@@ -159,6 +159,7 @@ begin
     Exit;
 
   LMethodAdd := AType.GetMethod('Add');
+
   if not Assigned(LMethodAdd) or
      (Length(LMethodAdd.GetParameters) <> 1) then
     Exit;

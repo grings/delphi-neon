@@ -419,8 +419,7 @@ begin
   if FConfig.IgnoreFieldPrefix and AMember.IsField then
   begin
     if AMember.Name.StartsWith('F', True) and
-      (AMember.Visibility in [mvPrivate, mvProtected])
-    then
+      (AMember.Visibility in [mvPrivate, mvProtected]) then
       LMemberName := AMember.Name.Substring(1)
     else
       LMemberName := AMember.Name;
@@ -500,6 +499,7 @@ begin
     LNeonMember := Result.NewMember(LMember);
     Result.Add(LNeonMember);
   end;
+
   FMemberRegistry.Add(AType.Handle, Result);
 
   case FConfig.MemberSort of
@@ -906,10 +906,8 @@ procedure TNeonRttiMember.SetValue(const AValue: TValue; AInstance: Pointer);
 begin
   case FMemberType of
     TNeonMemberType.Prop:
-      begin
-        if MemberAsProperty.IsWritable then
-          MemberAsProperty.SetValue(AInstance, AValue);
-      end;
+      if MemberAsProperty.IsWritable then
+        MemberAsProperty.SetValue(AInstance, AValue);
     TNeonMemberType.Field:
       MemberAsField.SetValue(AInstance, AValue);
   end;
@@ -1286,7 +1284,6 @@ constructor TNeonRttiType.Create(AType: TRttiType; AOperation: TNeonOperation);
 begin
   inherited Create(AType, AOperation);
   FType := AType;
-
   ParseAttributes;
 end;
 

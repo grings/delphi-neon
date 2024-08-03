@@ -574,11 +574,9 @@ begin
   case ANeonObject.NeonInclude.Value of
     IncludeIf.NotEmpty,
     IncludeIf.NotDefault:
-      begin
-        if (LStr = #0) or
-           LStr.IsEmpty then
-          Exit(nil);
-      end;
+      if (LStr = #0) or
+         LStr.IsEmpty then
+        Exit(nil);
   end;
 
   if (LStr = #0) or
@@ -628,17 +626,13 @@ begin
 
   case AValue.Kind of
     tkChar,
-      tkWChar:
-      begin
-        Result := WriteChar(AValue, ANeonObject);
-      end;
+    tkWChar:
+      Result := WriteChar(AValue, ANeonObject);
     tkString,
     tkLString,
     tkWString,
     tkUString:
-    begin
       Result := WriteString(AValue, ANeonObject);
-    end;
     tkEnumeration:
       begin
         if AValue.TypeInfo = System.TypeInfo(Boolean) then
@@ -647,13 +641,9 @@ begin
           Result := WriteEnum(AValue, ANeonObject);
       end;
     tkInteger:
-      begin
-        Result := WriteInteger(AValue, ANeonObject);
-      end;
+      Result := WriteInteger(AValue, ANeonObject);
     tkInt64:
-      begin
-        Result := WriteInt64(AValue, ANeonObject);
-      end;
+      Result := WriteInt64(AValue, ANeonObject);
     tkFloat:
       begin
         if AValue.TypeInfo = System.TypeInfo(TDate) then
@@ -692,17 +682,11 @@ begin
                 Result := WriteObject(AValue, ANeonObject);
       end;
     tkArray:
-      begin
         Result := WriteArray(AValue, ANeonObject);
-      end;
     tkDynArray:
-      begin
         Result := WriteArray(AValue, ANeonObject);
-      end;
     tkSet:
-      begin
         Result := WriteSet(AValue, ANeonObject);
-      end;
     tkRecord
 {$IFDEF HAS_MRECORDS}
      , tkMRecord
@@ -714,13 +698,9 @@ begin
           Result := WriteRecord(AValue, ANeonObject);
       end;
      tkInterface:
-      begin
-        Result := WriteInterface(AValue, ANeonObject);
-      end;
+       Result := WriteInterface(AValue, ANeonObject);
      tkVariant:
-      begin
-        Result := WriteVariant(AValue, ANeonObject);
-      end;
+       Result := WriteVariant(AValue, ANeonObject);
   end;
 end;
 
@@ -729,10 +709,8 @@ begin
   case ANeonObject.NeonInclude.Value of
     IncludeIf.NotEmpty,
     IncludeIf.NotDefault:
-      begin
-        if AValue.AsExtended = 0 then
-          Exit(nil);
-      end;
+      if AValue.AsExtended = 0 then
+        Exit(nil);
   end;
 
   Result := TJSONString.Create(TJSONUtils.DateToJSON(AValue.AsType<TDate>));
@@ -743,10 +721,8 @@ begin
   case ANeonObject.NeonInclude.Value of
     IncludeIf.NotEmpty,
     IncludeIf.NotDefault:
-      begin
-        if AValue.AsExtended = 0 then
-          Exit(nil);
-      end;
+      if AValue.AsExtended = 0 then
+        Exit(nil);
   end;
 
   Result := TJSONString.Create(TJSONUtils.TimeToJSON(AValue.AsType<TTime>));
@@ -757,11 +733,10 @@ begin
   case ANeonObject.NeonInclude.Value of
     IncludeIf.NotEmpty,
     IncludeIf.NotDefault:
-      begin
-        if AValue.AsExtended = 0 then
-          Exit(nil);
-      end;
+      if AValue.AsExtended = 0 then
+        Exit(nil);
   end;
+
   Result := TJSONString.Create(TJSONUtils.DateTimeToJSON(AValue.AsType<TDateTime>, FConfig.UseUTCDate));
 end;
 
@@ -770,9 +745,7 @@ var
   LName: string;
 begin
   if FConfig.EnumAsInt then
-  begin
-    Result := TJSONNumber.Create(AValue.AsOrdinal);
-  end
+    Result := TJSONNumber.Create(AValue.AsOrdinal)
   else
   begin
     LName := TTypeInfoUtils.EnumToString(AValue.TypeInfo, AValue.AsOrdinal, ANeonObject);
@@ -784,10 +757,8 @@ function TNeonSerializerJSON.WriteFloat(const AValue: TValue; ANeonObject: TNeon
 begin
   case ANeonObject.NeonInclude.Value of
     IncludeIf.NotDefault:
-      begin
-        if AValue.AsExtended = 0 then
-          Exit(nil);
-      end;
+      if AValue.AsExtended = 0 then
+        Exit(nil);
   end;
 
   Result := TJSONNumber.Create(AValue.AsExtended);
@@ -799,10 +770,8 @@ var
 begin
   case ANeonObject.NeonInclude.Value of
     IncludeIf.NotDefault:
-      begin
-        if AValue.AsInt64 = 0 then
-          Exit(nil);
-      end;
+      if AValue.AsInt64 = 0 then
+        Exit(nil);
   end;
 
   if AValue.TypeData^.MinInt64Value < 0 then
@@ -819,10 +788,8 @@ function TNeonSerializerJSON.WriteInteger(const AValue: TValue; ANeonObject: TNe
 begin
   case ANeonObject.NeonInclude.Value of
     IncludeIf.NotDefault:
-      begin
-        if AValue.AsInt64 = 0 then
-          Exit(nil);
-      end;
+      if AValue.AsInt64 = 0 then
+        Exit(nil);
   end;
 
   Result := TJSONNumber.Create(AValue.AsInt64);
@@ -908,10 +875,8 @@ begin
     IncludeIf.NotNull,
     IncludeIf.NotEmpty,
     IncludeIf.NotDefault:
-      begin
-        if ANullable.HasValue then
-          Result := WriteDataMember(ANullable.GetValue);
-      end;
+      if ANullable.HasValue then
+        Result := WriteDataMember(ANullable.GetValue);
   end;
 end;
 
@@ -934,10 +899,8 @@ begin
     case ANeonObject.NeonInclude.Value of
       IncludeIf.NotEmpty,
       IncludeIf.NotDefault:
-        begin
-          if (Result as TJSONObject).Count = 0 then
-            FreeAndNil(Result);
-        end;
+        if (Result as TJSONObject).Count = 0 then
+          FreeAndNil(Result);
     end;
   except
     FreeAndNil(Result);
@@ -957,6 +920,7 @@ begin
       Exit(nil);
 
   Result := TJSONArray.Create;
+
   while AList.MoveNext do
   begin
     LJSONValue := WriteDataMember(AList.Current);
@@ -977,22 +941,14 @@ begin
 
   case ANeonObject.NeonInclude.Value of
     IncludeIf.Always:
-      begin
-        if not Assigned(AMap) then
-          Exit(TJSONNull.Create);
-      end;
+      if not Assigned(AMap) then
+        Exit(TJSONNull.Create);
     IncludeIf.NotNull:
-      begin
-        if not Assigned(AMap) then
-          Exit(nil);
-      end;
+      if not Assigned(AMap) then
+        Exit(nil);
     IncludeIf.NotEmpty:
-      begin
-        if AMap.Count = 0 then
-          Exit(nil);
-      end;
-    IncludeIf.NotDefault:
-      ;
+      if AMap.Count = 0 then
+        Exit(nil);
   end;
 
   Result := TJSONObject.Create;
@@ -1041,11 +997,9 @@ begin
     case ANeonObject.NeonInclude.Value of
       IncludeIf.NotEmpty,
       IncludeIf.NotDefault:
-        begin
-          if ANeonObject.NeonInclude.Value = IncludeIf.NotEmpty then
-            if (Result as TJSONObject).Count = 0 then
-              FreeAndNil(Result);
-        end;
+        if ANeonObject.NeonInclude.Value = IncludeIf.NotEmpty then
+          if (Result as TJSONObject).Count = 0 then
+            FreeAndNil(Result);
     end;
   except
     FreeAndNil(Result);
@@ -1062,7 +1016,6 @@ var
   LValue: TValue;
 begin
   LArray := TJSONArray.Create;
-
   Integer(LIntegerValue) := Integer(AValue.GetReferenceToRawData^);
   LElementType := GetTypeData(AValue.TypeInfo)^.CompType;
 
@@ -1124,10 +1077,8 @@ begin
   case ANeonObject.NeonInclude.Value of
     IncludeIf.NotEmpty,
     IncludeIf.NotDefault:
-      begin
-        if AValue.AsString.IsEmpty then
-          Exit(nil);
-      end;
+      if AValue.AsString.IsEmpty then
+        Exit(nil);
   end;
 
   if ANeonObject.NeonRawValue then
@@ -1145,30 +1096,24 @@ begin
 
   case ANeonObject.NeonInclude.Value of
     IncludeIf.Always:
-      begin
-        if VarIsNull(LValue) then
-          Exit(TJSONNull.Create);
-      end;
+      if VarIsNull(LValue) then
+        Exit(TJSONNull.Create);
     IncludeIf.NotNull:
-      begin
-        if VarIsNull(LValue) then
-          Exit(nil);
-      end;
+      if VarIsNull(LValue) then
+        Exit(nil);
     IncludeIf.NotEmpty:
-      begin
-        if VarIsEmpty(LValue) then
-          Exit(nil);
-      end;
+      if VarIsEmpty(LValue) then
+        Exit(nil);
   end;
 
   LVariantType := VarType(LValue) and VarTypeMask;
   case LVariantType of
     varSmallInt,
-      varInteger:
+    varInteger:
       Result := WriteInteger(Int64(LValue), ANeonObject);
     varSingle,
     varDouble,
-      varCurrency:
+    varCurrency:
       Result := WriteFloat(Currency(LValue), ANeonObject);
     varDate:
       Result := WriteDate(VarToDateTime(LValue), ANeonObject);
@@ -1382,11 +1327,9 @@ begin
       LOrdinal := - 1;
 
       if Length(AParam.NeonObject.NeonEnumNames) > 0 then
-      begin
         for LIndex := Low(AParam.NeonObject.NeonEnumNames) to High(AParam.NeonObject.NeonEnumNames) do
           if AParam.JSONValue.Value = AParam.NeonObject.NeonEnumNames[LIndex] then
             LOrdinal := LIndex;
-      end;
 
       if LOrdinal = - 1 then
         LOrdinal := GetEnumValue(AParam.RttiType.Handle, AParam.JSONValue.Value);

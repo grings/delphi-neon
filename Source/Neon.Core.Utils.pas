@@ -245,15 +245,15 @@ begin
     tkMRecord,
 {$ENDIF}
     tkRecord,
-      tkDynArray:
-      begin
-        LAllocatedMem := AllocMem(AType.TypeSize);
-        try
-          TValue.Make(LAllocatedMem, AType.Handle, Result);
-        finally
-          FreeMem(LAllocatedMem);
-        end;
+    tkDynArray:
+    begin
+      LAllocatedMem := AllocMem(AType.TypeSize);
+      try
+        TValue.Make(LAllocatedMem, AType.Handle, Result);
+      finally
+        FreeMem(LAllocatedMem);
       end;
+    end;
   else
     raise Exception.CreateFmt('Error creating type [%s]', [AType.Name]);
   end;
@@ -296,22 +296,14 @@ begin
   Result := nil;
 
   if Assigned(AType) then
-  begin
     for LMethod in AType.GetMethods do
-    begin
       if LMethod.HasExtendedInfo and LMethod.IsConstructor then
-      begin
         if Length(LMethod.GetParameters) = 1 then
-        begin
           if LMethod.GetParameters[0].ParamType.TypeKind in [tkLString, tkUString, tkWString, tkString] then
           begin
             LMetaClass := AType.AsInstance.MetaclassType;
             Exit(LMethod.Invoke(LMetaClass, [AValue]).AsObject);
           end;
-        end;
-      end;
-    end;
-  end;
 end;
 
 class function TRttiUtils.CreateInstance(const ATypeName, AValue: string): TObject;
@@ -331,16 +323,12 @@ begin
 
   if Assigned(AType) then
     for LMethod in AType.GetMethods do
-    begin
       if LMethod.HasExtendedInfo and LMethod.IsConstructor then
-      begin
         if Length(LMethod.GetParameters) = 0 then
         begin
           LMetaClass := AType.AsInstance.MetaclassType;
           Exit(LMethod.Invoke(LMetaClass, []));
         end;
-      end;
-    end;
 end;
 
 class function TRttiUtils.ForEachAttribute<T>(AInstance: TObject; const ADoSomething: TProc<T>): Integer;
@@ -418,7 +406,6 @@ begin
   Result := 0;
 
   for LAttribute in ARttiObj.GetAttributes do
-  begin
     if LAttribute.InheritsFrom(TClass(T)) then
     begin
       if Assigned(ADoSomething) then
@@ -426,7 +413,6 @@ begin
 
       Inc(Result);
     end;
-  end;
 end;
 
 class function TRttiUtils.HasAttribute<T>(ARttiObj: TRttiObject): Boolean;
@@ -441,7 +427,6 @@ begin
   Result := False;
 
   for LAttribute in ARttiObj.GetAttributes do
-  begin
     if LAttribute.InheritsFrom(TClass(T)) then
     begin
       Result := True;
@@ -451,7 +436,6 @@ begin
 
       Break;
     end;
-  end;
 end;
 
 class function TRttiUtils.ForEachFieldWithAttribute<T>(ARttiType: TRttiType; const ADoSomething: TFunc<TRttiField, T, Boolean>): Integer;
@@ -466,14 +450,12 @@ begin
     LBreak := False;
 
     if TRttiUtils.HasAttribute<T>(LField,
-      procedure(AAttrib: T)
-      begin
-        if Assigned(ADoSomething) then
+        procedure(AAttrib: T)
         begin
-          if not ADoSomething(LField, AAttrib) then
-            LBreak := True;
-        end;
-      end)
+          if Assigned(ADoSomething) then
+            if not ADoSomething(LField, AAttrib) then
+              LBreak := True;
+        end)
     then
       Inc(Result);
 
@@ -494,14 +476,12 @@ begin
     LBreak := False;
 
     if TRttiUtils.HasAttribute<T>(LMethod,
-      procedure(AAttrib: T)
-      begin
-        if Assigned(ADoSomething) then
+        procedure(AAttrib: T)
         begin
-          if not ADoSomething(LMethod, AAttrib) then
-            LBreak := True;
-        end;
-      end)
+          if Assigned(ADoSomething) then
+            if not ADoSomething(LMethod, AAttrib) then
+              LBreak := True;
+        end)
     then
       Inc(Result);
 
@@ -522,14 +502,12 @@ begin
     LBreak := False;
 
     if TRttiUtils.HasAttribute<T>(LProperty,
-      procedure(AAttrib: T)
-      begin
-        if Assigned(ADoSomething) then
+        procedure(AAttrib: T)
         begin
-          if not ADoSomething(LProperty, AAttrib) then
-            LBreak := True;
-        end;
-      end)
+          if Assigned(ADoSomething) then
+            if not ADoSomething(LProperty, AAttrib) then
+              LBreak := True;
+        end)
     then
       Inc(Result);
 
@@ -611,14 +589,12 @@ begin
   Result := nil;
 
   for LAttribute in AType.GetAttributes do
-  begin
     if LAttribute.InheritsFrom(TClass(T)) then
     begin
       Result := LAttribute as T;
 
       Break;
     end;
-  end;
 end;
 
 class function TRttiUtils.CreateInstance(AClass: TClass; const Args: array of TValue): TObject;
@@ -639,16 +615,12 @@ begin
   if Assigned(AType) then
   begin
     for LMethod in AType.GetMethods do
-    begin
       if LMethod.HasExtendedInfo and LMethod.IsConstructor then
-      begin
         if Length(LMethod.GetParameters) = Length(Args) then
         begin
           LMetaClass := AType.AsInstance.MetaclassType;
           Exit(LMethod.Invoke(LMetaClass, Args).AsObject);
         end;
-      end;
-    end;
   end;
 
   if not Assigned(Result) then
@@ -1166,83 +1138,49 @@ begin
 
     case LField.DataType of
       TFieldType.ftString:
-        begin
           LJSONField.AddPair('type', 'string');
-        end;
       TFieldType.ftSmallint,
         TFieldType.ftInteger,
         TFieldType.ftWord,
         TFieldType.ftLongWord,
         TFieldType.ftShortint,
         TFieldType.ftByte:
-        begin
           LJSONField.AddPair('type', 'integer').AddPair('format', 'int32');
-        end;
       TFieldType.ftBoolean:
-        begin
           LJSONField.AddPair('type', 'boolean');
-        end;
         TFieldType.ftFloat,
         TFieldType.ftSingle:
-        begin
           LJSONField.AddPair('type', 'number').AddPair('format', 'float');
-        end;
         TFieldType.ftCurrency,
         TFieldType.ftExtended:
-        begin
           LJSONField.AddPair('type', 'number').AddPair('format', 'double');
-        end;
       TFieldType.ftBCD:
-        begin
           LJSONField.AddPair('type', 'number').AddPair('format', 'double');
-        end;
       TFieldType.ftDate:
-        begin
           LJSONField.AddPair('type', 'string').AddPair('format', 'date');
-        end;
       TFieldType.ftTime:
-        begin
           LJSONField.AddPair('type', 'string').AddPair('format', 'time');
-        end;
       TFieldType.ftDateTime:
-        begin
           LJSONField.AddPair('type', 'string').AddPair('format', 'date-time');
-        end;
       TFieldType.ftAutoInc:
-        begin
           LJSONField.AddPair('type', 'integer').AddPair('format', 'int32');
-        end;
       TFieldType.ftMemo,
         TFieldType.ftWideMemo:
-        begin
           LJSONField.AddPair('type', 'string');
-        end;
       TFieldType.ftFixedChar,
         TFieldType.ftFixedWideChar,
         TFieldType.ftWideString:
-        begin
           LJSONField.AddPair('type', 'string');
-        end;
       TFieldType.ftLargeint:
-        begin
           LJSONField.AddPair('type', 'integer').AddPair('format', 'int64');
-        end;
       TFieldType.ftVariant:
-        begin
           LJSONField.AddPair('type', 'string');
-        end;
       TFieldType.ftGuid:
-        begin
           LJSONField.AddPair('type', 'string');
-        end;
       TFieldType.ftTimeStamp:
-        begin
           LJSONField.AddPair('type', 'string').AddPair('format', 'date-time');
-        end;
       TFieldType.ftFMTBcd:
-        begin
           LJSONField.AddPair('type', 'number').AddPair('format', 'double');
-        end;
     end;
   end;
 end;
@@ -1355,6 +1293,7 @@ begin
     LBookmark := ADataSet.Bookmark;
     try
       ADataSet.First;
+
       while not ADataSet.Eof do
         try
           if (not Assigned(AAcceptFunc)) or (AAcceptFunc()) then

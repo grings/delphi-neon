@@ -275,7 +275,6 @@ end;
 function TNeonSchemaGenerator.WriteDataMember(AType: TRttiType; ANeonObject: TNeonRttiObject): TJSONObject;
 var
   LNeonTypeInfo: INeonTypeInfo;
-
   LNeonMap: INeonTypeInfoMap absolute LNeonTypeInfo;
   LNeonList: INeonTypeInfoList absolute LNeonTypeInfo;
   LNeonStream: INeonTypeInfoStream absolute LNeonTypeInfo;
@@ -290,9 +289,7 @@ begin
     tkLString,
     tkWString,
     tkUString:
-    begin
       Result := WriteString(AType, ANeonObject);
-    end;
     tkEnumeration:
       begin
         if AType.Handle = System.TypeInfo(Boolean) then
@@ -301,13 +298,9 @@ begin
           Result := WriteEnum(AType, ANeonObject);
       end;
     tkInteger:
-      begin
-        Result := WriteInteger(AType, ANeonObject);
-      end;
+      Result := WriteInteger(AType, ANeonObject);
     tkInt64:
-      begin
-        Result := WriteInt64(AType, ANeonObject);
-      end;
+      Result := WriteInt64(AType, ANeonObject);
     tkFloat:
       begin
         if AType.Handle = TypeInfo(Single) then
@@ -327,7 +320,7 @@ begin
     tkClass:
       begin
         if AType.IsInstance and
-           AType.AsInstance.MetaclassType.InheritsFrom(TDataSet) then
+          AType.AsInstance.MetaclassType.InheritsFrom(TDataSet) then
           Result := WriteDataSet(AType, ANeonObject)
         else
           if AType.IsInstance and
@@ -346,17 +339,11 @@ begin
                   Result := WriteObject(AType, ANeonObject);
       end;
     tkArray:
-      begin
-        Result := WriteArray(AType, ANeonObject);
-      end;
+      Result := WriteArray(AType, ANeonObject);
     tkDynArray:
-      begin
-        Result := WriteDynArray(AType, ANeonObject);
-      end;
+      Result := WriteDynArray(AType, ANeonObject);
     tkSet:
-      begin
-        Result := WriteSet(AType, ANeonObject);
-      end;
+      Result := WriteSet(AType, ANeonObject);
     tkRecord:
       begin
         if IsNullable(AType, LNeonNullable) then
@@ -365,13 +352,9 @@ begin
           Result := WriteRecord(AType, ANeonObject);
       end;
     tkInterface:
-      begin
-        Result := WriteInterface(AType, ANeonObject);
-      end;
+      Result := WriteInterface(AType, ANeonObject);
     tkVariant:
-      begin
-        Result := WriteVariant(AType, ANeonObject);
-      end;
+      Result := WriteVariant(AType, ANeonObject);
   end;
 end;
 
