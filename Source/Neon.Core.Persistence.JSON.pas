@@ -43,13 +43,12 @@ type
   /// <summary>
   /// JSON Serializer class
   /// </summary>
-  TNeonSerializerJSON = class(TNeonBase, ISerializerContext)
-  private
+  TNeonSerializerJSON = class sealed(TNeonBase, ISerializerContext)
+  strict private
     /// <summary>
     /// Writer for members of objects and records
     /// </summary>
     procedure WriteMembers(AType: TRttiType; AInstance: Pointer; AResult: TJSONValue);
-  private
     /// <summary>
     /// Writer for string types
     /// </summary>
@@ -162,12 +161,11 @@ type
     /// </remarks>
     function WriteNullable(const AValue: TValue; ANeonObject: TNeonRttiObject; ANullable: IDynamicNullable): TJSONValue;
     function IsNullable(const AValue: TValue; out ANullable: IDynamicNullable): Boolean;
-  protected
+  strict protected
     /// <summary>
     /// Function to be called by a custom serializer method (ISerializeContext)
     /// </summary>
     function WriteDataMember(const AValue: TValue; ACustomProcess: Boolean = True): TJSONValue; overload;
-
     /// <summary>
     /// This method chooses the right Writer based on the Kind of the AValue parameter
     /// </summary>
@@ -194,8 +192,8 @@ type
   /// <summary>
   /// JSON Deserializer class
   /// </summary>
-  TNeonDeserializerJSON = class(TNeonBase, IDeserializerContext)
-  private
+  TNeonDeserializerJSON = class sealed(TNeonBase, IDeserializerContext)
+  strict private
     /// <summary>
     /// Reader for members of objects and records
     /// </summary>
@@ -212,7 +210,6 @@ type
     /// Manages the creation of an Item of a collection (array, list, dictionary)
     /// </summary>
     function CreateItem(ANeonRtti: TNeonRttiObject; AValue: TJSONValue; var AType: TRttiType): TValue;
-  private
     /// <summary>
     /// reader for string types
     /// </summary>
@@ -249,7 +246,6 @@ type
     /// Reader for Variant types
     /// </summary>
     function ReadVariant(const AParam: TNeonDeserializerParam): TValue;
-  private
     /// <summary>
     /// Reader for static and dynamic arrays
     /// </summary>
@@ -297,7 +293,6 @@ type
     /// Record must have HasValue and GetValue methods
     /// </remarks>
     function ReadNullable(const AParam: TNeonDeserializerParam; const AData: TValue): Boolean;
-  private
     /// <summary>
     /// Function to be called by a custom serializer method (IDeserializeContext)
     /// </summary>
@@ -329,25 +324,23 @@ type
   /// <summary>
   /// Static utility class for serializing and deserializing Delphi types
   /// </summary>
-  TNeon = class sealed
+  TNeon = class sealed(TObject)
+  strict private
 {$IFDEF HAS_TOJSON_OPTIONS}
-  private
   const
     OUTPUT_DEFAULT = [TJSONAncestor.TJSONOutputOption.EncodeBelow32, TJSONAncestor.TJSONOutputOption.EncodeAbove127];
-{$ENDIF}
+    /// <summary>
+    /// Prints a TJSONValue in a single line or formatted (PrettyPrinting)
+    /// </summary>
+    class procedure PrintToWriter(AJSONValue: TJSONValue; AWriter: TTextWriter; APretty: Boolean
+      ; AOutputOptions: TJSONAncestor.TJSONOutputOptions
+{$ENDIF})
+      ; static;
   private
     /// <summary>
     /// ParseJSON function call for compatibility Delphi <= 10.2 Tokyo
     /// </summary>
     class function ParseJSON(const Data: string; UseBool: Boolean = False; RaiseExc: Boolean = False): TJSONValue;
-    /// <summary>
-    /// Prints a TJSONValue in a single line or formatted (PrettyPrinting)
-    /// </summary>
-    class procedure PrintToWriter(AJSONValue: TJSONValue; AWriter: TTextWriter; APretty: Boolean
-{$IFDEF HAS_TOJSON_OPTIONS}
-      ; AOutputOptions: TJSONAncestor.TJSONOutputOptions
-{$ENDIF})
-      ; static;
   public
     /// <summary>
     /// Prints a TJSONValue in a single line or formatted (PrettyPrinting)
@@ -355,16 +348,13 @@ type
     class function Print(AJSONValue: TJSONValue; APretty: Boolean): string; overload; static;
 {$IFDEF HAS_TOJSON_OPTIONS}
     class function Print(AJSONValue: TJSONValue; APretty: Boolean; AOutputOptions: TJSONAncestor.TJSONOutputOptions): string; overload; static;
+    class procedure PrintToStream(AJSONValue: TJSONValue; AStream: TStream; APretty: Boolean; AOutputOptions: TJSONAncestor.TJSONOutputOptions);
+      overload; static;
 {$ENDIF}
     /// <summary>
     /// Prints a TJSONValue in a single line or formatted (PrettyPrinting)
     /// </summary>
     class procedure PrintToStream(AJSONValue: TJSONValue; AStream: TStream; APretty: Boolean); overload; static;
-{$IFDEF HAS_TOJSON_OPTIONS}
-    class procedure PrintToStream(AJSONValue: TJSONValue; AStream: TStream; APretty: Boolean; AOutputOptions: TJSONAncestor.TJSONOutputOptions);
-      overload; static;
-{$ENDIF}
-  public
     /// <summary>
     /// Serializes a value based type (record, string, integer, etc...) to a TStream
     /// </summary>
@@ -390,7 +380,6 @@ type
     /// Serializes a vallue based type to a string with a given configuration <br />
     /// </summary>
     class function ValueToJSONString(const AValue: TValue; AConfig: INeonConfiguration): string; overload;
-  public
     /// <summary>
     /// Serializes an object based type into a TTStream with a default configuration
     /// </summary>
@@ -415,7 +404,6 @@ type
     /// Serializes an object based type to a string with a given configuration <br />
     /// </summary>
     class function ObjectToJSONString(AObject: TObject; AConfig: INeonConfiguration): string; overload;
-  public
     /// <summary>
     /// Deserializes a TJSONValue into a TObject with a given configuration
     /// </summary>
@@ -460,7 +448,6 @@ type
     /// Deserializes a string into a generic type &lt;T&gt; with a given configuration <br />
     /// </summary>
     class function JSONToObject<T: class, constructor>(const AJSON: string; AConfig: INeonConfiguration): T; overload;
-  public
     /// <summary>
     /// Deserializes a TJSONValue into a TRttiType value based with a default configuration <br />
     /// </summary>

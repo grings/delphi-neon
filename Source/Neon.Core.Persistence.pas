@@ -48,7 +48,7 @@ type
   TNeonSerializerRegistry = class;
   TNeonRttiObject = class;
 
-  INeonConfiguration = interface
+  INeonConfiguration = interface(IInterface)
     ['{F82AB790-1C65-4501-915C-0289EFD9D8CC}']
     function SetMembers(AValue: TNeonMembersSet): INeonConfiguration;
     function SetMemberSort(AValue: TNeonSort): INeonConfiguration;
@@ -71,7 +71,7 @@ type
     function GetSerializers: TNeonSerializerRegistry;
   end;
 
-  IConfigurationContext = interface
+  IConfigurationContext = interface(IInterface)
     ['{3954FFB5-2D3D-4978-AADA-FEC5C0D73FD0}']
     function GetConfiguration: INeonConfiguration;
   end;
@@ -125,14 +125,14 @@ type
   /// Base class for a Custom Serializer
   /// </summary>
   TCustomSerializer = class abstract(TObject)
-  protected
+  strict protected
     class function GetTargetInfo: PTypeInfo; virtual;
-    class function CanHandle(AType: PTypeInfo): Boolean; virtual; abstract;
-  protected
-    class function ClassDistance: Integer;
     class function ClassIs(AClass: TClass): Boolean;
     class function TypeInfoIs(AInfo: PTypeInfo): Boolean;
     class function TypeInfoIsClass(AInfo: PTypeInfo): Boolean;
+  protected
+    class function CanHandle(AType: PTypeInfo): Boolean; virtual; abstract;
+    class function ClassDistance: Integer;
   public
     function Serialize(const AValue: TValue; ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue; virtual; abstract;
     function Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue; virtual; abstract;
@@ -142,15 +142,14 @@ type
   public
     SerializerClass: TCustomSerializerClass;
     Distance: Integer;
-  public
     class function FromSerializer(ASerializerClass: TCustomSerializerClass): TSerializerInfo; static;
   end;
 
-  TNeonSerializerRegistry = class
-  private
+  TNeonSerializerRegistry = class sealed(TObject)
+  strict private
   type
-     SerializerCacheRegistry = class(TObjectDictionary<PTypeInfo, TCustomSerializer>);
-     SerializerClassRegistry = class(TList<TSerializerInfo>);
+   SerializerCacheRegistry = class(TObjectDictionary<PTypeInfo, TCustomSerializer>);
+   SerializerClassRegistry = class(TList<TSerializerInfo>);
   var
     FRegistryClass: SerializerClassRegistry;
     FRegistryCache: SerializerCacheRegistry;
@@ -160,7 +159,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-  public
     procedure Clear;
     procedure ClearCache;
     procedure Assign(ARegistry: TNeonSerializerRegistry);
@@ -170,11 +168,10 @@ type
     function GetSerializer(AValue: TValue): TCustomSerializer; overload;
     function GetSerializer(ATargetClass: TClass): TCustomSerializer; overload;
     function GetSerializer(ATargetInfo: PTypeInfo): TCustomSerializer; overload;
-  public
     property Count: Integer read GetCount;
   end;
 
-  TCaseAlgorithm = class
+  TCaseAlgorithm = class sealed(TObject)
   public
     class function PascalToCamel(const AString: string): string;
     class function CamelToPascal(const AString: string): string;
@@ -186,7 +183,7 @@ type
   end;
 
   TNeonConfiguration = class sealed(TInterfacedObject, INeonConfiguration)
-  private
+  strict private
     FVisibility: TNeonVisibility;
     FMembers: TNeonMembersSet;
     FMemberSort: TNeonSort;
@@ -247,13 +244,14 @@ type
     property FactoryList: TNeonFactoryRegistry read FFactoryList write FFactoryList;
   end;
 
-  TNeonRttiObject = class
-  private
+  TNeonRttiObject = class(TObject)
+  strict private
     FNeonFactoryClass: TCustomFactoryClass;
     FNeonItemFactoryClass: TCustomFactoryClass;
-    FTypeAttributes: TArray<TCustomAttribute>;
     FNeonAutoCreate: Boolean;
-  protected
+  private
+    FTypeAttributes: TArray<TCustomAttribute>;
+  strict protected
     FOperation: TNeonOperation;
     FRttiObject: TRttiObject;
     FNeonInclude: TIncludeValue;
@@ -267,13 +265,11 @@ type
     FNeonSerializerClass: TClass;
     FNeonRawValue: Boolean;
     FNeonUnwrapped: Boolean;
-  protected
     procedure InternalParseAttributes(const AAttr: TArray<TCustomAttribute>); virtual;
     procedure ProcessAttribute(AAttribute: TCustomAttribute); virtual;
   public
     constructor Create(ARttiObject: TRttiObject; AOperation: TNeonOperation);
     function AsRttiType: TRttiType;
-  public
     procedure ParseAttributes; virtual;
     function GetAttribute<T: TCustomAttribute>: T;
     property Attributes: TArray<TCustomAttribute> read FAttributes write FAttributes;
@@ -294,15 +290,15 @@ type
     property NeonItemFactoryClass: TCustomFactoryClass read FNeonItemFactoryClass write FNeonItemFactoryClass;
   end;
 
-  TNeonRttiType = class(TNeonRttiObject)
+  TNeonRttiType = class sealed(TNeonRttiObject)
   private
     FType: TRttiType;
   public
     constructor Create(AType: TRttiType; AOperation: TNeonOperation);
   end;
 
-  TNeonRttiMember = class(TNeonRttiObject)
-  private
+  TNeonRttiMember = class sealed(TNeonRttiObject)
+  strict private
     FMemberType: TNeonMemberType;
     FMemberRttiType: TRttiType;
     FMember: TRttiMember;
@@ -314,8 +310,9 @@ type
     function MemberAsField: TRttiField; inline;
     function GetName: string;
     // Instance-based method
+  private
     function EvalIncludeIf(AInstance: Pointer): TNeonIncludeOption;
-  protected
+  strict protected
     procedure ProcessAttribute(AAttribute: TCustomAttribute); override;
   public
     constructor Create(AMember: TRttiMember; AParent: TNeonRttiType; AOperation: TNeonOperation);
@@ -334,12 +331,11 @@ type
     property Serializable: Boolean read FSerializable write FSerializable;
   end;
 
-  TNeonRttiMembers = class(TObjectList<TNeonRttiMember>)
-  private
+  TNeonRttiMembers = class sealed(TObjectList<TNeonRttiMember>)
+  strict private
     FOperation: TNeonOperation;
     FConfig: TNeonConfiguration;
     FParent: TNeonRttiType;
-  private
     function IgnoredName(const AName: string): Boolean; inline;
     function MatchesVisibility(AVisibility: TMemberVisibility): Boolean;
     function MatchesMemberChoice(AMemberType: TNeonMemberType): Boolean;
@@ -358,7 +354,7 @@ type
 {$ELSE}
   TNeonBase = class(TSingletonImplementation, IConfigurationContext)
 {$ENDIF}
-  protected
+  strict protected
     FConfig: TNeonConfiguration;
     FConfigIntf: INeonConfiguration;
     FOperation: TNeonOperation;
@@ -374,12 +370,12 @@ type
     destructor Destroy; override;
     procedure LogError(const AMessage: string);
     function GetConfiguration: INeonConfiguration;
-  public
     property Config: TNeonConfiguration read FConfig;
     property Errors: TStrings read FErrors;
   end;
 
-  TTypeInfoUtils = class
+  TTypeInfoUtils = class sealed(TObject)
+  public
     class function EnumToString(ATypeInfo: PTypeInfo; AValue: Integer; ANeonObject: TNeonRttiObject): string; static;
   end;
 

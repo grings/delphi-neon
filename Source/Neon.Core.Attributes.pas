@@ -51,15 +51,15 @@ type
   /// <remarks>
   /// Read + Write Attribute
   /// </remarks>
-  NeonPropertyAttribute = class(NeonNamedAttribute);
+  NeonPropertyAttribute = class sealed(NeonNamedAttribute);
   /// <summary>
   /// The attribute [NeonEnum] is used to indicate the names of an enum
   /// </summary>
   /// <remarks>
   /// Read + Write Attribute
   /// </remarks>
-  NeonEnumNamesAttribute = class(TCustomAttribute)
-  private
+  NeonEnumNamesAttribute = class sealed(TCustomAttribute)
+  strict private
     FNames: TArray<string>;
   public
     constructor Create(const ANames: string);
@@ -75,7 +75,7 @@ type
   /// Read + Write Attribute
   /// </remarks>
   ///
-  NeonIgnoreAttribute = class(NeonAttribute);
+  NeonIgnoreAttribute = class sealed(NeonAttribute);
 
   /// <summary>
   /// The Neon attribute [NeonUnwrapped] is a property/field annotation used to
@@ -87,7 +87,7 @@ type
   /// Must be applied only to class/record's properties/fields
   /// </remarks>
   ///
-  NeonUnwrappedAttribute = class(NeonAttribute);
+  NeonUnwrappedAttribute = class sealed(NeonAttribute);
 
   /// <summary>
   /// The IncludeIf enum values define when to include the field or property.
@@ -125,8 +125,8 @@ type
   /// The Neon annotation NeonInclude tells Neon to include the property (or field)
   /// based on the value of the enumeration Include
   /// </summary>
-  NeonIncludeAttribute = class(TCustomAttribute)
-  private
+  NeonIncludeAttribute = class sealed(TCustomAttribute)
+  strict private
     FIncludeValue: TIncludeValue;
   public
     constructor Create(AIncludeValue: IncludeIf = IncludeIf.Always; const AIncludeFunction: string = 'ShouldInclude');
@@ -142,8 +142,8 @@ type
   /// </remarks>
   NeonFormat = (Native, Base64);
 
-  NeonFormatAttribute = class(NeonNamedAttribute)
-  private
+  NeonFormatAttribute = class sealed(NeonNamedAttribute)
+  strict private
     FFormatValue: NeonFormat;
   public
     constructor Create(AOutputValue: NeonFormat = NeonFormat.Native); overload; deprecated;
@@ -160,7 +160,7 @@ type
   /// <remarks>
   /// Read + Write Attribute
   /// </remarks>
-  NeonIgnorePropertiesAttribute = class(NeonAttribute);
+  NeonIgnorePropertiesAttribute = class sealed(NeonAttribute);
 
   /// <summary>
   /// The NeonIgnoreType Neon annotation is used to mark a whole type (class) to be
@@ -169,7 +169,7 @@ type
   /// <remarks>
   /// Read + Write Attribute
   /// </remarks>
-  NeonIgnoreTypeAttribute = class(NeonAttribute);
+  NeonIgnoreTypeAttribute = class sealed(NeonAttribute);
 
   /// <summary>
   /// The Neon attribute NeonMembers is used to tell Neon to change the Members
@@ -178,8 +178,8 @@ type
   /// <remarks>
   /// Read + Write Attribute
   /// </remarks>
-  NeonMembersSetAttribute = class(NeonAttribute)
-  private
+  NeonMembersSetAttribute = class sealed(NeonAttribute)
+  strict private
     FValue: TNeonMembersSet;
   public
     constructor Create(const AValue: TNeonMembersSet);
@@ -193,8 +193,8 @@ type
   /// <remarks>
   /// Read + Write Attribute
   /// </remarks>
-  NeonVisibilityAttribute = class(NeonAttribute)
-  private
+  NeonVisibilityAttribute = class sealed(NeonAttribute)
+  strict private
     FValue: TNeonVisibility;
   public
     constructor Create(const AValue: TNeonVisibility);
@@ -206,7 +206,7 @@ type
   /// field in a Delphi object.
   /// </summary>
   NeonSerializeAttribute = class(NeonAttribute)
-  private
+  strict private
     FClazz: TClass;
     FName: string;
   public
@@ -220,7 +220,7 @@ type
   /// The Neon annotation NeonDeserialize is used to specify a custom de-serializer
   /// class for a given field in a Delphi object.
   /// </summary>
-  NeonDeserializeAttribute = class(NeonSerializeAttribute);
+  NeonDeserializeAttribute = class sealed(NeonSerializeAttribute);
 
   /// <summary>
   /// The NeonFactory attribute is used to specify an object factory for an
@@ -235,8 +235,8 @@ type
   /// Config.RegisterFactory()
   /// </para>
   /// </remarks>
-  NeonFactoryAttribute = class(NeonAttribute)
-  private
+  NeonFactoryAttribute = class sealed(NeonAttribute)
+  strict private
     FFactoryClass: TClass;
   public
     constructor Create(const AFactory: TClass); overload;
@@ -252,8 +252,8 @@ type
   /// The factory class must be registerd in the config with
   /// Config.RegisterFactory()
   /// </remarks>
-  NeonItemFactoryAttribute = class(NeonAttribute)
-  private
+  NeonItemFactoryAttribute = class sealed(NeonAttribute)
+  strict private
     FFactoryClass: TClass;
   public
     constructor Create(const AItemFactory: TClass); overload;
@@ -265,9 +265,9 @@ type
   /// serialize the object itself, but rather call a method on the object which
   /// serializes the object to a TJSONValue.
   /// </summary>
-  NeonValueAttribute = class(NeonAttribute);
-  NeonMethodAttribute = class(NeonAttribute);
-  NeonSerializerMethodAttribute = class(NeonAttribute);
+  NeonValueAttribute = class sealed(NeonAttribute);
+  NeonMethodAttribute = class sealed(NeonAttribute);
+  NeonSerializerMethodAttribute = class sealed(NeonAttribute);
 
   /// <summary>
   /// The NeonRawValue annotation tells Neon that this property value should written
@@ -275,13 +275,13 @@ type
   /// normally have enclosed the value in quotation marks, but if annotated with the
   /// NeonRawValue property Neon won't do that.
   /// </summary>
-  NeonRawValueAttribute = class(NeonAttribute);
+  NeonRawValueAttribute = class sealed(NeonAttribute);
 
   /// <summary>
   /// The NeonAutoCreate tells Neon to create an object if it's nil. The
   /// class must have at least one parameterless Create constructor.
   /// </summary>
-  NeonAutoCreateAttribute = class(NeonAttribute);
+  NeonAutoCreateAttribute = class sealed(NeonAttribute);
 
 implementation
 

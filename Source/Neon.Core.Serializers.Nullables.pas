@@ -36,8 +36,8 @@ uses
   Neon.Core.Serializers.RTL;
 
 type
-  TNullableStringSerializer = class(TCustomSerializer)
-  protected
+  TNullableStringSerializer = class sealed(TCustomSerializer)
+  strict protected
     class function GetTargetInfo: PTypeInfo; override;
     class function CanHandle(AType: PTypeInfo): Boolean; override;
   public
@@ -45,8 +45,8 @@ type
     function Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue; override;
   end;
 
-  TNullableBooleanSerializer = class(TCustomSerializer)
-  protected
+  TNullableBooleanSerializer = class sealed(TCustomSerializer)
+  strict protected
     class function GetTargetInfo: PTypeInfo; override;
     class function CanHandle(AType: PTypeInfo): Boolean; override;
   public
@@ -54,8 +54,8 @@ type
     function Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue; override;
   end;
 
-  TNullableIntegerSerializer = class(TCustomSerializer)
-  protected
+  TNullableIntegerSerializer = class sealed(TCustomSerializer)
+  strict protected
     class function GetTargetInfo: PTypeInfo; override;
     class function CanHandle(AType: PTypeInfo): Boolean; override;
   public
@@ -63,8 +63,8 @@ type
     function Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue; override;
   end;
 
-  TNullableInt64Serializer = class(TCustomSerializer)
-  protected
+  TNullableInt64Serializer = class sealed(TCustomSerializer)
+  strict protected
     class function GetTargetInfo: PTypeInfo; override;
     class function CanHandle(AType: PTypeInfo): Boolean; override;
   public
@@ -72,8 +72,8 @@ type
     function Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue; override;
   end;
 
-  TNullableDoubleSerializer = class(TCustomSerializer)
-  protected
+  TNullableDoubleSerializer = class sealed(TCustomSerializer)
+  strict protected
     class function GetTargetInfo: PTypeInfo; override;
     class function CanHandle(AType: PTypeInfo): Boolean; override;
   public
@@ -81,8 +81,8 @@ type
     function Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue; override;
   end;
 
-  TNullableTDateTimeSerializer = class(TCustomSerializer)
-  protected
+  TNullableTDateTimeSerializer = class sealed(TCustomSerializer)
+  strict protected
     class function GetTargetInfo: PTypeInfo; override;
     class function CanHandle(AType: PTypeInfo): Boolean; override;
   public

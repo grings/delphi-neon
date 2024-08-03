@@ -42,7 +42,7 @@ uses
 {$ENDIF}
 
 type
-  TJSONUtils = class
+  TJSONUtils = class sealed(TObject)
   public
     class procedure Decode(const ASource: string; ADest: TStream); overload;
     class function Encode(const ASource: TStream): string; overload;
@@ -71,8 +71,8 @@ type
     class procedure Prettify(const AJSONString: string; AWriter: TTextWriter);
   end;
 
-  TRttiUtils = class
-  private
+  TRttiUtils = class sealed(TObject)
+  strict private
     class var FContext: TRttiContext;
   public
     // TRttiObject helpers functions
@@ -130,7 +130,7 @@ type
     class property Context: TRttiContext read FContext;
   end;
 
-  TBase64 = class
+  TBase64 = class sealed(TObject)
   public
     class function Encode(const ASource: TBytes): string; overload;
     class function Encode(const ASource: TStream): string; overload;
@@ -138,8 +138,8 @@ type
     class procedure Decode(const ASource: string; ADest: TStream); overload;
   end;
 
-  TDataSetUtils = class
-  private
+  TDataSetUtils = class sealed(TObject)
+  strict private
     class procedure SetField(AField: TField; AJSON: TJSONValue; AUseUTCDate: Boolean);
   public
     class function RecordToJSONSchema(const ADataSet: TDataSet; AUseUTCDate: Boolean): TJSONObject; static;

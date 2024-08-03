@@ -57,8 +57,9 @@ type
   TCaseFunc = reference to function(const AString: string): string;
 
 type
-  TNeonError = class
-  public const
+  TNeonError = class sealed(TObject)
+  public
+  const
     PARSE = 'Error parsing JSON string';
     NUM_EXPECTED = 'Invalid JSON value. Number expected';
     BOOL_EXPECTED = 'Invalid JSON value. Number expected';

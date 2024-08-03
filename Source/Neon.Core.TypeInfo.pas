@@ -33,7 +33,7 @@ uses
   System.Generics.Collections;
 
 type
-  INeonTypeInfo = interface
+  INeonTypeInfo = interface(IInterface)
     ['{DA498D59-E50C-490C-8F7F-4F0B8804D322}']
   end;
 
@@ -58,46 +58,42 @@ type
     function GetBaseType: TRttiType;
   end;
 
-  TNeonTypeInfoStream = class(TInterfacedObject, INeonTypeInfoStream)
-  private
+  TNeonTypeInfoStream = class sealed(TInterfacedObject, INeonTypeInfoStream)
+  strict private
     FStreamType: TRttiType;
     constructor Create(AStreamType: TRttiType);
+    function GetStreamType: TRttiType;
   public
     class function GuessType(AType: TRttiType): INeonTypeInfoStream;
-  public
-    function GetStreamType: TRttiType;
   end;
 
-  TNeonTypeInfoList = class(TInterfacedObject, INeonTypeInfoList)
-  private
+  TNeonTypeInfoList = class sealed(TInterfacedObject, INeonTypeInfoList)
+  strict private
     FItemType: TRttiType;
     constructor Create(AItemType: TRttiType);
+    function GetItemType: TRttiType;
   public
     class function GuessType(AType: TRttiType): INeonTypeInfoList;
-  public
-    function GetItemType: TRttiType;
   end;
 
-  TNeonTypeInfoMap = class(TInterfacedObject, INeonTypeInfoMap)
-  private
+  TNeonTypeInfoMap = class sealed(TInterfacedObject, INeonTypeInfoMap)
+  strict private
     FKeyType: TRttiType;
     FValueType: TRttiType;
     constructor Create(AKeyType, AValueType: TRttiType);
-  public
-    class function GuessType(AType: TRttiType): INeonTypeInfoMap;
-  public
     function GetKeyType: TRttiType;
     function GetValueType: TRttiType;
+  public
+    class function GuessType(AType: TRttiType): INeonTypeInfoMap;
   end;
 
-  TNeonTypeInfoNullable = class(TInterfacedObject, INeonTypeInfoNullable)
-  private
+  TNeonTypeInfoNullable = class sealed(TInterfacedObject, INeonTypeInfoNullable)
+  strict private
     FBaseType: TRttiType;
     constructor Create(ABaseType: TRttiType);
+    function GetBaseType: TRttiType;
   public
     class function GuessType(AType: TRttiType): INeonTypeInfoNullable;
-  public
-    function GetBaseType: TRttiType;
   end;
 
 implementation

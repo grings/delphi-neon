@@ -44,8 +44,8 @@ type
   /// <summary>
   /// JSON Schema (OpenAPI version) generator
   /// </summary>
-  TNeonSchemaGenerator = class(TNeonBase)
-  private
+  TNeonSchemaGenerator = class sealed(TNeonBase)
+  strict private
     /// <summary>
     /// Writer for members of objects and records
     /// </summary>
@@ -158,7 +158,7 @@ type
     /// </remarks>
     function WriteNullable(AType: TRttiType; ANeonObject: TNeonRttiObject; ANullable: INeonTypeInfoNullable): TJSONObject;
     function IsNullable(AType: TRttiType; out ANullable: INeonTypeInfoNullable): Boolean;
-  protected
+  strict protected
     /// <summary>
     /// Function to be called by a custom serializer method (ISerializeContext)
     /// </summary>

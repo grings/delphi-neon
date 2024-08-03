@@ -33,7 +33,7 @@ uses
   System.Generics.Collections;
 
 type
-  IDynamicType = interface
+  IDynamicType = interface(IInterface)
     ['{DD163E75-134C-4035-809C-D9E1EEEC4225}']
   end;
 
@@ -82,21 +82,20 @@ type
     procedure SetValue(const AValue: TValue);
   end;
 
-  TDynamicStream = class(TInterfacedObject, IDynamicStream)
-  private
+  TDynamicStream = class sealed(TInterfacedObject, IDynamicStream)
+  strict private
     FInstance: TObject;
     FLoadMethod: TRttiMethod;
     FSaveMethod: TRttiMethod;
     constructor Create(AInstance: TObject; ALoadMethod, ASaveMethod: TRttiMethod);
-  public
-    class function GuessType(AInstance: TObject): IDynamicStream;
-  public
     procedure LoadFromStream(AStream: TStream);
     procedure SaveToStream(AStream: TStream);
+  public
+    class function GuessType(AInstance: TObject): IDynamicStream;
   end;
 
-  TDynamicList = class(TInterfacedObject, IDynamicList)
-  private
+  TDynamicList = class sealed(TInterfacedObject, IDynamicList)
+  strict private
     FInstance: TObject;
     FEnumInstance: TObject;
     FItemType: TRttiType;
@@ -107,10 +106,7 @@ type
     FCountProperty: TRttiProperty;
     constructor Create(AInstance, AEnumInstance: TObject; AItemType: TRttiType; AAddMethod, AClearMethod, AMoveNextMethod: TRttiMethod; ACurrentProperty,
         ACountProperty: TRttiProperty);
-  public
     destructor Destroy; override;
-    class function GuessType(AInstance: TObject): IDynamicList;
-  public
     function NewItem: TValue;
     function GetItemType: TRttiType;
     procedure Add(AItem: TValue);
@@ -118,12 +114,15 @@ type
     function Count: Integer;
     function Current: TValue;
     function MoveNext: Boolean;
+  public
+    class function GuessType(AInstance: TObject): IDynamicList;
   end;
 
-  TDynamicMap = class(TInterfacedObject, IDynamicMap)
-  public type
-    TEnumerator = class
-    private
+  TDynamicMap = class sealed(TInterfacedObject, IDynamicMap)
+  public
+  type
+    TEnumerator = class sealed(TObject)
+    strict private
     const
       CURRENT_PROP = 'Current';
       MOVENEXT_METH = 'MoveNext';
@@ -134,11 +133,10 @@ type
     public
       constructor Create(AMethod: TRttiMethod; AInstance: TObject);
       destructor Destroy; override;
-    public
       function Current: TValue;
       function MoveNext: Boolean;
     end;
-  private
+  strict private
     FInstance: TObject;
     FKeyType: TRttiType;
     FValueType: TRttiType;
@@ -154,7 +152,6 @@ type
   public
     class function GuessType(AInstance: TObject): IDynamicMap;
     destructor Destroy; override;
-  public
     function NewKey: TValue;
     function NewValue: TValue;
     function GetKeyType: TRttiType;
@@ -172,8 +169,8 @@ type
     procedure KeyFromString(const AKey: TValue; const AStringVal: string);
   end;
 
-  TDynamicNullable = class(TInterfacedObject, IDynamicNullable)
-  private
+  TDynamicNullable = class sealed(TInterfacedObject, IDynamicNullable)
+  strict private
     FInstance: TValue;
     FTypeInfoMethod: TRttiMethod;
     FHasValueMethod: TRttiMethod;

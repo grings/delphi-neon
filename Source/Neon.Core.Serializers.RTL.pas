@@ -41,8 +41,8 @@ type
   /// Custom serializer for the TGUID record type. It serialize the GUID in
   /// the canonical form: 'C4A22FDD-443F-4737-AA7D-2323F635E207'
   /// </summary>
-  TGUIDSerializer = class(TCustomSerializer)
-  protected
+  TGUIDSerializer = class sealed(TCustomSerializer)
+  strict protected
     class function GetTargetInfo: PTypeInfo; override;
     class function CanHandle(AType: PTypeInfo): Boolean; override;
   public
@@ -54,8 +54,8 @@ type
   /// Custom serializer for the TStream (and descendant) class. It serializes
   /// the stream as Base64
   /// </summary>
-  TStreamSerializer = class(TCustomSerializer)
-  protected
+  TStreamSerializer = class sealed(TCustomSerializer)
+  strict protected
     class function GetTargetInfo: PTypeInfo; override;
     class function CanHandle(AType: PTypeInfo): Boolean; override;
   public
@@ -67,8 +67,8 @@ type
   /// Custom serializer for the TJSONValue class. Clones the JSON object or
   /// array
   /// </summary>
-  TJSONValueSerializer = class(TCustomSerializer)
-  protected
+  TJSONValueSerializer = class sealed(TCustomSerializer)
+  strict protected
     class function GetTargetInfo: PTypeInfo; override;
     class function CanHandle(AType: PTypeInfo): Boolean; override;
   public
@@ -79,8 +79,8 @@ type
   /// <summary>
   /// Custom serializer for the TValue record.
   /// </summary>
-  TTValueSerializer = class(TCustomSerializer)
-  protected
+  TTValueSerializer = class sealed(TCustomSerializer)
+  strict protected
     class function GetTargetInfo: PTypeInfo; override;
     class function CanHandle(AType: PTypeInfo): Boolean; override;
   public
@@ -92,11 +92,11 @@ type
   /// Custom serializer for the TBytes type. It allows to serialize TBytes as
   /// Base64 using NeonFormat attribute
   /// </summary>
-  TBytesSerializer = class(TCustomSerializer)
-  private
+  TBytesSerializer = class sealed(TCustomSerializer)
+  strict private
     function IsFormatValue(AFormat: NeonFormatAttribute; const AValue: string): Boolean; inline;
     function ValueAsBase64(const AValue: TJSONValue): TValue; inline;
-  protected
+  strict protected
     class function GetTargetInfo: PTypeInfo; override;
     class function CanHandle(AType: PTypeInfo): Boolean; override;
   public

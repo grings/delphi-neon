@@ -38,8 +38,8 @@ uses
   Neon.Core.Persistence;
 
 type
-  TDataSetSerializer = class(TCustomSerializer)
-  protected
+  TDataSetSerializer = class sealed(TCustomSerializer)
+  strict protected
     class function GetTargetInfo: PTypeInfo; override;
     class function CanHandle(AType: PTypeInfo): Boolean; override;
   public
