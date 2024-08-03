@@ -34,27 +34,27 @@ uses
 
 type
   INeonTypeInfo = interface
-  ['{DA498D59-E50C-490C-8F7F-4F0B8804D322}']
+    ['{DA498D59-E50C-490C-8F7F-4F0B8804D322}']
   end;
 
   INeonTypeInfoStream = interface(INeonTypeInfo)
-  ['{285B6152-BC07-4195-8A10-B6A9B2A54536}']
+    ['{285B6152-BC07-4195-8A10-B6A9B2A54536}']
     function GetStreamType: TRttiType;
   end;
 
   INeonTypeInfoList = interface(INeonTypeInfo)
-  ['{0432B934-A484-46BE-8AF8-D2207694E1EA}']
+    ['{0432B934-A484-46BE-8AF8-D2207694E1EA}']
     function GetItemType: TRttiType;
   end;
 
   INeonTypeInfoMap = interface(INeonTypeInfo)
-  ['{9788B4FE-8F9E-4284-86F5-6DB5EFF326FC}']
+    ['{9788B4FE-8F9E-4284-86F5-6DB5EFF326FC}']
     function GetKeyType: TRttiType;
     function GetValueType: TRttiType;
   end;
 
   INeonTypeInfoNullable = interface(INeonTypeInfo)
-  ['{20924A89-A952-4048-9A3A-7E209CA7C40D}']
+    ['{20924A89-A952-4048-9A3A-7E209CA7C40D}']
     function GetBaseType: TRttiType;
   end;
 
@@ -148,9 +148,10 @@ begin
   Result := nil;
 
   LMethodGetEnumerator := AType.GetMethod('GetEnumerator');
+
   if not Assigned(LMethodGetEnumerator) or
-     (LMethodGetEnumerator.MethodKind <> mkFunction) or
-     (LMethodGetEnumerator.ReturnType.Handle.Kind <> tkClass)
+    (LMethodGetEnumerator.MethodKind <> mkFunction) or
+    (LMethodGetEnumerator.ReturnType.Handle.Kind <> tkClass)
   then
     Exit;
 
@@ -158,7 +159,8 @@ begin
     Exit;
 
   LMethodAdd := AType.GetMethod('Add');
-  if not Assigned(LMethodAdd) or (Length(LMethodAdd.GetParameters) <> 1) then
+  if not Assigned(LMethodAdd) or
+     (Length(LMethodAdd.GetParameters) <> 1) then
     Exit;
 
   LItemType := LMethodAdd.GetParameters[0].ParamType;
@@ -202,7 +204,9 @@ begin
     Exit;
 
   LAddMethod := AType.GetMethod('Add');
-  if not Assigned(LAddMethod) or (Length(LAddMethod.GetParameters) <> 2) then
+
+  if not Assigned(LAddMethod) or
+    (Length(LAddMethod.GetParameters) <> 2) then
     Exit;
 
   LKeyType := LAddMethod.GetParameters[0].ParamType;

@@ -41,166 +41,145 @@ uses
 
 type
   /// <summary>
-  ///   JSON Serializer class
+  /// JSON Serializer class
   /// </summary>
   TNeonSerializerJSON = class(TNeonBase, ISerializerContext)
   private
     /// <summary>
-    ///   Writer for members of objects and records
+    /// Writer for members of objects and records
     /// </summary>
     procedure WriteMembers(AType: TRttiType; AInstance: Pointer; AResult: TJSONValue);
   private
     /// <summary>
-    ///   Writer for string types
+    /// Writer for string types
     /// </summary>
     function WriteString(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
-
     /// <summary>
-    ///   Writer for Char types
+    /// Writer for Char types
     /// </summary>
     function WriteChar(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
-
     /// <summary>
-    ///   Writer for Boolean types
+    /// Writer for Boolean types
     /// </summary>
     function WriteBoolean(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
-
     /// <summary>
-    ///   Writer for enums types <br />
+    /// Writer for enums types <br />
     /// </summary>
     function WriteEnum(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
-
     /// <summary>
-    ///   Writer for Integer types <br />
+    /// Writer for Integer types <br />
     /// </summary>
     function WriteInteger(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
-
     /// <summary>
-    ///   Writer for Int64 types <br />
+    /// Writer for Int64 types <br />
     /// </summary>
     /// <remarks>
-    ///   Delphi does not manage correctly UInt64 values in TJSONNumber
+    /// Delphi does not manage correctly UInt64 values in TJSONNumber
     /// </remarks>
     function WriteInt64(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
-
     /// <summary>
-    ///   Writer for float types
+    /// Writer for float types
     /// </summary>
     function WriteFloat(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
-
     /// <summary>
-    ///   Writer for TDate types
+    /// Writer for TDate types
     /// </summary>
     function WriteDate(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
-
     /// <summary>
-    ///   Writer for TTime types
+    /// Writer for TTime types
     /// </summary>
     function WriteTime(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
-
     /// <summary>
-    ///   Writer for TDateTime types
+    /// Writer for TDateTime types
     /// </summary>
     function WriteDateTime(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
-
-    /// <summary>
-    ///   Writer for Variant types
+     /// <summary>
+    /// Writer for Variant types
     /// </summary>
     /// <remarks>
-    ///   The variant will be written as string
+    /// The variant will be written as string
     /// </remarks>
     function WriteVariant(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
-
-    /// <summary>
-    ///   Writer for static and dynamic arrays
+     /// <summary>
+    /// Writer for static and dynamic arrays
     /// </summary>
     function WriteArray(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
-
-    /// <summary>
-    ///   Writer for the set type
+     /// <summary>
+    /// Writer for the set type
     /// </summary>
     /// <remarks>
-    ///   The output is a string with the values comma separated and enclosed by square brackets
+    /// The output is a string with the values comma separated and enclosed by square brackets
     /// </remarks>
     /// <returns>[First,Second,Third]</returns>
     function WriteSet(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
-
-    /// <summary>
-    ///   Writer for a record type
+     /// <summary>
+    /// Writer for a record type
     /// </summary>
     /// <remarks>
-    ///   For records the engine serialize the fields by default
+    /// For records the engine serialize the fields by default
     /// </remarks>
     function WriteRecord(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
-
-    /// <summary>
-    ///   Writer for a standard TObject (descendants)  type (no list, stream or streamable)
+     /// <summary>
+    /// Writer for a standard TObject (descendants)  type (no list, stream or streamable)
     /// </summary>
     function WriteObject(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
-
-    /// <summary>
-    ///   Writer for an Interface type
+     /// <summary>
+    /// Writer for an Interface type
     /// </summary>
     /// <remarks>
-    ///   The object that implements the interface is serialized
+    /// The object that implements the interface is serialized
     /// </remarks>
     function WriteInterface(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
-
-    /// <summary>
-    ///   Writer for "Enumerable" objects (Lists, Generic Lists, TStrings, etc...)
+     /// <summary>
+    /// Writer for "Enumerable" objects (Lists, Generic Lists, TStrings, etc...)
     /// </summary>
     /// <remarks>
-    ///   Objects must have GetEnumerator, Clear, Add methods
+    /// Objects must have GetEnumerator, Clear, Add methods
     /// </remarks>
     function WriteEnumerable(const AValue: TValue; ANeonObject: TNeonRttiObject; AList: IDynamicList): TJSONValue;
     function IsEnumerable(const AValue: TValue; out AList: IDynamicList): Boolean;
-
-    /// <summary>
-    ///   Writer for "Dictionary" objects (TDictionary, TObjectDictionary)
+     /// <summary>
+    /// Writer for "Dictionary" objects (TDictionary, TObjectDictionary)
     /// </summary>
     /// <remarks>
-    ///   Objects must have Keys, Values, GetEnumerator, Clear, Add methods
+    /// Objects must have Keys, Values, GetEnumerator, Clear, Add methods
     /// </remarks>
     function WriteEnumerableMap(const AValue: TValue; ANeonObject: TNeonRttiObject; AMap: IDynamicMap): TJSONValue;
     function IsEnumerableMap(const AValue: TValue; out AMap: IDynamicMap): Boolean;
-
-    /// <summary>
-    ///   Writer for "Streamable" objects
+     /// <summary>
+    /// Writer for "Streamable" objects
     /// </summary>
     /// <remarks>
-    ///   Objects must have LoadFromStream and SaveToStream methods
+    /// Objects must have LoadFromStream and SaveToStream methods
     /// </remarks>
     function WriteStreamable(const AValue: TValue; ANeonObject: TNeonRttiObject; AStream: IDynamicStream): TJSONValue;
     function IsStreamable(const AValue: TValue; out AStream: IDynamicStream): Boolean;
-
-    /// <summary>
-    ///   Writer for "Nullable" records
+     /// <summary>
+    /// Writer for "Nullable" records
     /// </summary>
     /// <remarks>
-    ///   Record must have HasValue and GetValue methods
+    /// Record must have HasValue and GetValue methods
     /// </remarks>
     function WriteNullable(const AValue: TValue; ANeonObject: TNeonRttiObject; ANullable: IDynamicNullable): TJSONValue;
     function IsNullable(const AValue: TValue; out ANullable: IDynamicNullable): Boolean;
   protected
     /// <summary>
-    ///   Function to be called by a custom serializer method (ISerializeContext)
+    /// Function to be called by a custom serializer method (ISerializeContext)
     /// </summary>
     function WriteDataMember(const AValue: TValue; ACustomProcess: Boolean = True): TJSONValue; overload;
 
     /// <summary>
-    ///   This method chooses the right Writer based on the Kind of the AValue parameter
+    /// This method chooses the right Writer based on the Kind of the AValue parameter
     /// </summary>
     function WriteDataMember(const AValue: TValue; ACustomProcess: Boolean; ANeonObject: TNeonRttiObject): TJSONValue; overload;
   public
     constructor Create(const AConfig: INeonConfiguration);
-
-    /// <summary>
-    ///   Serialize any Delphi type into a JSONValue, the Delphi type must be passed as a TValue
+     /// <summary>
+    /// Serialize any Delphi type into a JSONValue, the Delphi type must be passed as a TValue
     /// </summary>
     function ValueToJSON(const AValue: TValue): TJSONValue;
-
-    /// <summary>
-    ///   Serialize any Delphi objects into a JSONValue
+     /// <summary>
+    /// Serialize any Delphi objects into a JSONValue
     /// </summary>
     function ObjectToJSON(AObject: TObject): TJSONValue;
   end;
@@ -213,341 +192,297 @@ type
   end;
 
   /// <summary>
-  ///   JSON Deserializer class
+  /// JSON Deserializer class
   /// </summary>
   TNeonDeserializerJSON = class(TNeonBase, IDeserializerContext)
   private
     /// <summary>
-    ///   Reader for members of objects and records
+    /// Reader for members of objects and records
     /// </summary>
     procedure ReadMembers(AType: TRttiType; AInstance: Pointer; AJSONObject: TJSONObject);
-
     /// <summary>
-    ///   Decides to whether or not to create the object and assigning it to the reference
+    /// Decides to whether or not to create the object and assigning it to the reference
     /// </summary>
     function ReadReference(var AParam: TNeonDeserializerParam; const AData: TValue): TValue;
-
     /// <summary>
-    ///   Decides to whether or not to create the object and assigning it to the reference
+    /// Decides to whether or not to create the object and assigning it to the reference
     /// </summary>
     function ManageInstance(var AParam: TNeonDeserializerParam; const AData: TValue): TValue;
-
     /// <summary>
-    ///   Manages the creation of an Item of a collection (array, list, dictionary)
+    /// Manages the creation of an Item of a collection (array, list, dictionary)
     /// </summary>
     function CreateItem(ANeonRtti: TNeonRttiObject; AValue: TJSONValue; var AType: TRttiType): TValue;
   private
     /// <summary>
-    ///   reader for string types
+    /// reader for string types
     /// </summary>
     function ReadString(const AParam: TNeonDeserializerParam): TValue;
-
     /// <summary>
-    ///   Writer for char types
+    /// Writer for char types
     /// </summary>
     function ReadChar(const AParam: TNeonDeserializerParam): TValue;
-
     /// <summary>
-    ///   Writer for enum types
+    /// Writer for enum types
     /// </summary>
     function ReadEnum(const AParam: TNeonDeserializerParam): TValue;
-
     /// <summary>
-    ///   Writer for integer type
+    /// Writer for integer type
     /// </summary>
     function ReadInteger(const AParam: TNeonDeserializerParam): TValue;
-
     /// <summary>
-    ///   Writer for Int64 type
+    /// Writer for Int64 type
     /// </summary>
     function ReadInt64(const AParam: TNeonDeserializerParam): TValue;
-
     /// <summary>
-    ///   Writer for float types
+    /// Writer for float types
     /// </summary>
     function ReadFloat(const AParam: TNeonDeserializerParam): TValue;
-
     /// <summary>
-    ///   Reader for set types
+    /// Reader for set types
     /// </summary>
     /// <remarks>
-    ///   The input is a string with the values comma separated and enclosed by square brackets
+    /// The input is a string with the values comma separated and enclosed by square brackets
     /// </remarks>
     /// <returns>[First,Second,Third]</returns>
     function ReadSet(const AParam: TNeonDeserializerParam): TValue;
-
     /// <summary>
-    ///   Reader for Variant types
+    /// Reader for Variant types
     /// </summary>
     function ReadVariant(const AParam: TNeonDeserializerParam): TValue;
   private
     /// <summary>
-    ///   Reader for static and dynamic arrays
+    /// Reader for static and dynamic arrays
     /// </summary>
     function ReadArray(const AParam: TNeonDeserializerParam; const AData: TValue): TValue;
-
     /// <summary>
-    ///   Reader for a standard TObject (descendants)  type (no list, stream or streamable)
+    /// Reader for a standard TObject (descendants)  type (no list, stream or streamable)
     /// </summary>
     function ReadObject(const AParam: TNeonDeserializerParam; const AData: TValue): TValue;
-
     /// <summary>
-    ///   Reader for an Interface type
+    /// Reader for an Interface type
     /// </summary>
     function ReadInterface(const AParam: TNeonDeserializerParam; const AData: TValue): TValue;
-
     /// <summary>
-    ///   Reader for a record type
+    /// Reader for a record type
     /// </summary>
     /// <remarks>
-    ///   For records the engine deserialize to fields by default
+    /// For records the engine deserialize to fields by default
     /// </remarks>
     function ReadRecord(const AParam: TNeonDeserializerParam; const AData: TValue): TValue;
-
     /// <summary>
-    ///   Reader for "Streamable" objects
+    /// Reader for "Streamable" objects
     /// </summary>
     /// <remarks>
-    ///   Objects must have LoadFromStream and SaveToStream methods
+    /// Objects must have LoadFromStream and SaveToStream methods
     /// </remarks>
     function ReadStreamable(const AParam: TNeonDeserializerParam; const AData: TValue): Boolean;
-
     /// <summary>
-    ///   Writer for "Enumerable" objects (Lists, Generic Lists, TStrings, etc...)
+    /// Writer for "Enumerable" objects (Lists, Generic Lists, TStrings, etc...)
     /// </summary>
     /// <remarks>
-    ///   Objects must have GetEnumerator, Clear, Add methods
+    /// Objects must have GetEnumerator, Clear, Add methods
     /// </remarks>
     function ReadEnumerable(const AParam: TNeonDeserializerParam; const AData: TValue): Boolean;
-
     /// <summary>
-    ///   Reader for "Dictionary" objects (TDictionary, TObjectDictionary)
+    /// Reader for "Dictionary" objects (TDictionary, TObjectDictionary)
     /// </summary>
     /// <remarks>
-    ///   Objects must have Keys, Values, GetEnumerator, Clear, Add methods
+    /// Objects must have Keys, Values, GetEnumerator, Clear, Add methods
     /// </remarks>
     function ReadEnumerableMap(const AParam: TNeonDeserializerParam; const AData: TValue): Boolean;
-
     /// <summary>
-    ///   Reader for "Nullable" records
+    /// Reader for "Nullable" records
     /// </summary>
     /// <remarks>
-    ///   Record must have HasValue and GetValue methods
+    /// Record must have HasValue and GetValue methods
     /// </remarks>
     function ReadNullable(const AParam: TNeonDeserializerParam; const AData: TValue): Boolean;
   private
     /// <summary>
-    ///   Function to be called by a custom serializer method (IDeserializeContext)
+    /// Function to be called by a custom serializer method (IDeserializeContext)
     /// </summary>
     function ReadDataMember(AJSONValue: TJSONValue; AType: TRttiType; const AData: TValue; ACustomProcess: Boolean = True): TValue; overload;
-
     /// <summary>
-    ///   This method chooses the right Reader
+    /// This method chooses the right Reader
     /// </summary>
     function ReadDataMember(var AParam: TNeonDeserializerParam; const AData: TValue; ACustomProcess: Boolean): TValue; overload;
   public
     constructor Create(const AConfig: INeonConfiguration);
-
     /// <summary>
-    ///   Deserialize a JSON value into a Delphi object
+    /// Deserialize a JSON value into a Delphi object
     /// </summary>
     procedure JSONToObject(AObject: TObject; AJSON: TJSONValue);
-
     /// <summary>
-    ///   Deserialize a JSON value into any Delphi type
+    /// Deserialize a JSON value into any Delphi type
     /// </summary>
     function JSONToTValue(AJSON: TJSONValue; AType: TRttiType): TValue; overload;
-
     /// <summary>
-    ///   Deserialize a JSON value into any Delphi type
+    /// Deserialize a JSON value into any Delphi type
     /// </summary>
     function JSONToTValue(AJSON: TJSONValue; AType: TRttiType; const AData: TValue): TValue; overload;
-
     /// <summary>
-    ///   Deserialize a JSON array into any Delphi type
+    /// Deserialize a JSON array into any Delphi type
     /// </summary>
     function JSONToArray(AJSON: TJSONValue; AType: TRttiType): TValue;
   end;
 
   /// <summary>
-  ///   Static utility class for serializing and deserializing Delphi types
+  /// Static utility class for serializing and deserializing Delphi types
   /// </summary>
   TNeon = class sealed
-  {$IFDEF HAS_TOJSON_OPTIONS}
-  private const
+{$IFDEF HAS_TOJSON_OPTIONS}
+  private
+  const
     OUTPUT_DEFAULT = [TJSONAncestor.TJSONOutputOption.EncodeBelow32, TJSONAncestor.TJSONOutputOption.EncodeAbove127];
-  {$ENDIF}
+{$ENDIF}
   private
     /// <summary>
-    ///   ParseJSON function call for compatibility Delphi <= 10.2 Tokyo
+    /// ParseJSON function call for compatibility Delphi <= 10.2 Tokyo
     /// </summary>
     class function ParseJSON(const Data: string; UseBool: Boolean = False; RaiseExc: Boolean = False): TJSONValue;
-
     /// <summary>
-    ///   Prints a TJSONValue in a single line or formatted (PrettyPrinting)
+    /// Prints a TJSONValue in a single line or formatted (PrettyPrinting)
     /// </summary>
     class procedure PrintToWriter(AJSONValue: TJSONValue; AWriter: TTextWriter; APretty: Boolean
-      {$IFDEF HAS_TOJSON_OPTIONS}; AOutputOptions: TJSONAncestor.TJSONOutputOptions{$ENDIF}); static;
+{$IFDEF HAS_TOJSON_OPTIONS}
+      ; AOutputOptions: TJSONAncestor.TJSONOutputOptions
+{$ENDIF})
+      ; static;
   public
     /// <summary>
-    ///   Prints a TJSONValue in a single line or formatted (PrettyPrinting)
+    /// Prints a TJSONValue in a single line or formatted (PrettyPrinting)
     /// </summary>
     class function Print(AJSONValue: TJSONValue; APretty: Boolean): string; overload; static;
-    {$IFDEF HAS_TOJSON_OPTIONS}
+{$IFDEF HAS_TOJSON_OPTIONS}
     class function Print(AJSONValue: TJSONValue; APretty: Boolean; AOutputOptions: TJSONAncestor.TJSONOutputOptions): string; overload; static;
-    {$ENDIF}
-
+{$ENDIF}
     /// <summary>
-    ///   Prints a TJSONValue in a single line or formatted (PrettyPrinting)
+    /// Prints a TJSONValue in a single line or formatted (PrettyPrinting)
     /// </summary>
     class procedure PrintToStream(AJSONValue: TJSONValue; AStream: TStream; APretty: Boolean); overload; static;
-    {$IFDEF HAS_TOJSON_OPTIONS}
-    class procedure PrintToStream(AJSONValue: TJSONValue; AStream: TStream; APretty: Boolean; AOutputOptions: TJSONAncestor.TJSONOutputOptions); overload; static;
-    {$ENDIF}
+{$IFDEF HAS_TOJSON_OPTIONS}
+    class procedure PrintToStream(AJSONValue: TJSONValue; AStream: TStream; APretty: Boolean; AOutputOptions: TJSONAncestor.TJSONOutputOptions);
+      overload; static;
+{$ENDIF}
   public
     /// <summary>
-    ///   Serializes a value based type (record, string, integer, etc...) to a TStream
+    /// Serializes a value based type (record, string, integer, etc...) to a TStream
     /// </summary>
     class procedure ValueToStream(const AValue: TValue; AStream: TStream); overload;
-
     /// <summary>
-    ///   Serializes a value based type to a TStream with a given configuration
+    /// Serializes a value based type to a TStream with a given configuration
     /// </summary>
     class procedure ValueToStream(const AValue: TValue; AStream: TStream; AConfig: INeonConfiguration); overload;
-
     /// <summary>
-    ///   Serializes a value based type to a TJSONValue with a default configuration
+    /// Serializes a value based type to a TJSONValue with a default configuration
     /// </summary>
     class function ValueToJSON(const AValue: TValue): TJSONValue; overload;
-
     /// <summary>
-    ///   Serializes a value based type (record, string, integer, etc...) to a TJSONValue
-    ///   with a given configuration
+    /// Serializes a value based type (record, string, integer, etc...) to a TJSONValue
+    /// with a given configuration
     /// </summary>
     class function ValueToJSON(const AValue: TValue; AConfig: INeonConfiguration): TJSONValue; overload;
-
     /// <summary>
-    ///   Serializes a value based type to a string with a default configuration <br />
+    /// Serializes a value based type to a string with a default configuration <br />
     /// </summary>
     class function ValueToJSONString(const AValue: TValue): string; overload;
-
     /// <summary>
-    ///   Serializes a vallue based type to a string with a given configuration <br />
+    /// Serializes a vallue based type to a string with a given configuration <br />
     /// </summary>
     class function ValueToJSONString(const AValue: TValue; AConfig: INeonConfiguration): string; overload;
   public
     /// <summary>
-    ///   Serializes an object based type into a TTStream with a default configuration
+    /// Serializes an object based type into a TTStream with a default configuration
     /// </summary>
     class procedure ObjectToStream(AObject: TObject; AStream: TStream); overload;
-
     /// <summary>
-    ///   Serializes an object based type into a TTStream with a given configuration
+    /// Serializes an object based type into a TTStream with a given configuration
     /// </summary>
     class procedure ObjectToStream(AObject: TObject; AStream: TStream; AConfig: INeonConfiguration); overload;
-
     /// <summary>
-    ///   Serializes an object based type to a TJSONValue with a default configuration
+    /// Serializes an object based type to a TJSONValue with a default configuration
     /// </summary>
     class function ObjectToJSON(AObject: TObject): TJSONValue; overload;
-
     /// <summary>
-    ///   Serializes an object based type to a TJSONValue with a given configuration <br />
+    /// Serializes an object based type to a TJSONValue with a given configuration <br />
     /// </summary>
     class function ObjectToJSON(AObject: TObject; AConfig: INeonConfiguration): TJSONValue; overload;
-
     /// <summary>
-    ///   Serializes an object based type to a string with a default configuration <br />
+    /// Serializes an object based type to a string with a default configuration <br />
     /// </summary>
     class function ObjectToJSONString(AObject: TObject): string; overload;
-
     /// <summary>
-    ///   Serializes an object based type to a string with a given configuration <br />
+    /// Serializes an object based type to a string with a given configuration <br />
     /// </summary>
     class function ObjectToJSONString(AObject: TObject; AConfig: INeonConfiguration): string; overload;
   public
     /// <summary>
-    ///   Deserializes a TJSONValue into a TObject with a given configuration
+    /// Deserializes a TJSONValue into a TObject with a given configuration
     /// </summary>
     class procedure JSONToObject(AObject: TObject; AJSON: TJSONValue; AConfig: INeonConfiguration); overload;
-
     /// <summary>
-    ///   Deserializes a string into a TObject with a default configuration
+    /// Deserializes a string into a TObject with a default configuration
     /// </summary>
     class procedure JSONToObject(AObject: TObject; const AJSON: string); overload;
-
     /// <summary>
-    ///   Deserializes a string into a TObject with a given configuration
+    /// Deserializes a string into a TObject with a given configuration
     /// </summary>
     class procedure JSONToObject(AObject: TObject; const AJSON: string; AConfig: INeonConfiguration); overload;
-
     /// <summary>
-    ///   Deserializes a TJSONValue into a TRttiType with a default configuration
+    /// Deserializes a TJSONValue into a TRttiType with a default configuration
     /// </summary>
     class function JSONToObject(AType: TRttiType; AJSON: TJSONValue): TObject; overload;
-
     /// <summary>
-    ///   Deserializes a TJSONValue into a TRttiType with a given configuration
+    /// Deserializes a TJSONValue into a TRttiType with a given configuration
     /// </summary>
     class function JSONToObject(AType: TRttiType; AJSON: TJSONValue; AConfig: INeonConfiguration): TObject; overload;
-
     /// <summary>
-    ///   Deserializes a string into a TRttiType with a default configuration
+    /// Deserializes a string into a TRttiType with a default configuration
     /// </summary>
     class function JSONToObject(AType: TRttiType; const AJSON: string): TObject; overload;
-
     /// <summary>
-    ///   Deserializes a string into a TRttiType with a given configuration
+    /// Deserializes a string into a TRttiType with a given configuration
     /// </summary>
     class function JSONToObject(AType: TRttiType; const AJSON: string; AConfig: INeonConfiguration): TObject; overload;
-
     /// <summary>
-    ///   Deserializes a TJSONValue into a generic type &lt;T&gt; with a default configuration
+    /// Deserializes a TJSONValue into a generic type &lt;T&gt; with a default configuration
     /// </summary>
     class function JSONToObject<T: class, constructor>(AJSON: TJSONValue): T; overload;
-
     /// <summary>
-    ///   Deserializes a TJSONValue into a generic type &lt;T&gt; with a given configuration <br />
+    /// Deserializes a TJSONValue into a generic type &lt;T&gt; with a given configuration <br />
     /// </summary>
     class function JSONToObject<T: class, constructor>(AJSON: TJSONValue; AConfig: INeonConfiguration): T; overload;
-
     /// <summary>
-    ///   Deserializes a string into a generic type &lt;T&gt; with a default configuration <br />
+    /// Deserializes a string into a generic type &lt;T&gt; with a default configuration <br />
     /// </summary>
     class function JSONToObject<T: class, constructor>(const AJSON: string): T; overload;
-
     /// <summary>
-    ///   Deserializes a string into a generic type &lt;T&gt; with a given configuration <br />
+    /// Deserializes a string into a generic type &lt;T&gt; with a given configuration <br />
     /// </summary>
     class function JSONToObject<T: class, constructor>(const AJSON: string; AConfig: INeonConfiguration): T; overload;
   public
     /// <summary>
-    ///   Deserializes a TJSONValue into a TRttiType value based with a default configuration <br />
+    /// Deserializes a TJSONValue into a TRttiType value based with a default configuration <br />
     /// </summary>
     class function JSONToValue(ARttiType: TRttiType; AJSON: TJSONValue): TValue; overload;
-
     /// <summary>
-    ///   Deserializes a TJSONValue into a TRttiType value based with a given configuration
+    /// Deserializes a TJSONValue into a TRttiType value based with a given configuration
     /// </summary>
     class function JSONToValue(ARttiType: TRttiType; AJSON: TJSONValue; AConfig: INeonConfiguration): TValue; overload;
-
     /// <summary>
-    ///   Deserializes a TJSONValue into a generic type &lt;T&gt; (value based) with a default configuration
+    /// Deserializes a TJSONValue into a generic type &lt;T&gt; (value based) with a default configuration
     /// </summary>
     class function JSONToValue<T>(AJSON: TJSONValue): T; overload;
-
     /// <summary>
-    ///   Deserializes a TJSONValue into a generic type &lt;T&gt; (value based) with a given configuration <br />
+    /// Deserializes a TJSONValue into a generic type &lt;T&gt; (value based) with a given configuration <br />
     /// </summary>
     class function JSONToValue<T>(AJSON: TJSONValue; AConfig: INeonConfiguration): T; overload;
-
     /// <summary>
-    ///   Deserializes a string into a generic type &lt;T&gt; (value based) with a default configuration <br />
+    /// Deserializes a string into a generic type &lt;T&gt; (value based) with a default configuration <br />
     /// </summary>
     class function JSONToValue<T>(const AJSON: string): T; overload;
-
     /// <summary>
-    ///   Deserializes a string into a generic type &lt;T&gt; (value based) with a given configuration <br />
+    /// Deserializes a string into a generic type &lt;T&gt; (value based) with a given configuration <br />
     /// </summary>
     class function JSONToValue<T>(const AJSON: string; const AConfig: INeonConfiguration): T; overload;
   end;
@@ -592,6 +527,7 @@ end;
 function TNeonSerializerJSON.ObjectToJSON(AObject: TObject): TJSONValue;
 begin
   FOriginalInstance := AObject;
+
   if not Assigned(AObject) then
     Exit(TJSONObject.Create);
 
@@ -611,11 +547,13 @@ var
   LArray: TJSONArray;
 begin
   LCount := AValue.GetArrayLength;
+
   if ANeonObject.NeonInclude.Value = IncludeIf.NotEmpty then
     if LCount = 0 then
       Exit(nil);
 
   LArray := TJSONArray.Create;
+
   for LIndex := 0 to LCount - 1 do
     LArray.AddElement(WriteDataMember(AValue.GetArrayElement(LIndex)));
 
@@ -632,15 +570,19 @@ var
   LStr: string;
 begin
   LStr := AValue.AsString;
+
   case ANeonObject.NeonInclude.Value of
-    IncludeIf.NotEmpty, IncludeIf.NotDefault:
-    begin
-      if (LStr = #0) or LStr.IsEmpty then
-        Exit(nil);
-    end;
+    IncludeIf.NotEmpty,
+    IncludeIf.NotDefault:
+      begin
+        if (LStr = #0) or
+           LStr.IsEmpty then
+          Exit(nil);
+      end;
   end;
 
-  if (LStr = #0) or LStr.IsEmpty then
+  if (LStr = #0) or
+     LStr.IsEmpty then
     Result := TJSONString.Create('')
   else
     Result := TJSONString.Create(AValue.AsString);
@@ -666,7 +608,6 @@ function TNeonSerializerJSON.WriteDataMember(const AValue: TValue; ACustomProces
 var
   LCustomSer: TCustomSerializer;
   LDynamicType: IDynamicType;
-
   LDynamicMap: IDynamicMap absolute LDynamicType;
   LDynamicList: IDynamicList absolute LDynamicType;
   LDynamicStream: IDynamicStream absolute LDynamicType;
@@ -677,6 +618,7 @@ begin
   if ACustomProcess then
   begin
     LCustomSer := FConfig.Serializers.GetSerializer(AValue.TypeInfo);
+
     if Assigned(LCustomSer) then
     begin
       Result := LCustomSer.Serialize(AValue, ANeonObject, Self);
@@ -686,11 +628,10 @@ begin
 
   case AValue.Kind of
     tkChar,
-    tkWChar:
-    begin
-      Result := WriteChar(AValue, ANeonObject);
-    end;
-
+      tkWChar:
+      begin
+        Result := WriteChar(AValue, ANeonObject);
+      end;
     tkString,
     tkLString,
     tkWString,
@@ -698,125 +639,128 @@ begin
     begin
       Result := WriteString(AValue, ANeonObject);
     end;
-
     tkEnumeration:
-    begin
-      if AValue.TypeInfo = System.TypeInfo(Boolean) then
-        Result := WriteBoolean(AValue, ANeonObject)
-      else
-        Result := WriteEnum(AValue, ANeonObject);
-    end;
-
-    tkInteger:
-    begin
-      Result := WriteInteger(AValue, ANeonObject);
-    end;
-
-    tkInt64:
-    begin
-      Result := WriteInt64(AValue, ANeonObject);
-    end;
-
-    tkFloat:
-    begin
-      if AValue.TypeInfo = System.TypeInfo(TDate) then
-        Result := WriteDate(AValue, ANeonObject)
-      else if AValue.TypeInfo = System.TypeInfo(TTime) then
-        Result := WriteTime(AValue, ANeonObject)
-      else if AValue.TypeInfo = System.TypeInfo(TDateTime) then
-        Result := WriteDateTime(AValue, ANeonObject)
-      else
-        Result := WriteFloat(AValue, ANeonObject);
-    end;
-
-    tkClass:
-    begin
-      if AValue.AsObject = nil then
       begin
-        case ANeonObject.NeonInclude.Value of
-          IncludeIf.Always, IncludeIf.CustomFunction:
-          Exit(TJSONNull.Create);
+        if AValue.TypeInfo = System.TypeInfo(Boolean) then
+          Result := WriteBoolean(AValue, ANeonObject)
         else
-          Exit(nil);
-        end;
-      end
-      else if IsEnumerableMap(AValue, LDynamicMap) then
-        Result := WriteEnumerableMap(AValue, ANeonObject, LDynamicMap)
-      else if IsEnumerable(AValue, LDynamicList) then
-        Result := WriteEnumerable(AValue, ANeonObject, LDynamicList)
-      else if IsStreamable(AValue, LDynamicStream) then
-        Result := WriteStreamable(AValue, ANeonObject, LDynamicStream)
-      else
-        Result := WriteObject(AValue, ANeonObject);
-    end;
-
+          Result := WriteEnum(AValue, ANeonObject);
+      end;
+    tkInteger:
+      begin
+        Result := WriteInteger(AValue, ANeonObject);
+      end;
+    tkInt64:
+      begin
+        Result := WriteInt64(AValue, ANeonObject);
+      end;
+    tkFloat:
+      begin
+        if AValue.TypeInfo = System.TypeInfo(TDate) then
+          Result := WriteDate(AValue, ANeonObject)
+        else
+          if AValue.TypeInfo = System.TypeInfo(TTime) then
+            Result := WriteTime(AValue, ANeonObject)
+          else
+            if AValue.TypeInfo = System.TypeInfo(TDateTime) then
+              Result := WriteDateTime(AValue, ANeonObject)
+            else
+              Result := WriteFloat(AValue, ANeonObject);
+      end;
+    tkClass:
+      begin
+        if AValue.AsObject = nil then
+        begin
+          case ANeonObject.NeonInclude.Value of
+            IncludeIf.Always,
+            IncludeIf.CustomFunction:
+              Exit(TJSONNull.Create);
+          else
+            Exit(nil);
+          end;
+        end
+        else
+          if IsEnumerableMap(AValue, LDynamicMap) then
+            Result := WriteEnumerableMap(AValue, ANeonObject, LDynamicMap)
+          else
+            if IsEnumerable(AValue, LDynamicList) then
+              Result := WriteEnumerable(AValue, ANeonObject, LDynamicList)
+            else
+              if IsStreamable(AValue, LDynamicStream) then
+                Result := WriteStreamable(AValue, ANeonObject, LDynamicStream)
+              else
+                Result := WriteObject(AValue, ANeonObject);
+      end;
     tkArray:
-    begin
-      Result := WriteArray(AValue, ANeonObject);
-    end;
-
+      begin
+        Result := WriteArray(AValue, ANeonObject);
+      end;
     tkDynArray:
-    begin
-      Result := WriteArray(AValue, ANeonObject);
-    end;
-
+      begin
+        Result := WriteArray(AValue, ANeonObject);
+      end;
     tkSet:
-    begin
-      Result := WriteSet(AValue, ANeonObject);
-    end;
-
-    tkRecord{$IFDEF HAS_MRECORDS}, tkMRecord{$ENDIF}:
-    begin
-      if IsNullable(AValue, LDynamicNullable) then
-        Result := WriteNullable(AValue, ANeonObject, LDynamicNullable)
-      else
-        Result := WriteRecord(AValue, ANeonObject);
-    end;
-
-    tkInterface:
-    begin
-      Result := WriteInterface(AValue, ANeonObject);
-    end;
-
-    tkVariant:
-    begin
-      Result := WriteVariant(AValue, ANeonObject);
-    end;
+      begin
+        Result := WriteSet(AValue, ANeonObject);
+      end;
+    tkRecord
+{$IFDEF HAS_MRECORDS}
+     , tkMRecord
+{$ENDIF}:
+      begin
+        if IsNullable(AValue, LDynamicNullable) then
+          Result := WriteNullable(AValue, ANeonObject, LDynamicNullable)
+        else
+          Result := WriteRecord(AValue, ANeonObject);
+      end;
+     tkInterface:
+      begin
+        Result := WriteInterface(AValue, ANeonObject);
+      end;
+     tkVariant:
+      begin
+        Result := WriteVariant(AValue, ANeonObject);
+      end;
   end;
 end;
 
 function TNeonSerializerJSON.WriteDate(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
 begin
   case ANeonObject.NeonInclude.Value of
-    IncludeIf.NotEmpty, IncludeIf.NotDefault:
-    begin
-      if AValue.AsExtended = 0 then
-        Exit(nil);
-    end;
+    IncludeIf.NotEmpty,
+    IncludeIf.NotDefault:
+      begin
+        if AValue.AsExtended = 0 then
+          Exit(nil);
+      end;
   end;
+
   Result := TJSONString.Create(TJSONUtils.DateToJSON(AValue.AsType<TDate>));
 end;
 
 function TNeonSerializerJSON.WriteTime(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
 begin
   case ANeonObject.NeonInclude.Value of
-    IncludeIf.NotEmpty, IncludeIf.NotDefault:
-    begin
-      if AValue.AsExtended = 0 then
-        Exit(nil);
-    end;
+    IncludeIf.NotEmpty,
+    IncludeIf.NotDefault:
+      begin
+        if AValue.AsExtended = 0 then
+          Exit(nil);
+      end;
   end;
+
   Result := TJSONString.Create(TJSONUtils.TimeToJSON(AValue.AsType<TTime>));
 end;
 
 function TNeonSerializerJSON.WriteDateTime(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
 begin
   case ANeonObject.NeonInclude.Value of
-    IncludeIf.NotEmpty, IncludeIf.NotDefault:
-    begin
-      if AValue.AsExtended = 0 then
-        Exit(nil);
-    end;
+    IncludeIf.NotEmpty,
+    IncludeIf.NotDefault:
+      begin
+        if AValue.AsExtended = 0 then
+          Exit(nil);
+      end;
   end;
   Result := TJSONString.Create(TJSONUtils.DateTimeToJSON(AValue.AsType<TDateTime>, FConfig.UseUTCDate));
 end;
@@ -840,10 +784,10 @@ function TNeonSerializerJSON.WriteFloat(const AValue: TValue; ANeonObject: TNeon
 begin
   case ANeonObject.NeonInclude.Value of
     IncludeIf.NotDefault:
-    begin
-      if AValue.AsExtended = 0 then
-        Exit(nil);
-    end;
+      begin
+        if AValue.AsExtended = 0 then
+          Exit(nil);
+      end;
   end;
 
   Result := TJSONNumber.Create(AValue.AsExtended);
@@ -855,10 +799,10 @@ var
 begin
   case ANeonObject.NeonInclude.Value of
     IncludeIf.NotDefault:
-    begin
-      if AValue.AsInt64 = 0 then
-        Exit(nil);
-    end;
+      begin
+        if AValue.AsInt64 = 0 then
+          Exit(nil);
+      end;
   end;
 
   if AValue.TypeData^.MinInt64Value < 0 then
@@ -875,10 +819,10 @@ function TNeonSerializerJSON.WriteInteger(const AValue: TValue; ANeonObject: TNe
 begin
   case ANeonObject.NeonInclude.Value of
     IncludeIf.NotDefault:
-    begin
-      if AValue.AsInt64 = 0 then
-        Exit(nil);
-    end;
+      begin
+        if AValue.AsInt64 = 0 then
+          Exit(nil);
+      end;
   end;
 
   Result := TJSONNumber.Create(AValue.AsInt64);
@@ -908,19 +852,21 @@ begin
 
   for LNeonMember in LMembers do
   begin
-
     if LNeonMember.Serializable then
     begin
       try
         LJSONValue := WriteDataMember(LNeonMember.GetValue(AInstance), True, LNeonMember);
+
         if Assigned(LJSONValue) then
         begin
           // if it's unwrapped add childs to the AResult JSON object
           if LNeonMember.NeonUnwrapped and (LJSONValue is TJSONObject) then
           begin
             LJSONObject := LJSONValue as TJSONObject;
+
             for LPair in LJSONObject do
               (AResult as TJSONObject).AddPair(LPair.Clone as TJSONPair);
+
             LJSONObject.Free;
           end
           else
@@ -933,8 +879,8 @@ begin
       except
         on E: Exception do
         begin
-          LogError(Format('Error converting member [%s] of type [%s]: %s',
-            [LNeonMember.Name, AType.Name, E.Message]));
+          LogError(Format('Error converting member [%s] of type [%s]: %s', [LNeonMember.Name, AType.Name, E.Message]));
+
           if FConfig.RaiseExceptions then
             raise;
         end;
@@ -946,22 +892,26 @@ end;
 function TNeonSerializerJSON.WriteNullable(const AValue: TValue; ANeonObject: TNeonRttiObject; ANullable: IDynamicNullable): TJSONValue;
 begin
   Result := nil;
+
   if not Assigned(ANullable) then
     Exit;
 
   case ANeonObject.NeonInclude.Value of
-    IncludeIf.Always, IncludeIf.CustomFunction:
-    begin
-      if ANullable.HasValue then
-        Result := WriteDataMember(ANullable.GetValue)
-      else
-        Result := TJSONNull.Create;
-    end;
-    IncludeIf.NotNull, IncludeIf.NotEmpty, IncludeIf.NotDefault:
-    begin
-      if ANullable.HasValue then
-        Result := WriteDataMember(ANullable.GetValue);
-    end;
+    IncludeIf.Always,
+    IncludeIf.CustomFunction:
+      begin
+        if ANullable.HasValue then
+          Result := WriteDataMember(ANullable.GetValue)
+        else
+          Result := TJSONNull.Create;
+      end;
+    IncludeIf.NotNull,
+    IncludeIf.NotEmpty,
+    IncludeIf.NotDefault:
+      begin
+        if ANullable.HasValue then
+          Result := WriteDataMember(ANullable.GetValue);
+      end;
   end;
 end;
 
@@ -980,12 +930,14 @@ begin
   Result := TJSONObject.Create;
   try
     WriteMembers(LType, LObject, Result);
+
     case ANeonObject.NeonInclude.Value of
-      IncludeIf.NotEmpty, IncludeIf.NotDefault:
-      begin
-        if (Result as TJSONObject).Count = 0 then
-          FreeAndNil(Result);
-      end;
+      IncludeIf.NotEmpty,
+      IncludeIf.NotDefault:
+        begin
+          if (Result as TJSONObject).Count = 0 then
+            FreeAndNil(Result);
+        end;
     end;
   except
     FreeAndNil(Result);
@@ -999,6 +951,7 @@ begin
   // Not an enumerable object
   if not Assigned(AList) then
     Exit(nil);
+
   if ANeonObject.NeonInclude.Value = IncludeIf.NotEmpty then
     if AList.Count = 0 then
       Exit(nil);
@@ -1024,21 +977,22 @@ begin
 
   case ANeonObject.NeonInclude.Value of
     IncludeIf.Always:
-    begin
-      if not Assigned(AMap) then
-        Exit(TJSONNull.Create);
-    end;
+      begin
+        if not Assigned(AMap) then
+          Exit(TJSONNull.Create);
+      end;
     IncludeIf.NotNull:
-    begin
-      if not Assigned(AMap) then
-        Exit(nil);
-    end;
+      begin
+        if not Assigned(AMap) then
+          Exit(nil);
+      end;
     IncludeIf.NotEmpty:
-    begin
-      if AMap.Count = 0 then
-        Exit(nil);
-    end;
-    IncludeIf.NotDefault: ;
+      begin
+        if AMap.Count = 0 then
+          Exit(nil);
+      end;
+    IncludeIf.NotDefault:
+      ;
   end;
 
   Result := TJSONObject.Create;
@@ -1054,8 +1008,9 @@ begin
 
         if LJSONName is TJSONString then
           LName := (LJSONName as TJSONString).Value
-        else if AMap.KeyIsString then
-          LName := AMap.KeyToString(LKeyValue);
+        else
+          if AMap.KeyIsString then
+            LName := AMap.KeyToString(LKeyValue);
 
         (Result as TJSONObject).AddPair(LName, LJSONValue);
 
@@ -1082,13 +1037,15 @@ begin
   LType := TRttiUtils.Context.GetType(AValue.TypeInfo);
   try
     WriteMembers(LType, AValue.GetReferenceToRawData, Result);
+
     case ANeonObject.NeonInclude.Value of
-      IncludeIf.NotEmpty, IncludeIf.NotDefault:
-      begin
-        if ANeonObject.NeonInclude.Value = IncludeIf.NotEmpty then
-          if (Result as TJSONObject).Count = 0 then
-            FreeAndNil(Result);
-      end;
+      IncludeIf.NotEmpty,
+      IncludeIf.NotDefault:
+        begin
+          if ANeonObject.NeonInclude.Value = IncludeIf.NotEmpty then
+            if (Result as TJSONObject).Count = 0 then
+              FreeAndNil(Result);
+        end;
     end;
   except
     FreeAndNil(Result);
@@ -1107,8 +1064,8 @@ begin
   LArray := TJSONArray.Create;
 
   Integer(LIntegerValue) := Integer(AValue.GetReferenceToRawData^);
-
   LElementType := GetTypeData(AValue.TypeInfo)^.CompType;
+
   if LElementType <> nil then
   begin
     for LIndex := 0 to SizeOf(Integer) * 8 - 1 do
@@ -1151,6 +1108,7 @@ begin
       AStream.SaveToStream(LBinaryStream);
       LBinaryStream.Position := soFromBeginning;
       LBase64 := TBase64.Encode(LBinaryStream);
+
       if IsOriginalInstance(AValue) then
         Result := TJSONObject.Create.AddPair('$value', LBase64)
       else
@@ -1164,11 +1122,12 @@ end;
 function TNeonSerializerJSON.WriteString(const AValue: TValue; ANeonObject: TNeonRttiObject): TJSONValue;
 begin
   case ANeonObject.NeonInclude.Value of
-    IncludeIf.NotEmpty, IncludeIf.NotDefault:
-    begin
-      if AValue.AsString.IsEmpty then
-        Exit(nil);
-    end;
+    IncludeIf.NotEmpty,
+    IncludeIf.NotDefault:
+      begin
+        if AValue.AsString.IsEmpty then
+          Exit(nil);
+      end;
   end;
 
   if ANeonObject.NeonRawValue then
@@ -1183,40 +1142,45 @@ var
   LVariantType: Integer;
 begin
   LValue := AValue.AsVariant;
+
   case ANeonObject.NeonInclude.Value of
     IncludeIf.Always:
-    begin
-      if VarIsNull(LValue) then
-        Exit(TJSONNull.Create);
-    end;
-
+      begin
+        if VarIsNull(LValue) then
+          Exit(TJSONNull.Create);
+      end;
     IncludeIf.NotNull:
-    begin
-      if VarIsNull(LValue) then
-        Exit(nil);
-    end;
-
+      begin
+        if VarIsNull(LValue) then
+          Exit(nil);
+      end;
     IncludeIf.NotEmpty:
-    begin
-      if VarIsEmpty(LValue) then
-        Exit(nil);
-    end;
+      begin
+        if VarIsEmpty(LValue) then
+          Exit(nil);
+      end;
   end;
 
   LVariantType := VarType(LValue) and VarTypeMask;
   case LVariantType of
     varSmallInt,
-    varInteger : Result := WriteInteger(Int64(LValue), ANeonObject);
-    varSingle  ,
-    varDouble  ,
-    varCurrency: Result := WriteFloat(Currency(LValue), ANeonObject);
-    varDate    : Result := WriteDate(VarToDateTime(LValue), ANeonObject);
-    varBoolean : Result := WriteBoolean(Boolean(LValue), ANeonObject);
-    varByte    ,
-    varWord    ,
+      varInteger:
+      Result := WriteInteger(Int64(LValue), ANeonObject);
+    varSingle,
+    varDouble,
+      varCurrency:
+      Result := WriteFloat(Currency(LValue), ANeonObject);
+    varDate:
+      Result := WriteDate(VarToDateTime(LValue), ANeonObject);
+    varBoolean:
+      Result := WriteBoolean(Boolean(LValue), ANeonObject);
+    varByte,
+    varWord,
     varLongWord,
-    varInt64   : Result := WriteInteger(Int64(LValue), ANeonObject);
-    varString  : Result := WriteString(VarToStr(LValue), ANeonObject);
+    varInt64:
+      Result := WriteInteger(Int64(LValue), ANeonObject);
+    varString:
+      Result := WriteString(VarToStr(LValue), ANeonObject);
   else
     Result := TJSONString.Create(AValue.AsVariant);
   end;
@@ -1245,7 +1209,7 @@ begin
 
   if AParam.RttiType.TypeKind = tkArray then
     LItemParam.RttiType := (AParam.RttiType as TRttiArrayType).ElementType
-  else //tkDynArray
+  else // tkDynArray
   begin
     LItemParam.RttiType := (AParam.RttiType as TRttiDynamicArrayType).ElementType;
     DynArraySetLength(PPointer(Result.GetReferenceToRawData)^, Result.TypeInfo, 1, @LArrayLength);
@@ -1266,7 +1230,7 @@ begin
         else
           LItemValue := Result.GetArrayElement(LIndex);
       end
-      else //tkDynArray (Dynamic Array)
+      else // tkDynArray (Dynamic Array)
         LItemValue := CreateItem(AParam.NeonObject, LItemParam.JSONValue, LItemParam.RttiType);
 
       LItemValue := ReadDataMember(LItemParam, LItemValue, True);
@@ -1287,16 +1251,17 @@ begin
 
   case AParam.RttiType.TypeKind of
 {$IFDEF HAS_UTF8CHAR}
-    tkChar:  Result := TValue.From<UTF8Char>(UTF8Char(AParam.JSONValue.Value.Chars[0]));
+    tkChar:
+      Result := TValue.From<UTF8Char>(UTF8Char(AParam.JSONValue.Value.Chars[0]));
 {$ELSE}
     tkChar,
 {$ENDIF}
-    tkWChar: Result := TValue.From<Char>(AParam.JSONValue.Value.Chars[0]);
+    tkWChar:
+      Result := TValue.From<Char>(AParam.JSONValue.Value.Chars[0]);
   end;
 end;
 
-function TNeonDeserializerJSON.ReadDataMember(AJSONValue: TJSONValue;
-    AType: TRttiType; const AData: TValue; ACustomProcess: Boolean): TValue;
+function TNeonDeserializerJSON.ReadDataMember(AJSONValue: TJSONValue; AType: TRttiType; const AData: TValue; ACustomProcess: Boolean = True): TValue;
 var
   LParam: TNeonDeserializerParam;
 begin
@@ -1311,8 +1276,7 @@ begin
   end;
 end;
 
-function TNeonDeserializerJSON.ReadDataMember(var AParam: TNeonDeserializerParam;
-  const AData: TValue; ACustomProcess: Boolean): TValue;
+function TNeonDeserializerJSON.ReadDataMember(var AParam: TNeonDeserializerParam; const AData: TValue; ACustomProcess: Boolean): TValue;
 var
   LCustom: TCustomSerializer;
   LValue: TValue;
@@ -1323,6 +1287,7 @@ begin
   begin
     // if there is a custom serializer
     LCustom := FConfig.Serializers.GetSerializer(AParam.RttiType.Handle);
+
     if Assigned(LCustom) then
     begin
       LValue := ManageInstance(AParam, AData);
@@ -1332,41 +1297,53 @@ begin
   end;
 
   case AParam.RttiType.TypeKind of
-    tkInt64:       Result := ReadInt64(AParam);
-    tkInteger:     Result := ReadInteger(AParam);
-    tkChar:        Result := ReadChar(AParam);
-    tkWChar:       Result := ReadChar(AParam);
-    tkEnumeration: Result := ReadEnum(AParam);
-    tkFloat:       Result := ReadFloat(AParam);
-    tkLString:     Result := ReadString(AParam);
-    tkWString:     Result := ReadString(AParam);
-    tkUString:     Result := ReadString(AParam);
-    tkString:      Result := ReadString(AParam);
-    tkSet:         Result := ReadSet(AParam);
-    tkVariant:     Result := ReadVariant(AParam);
-    tkArray:       Result := ReadArray(AParam, AData);
-    tkDynArray:    Result := ReadArray(AParam, AData);
-    tkInterface:   Result := ReadInterface(AParam, AData);
-
+    tkInt64:
+      Result := ReadInt64(AParam);
+    tkInteger:
+      Result := ReadInteger(AParam);
+    tkChar:
+      Result := ReadChar(AParam);
+    tkWChar:
+      Result := ReadChar(AParam);
+    tkEnumeration:
+      Result := ReadEnum(AParam);
+    tkFloat:
+      Result := ReadFloat(AParam);
+    tkLString:
+      Result := ReadString(AParam);
+    tkWString:
+      Result := ReadString(AParam);
+    tkUString:
+      Result := ReadString(AParam);
+    tkString:
+      Result := ReadString(AParam);
+    tkSet:
+      Result := ReadSet(AParam);
+    tkVariant:
+      Result := ReadVariant(AParam);
+    tkArray:
+      Result := ReadArray(AParam, AData);
+    tkDynArray:
+      Result := ReadArray(AParam, AData);
+    tkInterface:
+      Result := ReadInterface(AParam, AData);
     tkClass:
-    begin
-      if TJSONUtils.HasItems(AParam.JSONValue) then
-        Result := ReadReference(AParam, AData)
-      else
-        Result := AData;
-    end;
-
-    tkRecord{$IFDEF HAS_MRECORDS}, tkMRecord{$ENDIF}:
-    begin
-      if TJSONUtils.HasItems(AParam.JSONValue) then
       begin
-        if ReadNullable(AParam, AData) then
-          Result := AData
+        if TJSONUtils.HasItems(AParam.JSONValue) then
+          Result := ReadReference(AParam, AData)
         else
-          Result := ReadRecord(AParam, AData);
+          Result := AData;
       end;
-    end;
-
+    tkRecord{$IFDEF HAS_MRECORDS}, tkMRecord{$ENDIF}:
+      begin
+        if TJSONUtils.HasItems(AParam.JSONValue) then
+        begin
+          if ReadNullable(AParam, AData) then
+            Result := AData
+          else
+            Result := ReadRecord(AParam, AData);
+        end;
+      end;
   end;
 end;
 
@@ -1382,17 +1359,19 @@ begin
   begin
     if TJSONUtils.IsBool(AParam.JSONValue) then
       Result := TJSONUtils.GetValueBool(AParam.JSONValue)
-    else if not FConfig.StrictTypes  then
-      Result := AParam.JSONValue.GetValue<Boolean>
     else
-      raise ENeonException.Create(TNeonError.BOOL_EXPECTED);
+      if not FConfig.StrictTypes then
+        Result := AParam.JSONValue.GetValue<Boolean>
+      else
+        raise ENeonException.Create(TNeonError.BOOL_EXPECTED);
   end
   else
   begin
     if FConfig.EnumAsInt then
     begin
       LTypeData := GetTypeData(AParam.RttiType.Handle);
-      LOrdinal := StrToIntDef(AParam.JSONValue.Value, -1);
+      LOrdinal := StrToIntDef(AParam.JSONValue.Value, - 1);
+
       if (LOrdinal >= LTypeData.MinValue) and (LOrdinal <= LTypeData.MaxValue) then
         TValue.Make(LOrdinal, AParam.RttiType.Handle, Result)
       else
@@ -1400,19 +1379,22 @@ begin
     end
     else
     begin
-      LOrdinal := -1;
+      LOrdinal := - 1;
+
       if Length(AParam.NeonObject.NeonEnumNames) > 0 then
       begin
         for LIndex := Low(AParam.NeonObject.NeonEnumNames) to High(AParam.NeonObject.NeonEnumNames) do
           if AParam.JSONValue.Value = AParam.NeonObject.NeonEnumNames[LIndex] then
             LOrdinal := LIndex;
       end;
-      if LOrdinal = -1 then
+
+      if LOrdinal = - 1 then
         LOrdinal := GetEnumValue(AParam.RttiType.Handle, AParam.JSONValue.Value);
 
       LTypeData := GetTypeData(AParam.RttiType.Handle);
 
-      if (LOrdinal >= LTypeData.MinValue) and (LOrdinal <= LTypeData.MaxValue) then
+      if (LOrdinal >= LTypeData.MinValue) and
+         (LOrdinal <= LTypeData.MaxValue) then
         TValue.Make(LOrdinal, AParam.RttiType.Handle, Result)
       else
         raise ENeonException.Create(TNeonError.ENUM_NAMES);
@@ -1431,12 +1413,12 @@ begin
   Result := False;
   LParam.NeonObject := AParam.NeonObject;
   LList := TDynamicList.GuessType(AData.AsObject);
+
   if Assigned(LList) then
   begin
     Result := True;
     LParam.RttiType := LList.GetItemType;
     LList.Clear;
-
     LJSONArray := AParam.JSONValue as TJSONArray;
 
     for LIndex := 0 to LJSONArray.Count - 1 do
@@ -1449,7 +1431,6 @@ begin
         LItemValue := LList.NewItem;
 
       LItemValue := ReadDataMember(LParam, LItemValue, True);
-
       LList.Add(LItemValue);
     end;
   end;
@@ -1469,8 +1450,8 @@ begin
   Result := False;
   LParamKey.NeonObject := AParam.NeonObject;
   LParamValue.NeonObject := AParam.NeonObject;
-
   LMap := TDynamicMap.GuessType(AData.AsObject);
+
   if Assigned(LMap) then
   begin
     Result := True;
@@ -1496,15 +1477,14 @@ begin
           LKey := ReadDataMember(LParamKey, LKey, True);
 
         // Value creation and deserialization
-        LParamValue.JSONValue := LEnum.Current.JsonValue;
+        LParamValue.JSONValue := LEnum.Current.JSONValue;
+
         if LParamValue.RttiType.TypeKind = tkClass then
           LValue := CreateItem(AParam.NeonObject, LParamValue.JSONValue, LParamValue.RttiType)
         else
           LValue := LMap.NewValue;
 
         LValue := ReadDataMember(LParamValue, LValue, True);
-
-        // Add the pair to the Map
         LMap.Add(LKey, LValue);
       end;
     finally
@@ -1524,60 +1504,64 @@ begin
 
   if AParam.RttiType.Handle = System.TypeInfo(TDate) then
     Result := TValue.From<TDate>(TJSONUtils.JSONToDate(AParam.JSONValue.Value))
-  else if AParam.RttiType.Handle = System.TypeInfo(TTime) then
-    Result := TValue.From<TTime>(TJSONUtils.JSONToTime(AParam.JSONValue.Value))
-  else if AParam.RttiType.Handle = System.TypeInfo(TDateTime) then
-    Result := TValue.From<TDateTime>(TJSONUtils.JSONToDateTime(AParam.JSONValue.Value, FConfig.UseUTCDate))
   else
-  begin
-    if FConfig.StrictTypes and not (AParam.JSONValue is TJSONNumber) then
-      raise ENeonException.Create(TNeonError.NUM_EXPECTED);
+    if AParam.RttiType.Handle = System.TypeInfo(TTime) then
+      Result := TValue.From<TTime>(TJSONUtils.JSONToTime(AParam.JSONValue.Value))
+    else
+      if AParam.RttiType.Handle = System.TypeInfo(TDateTime) then
+        Result := TValue.From<TDateTime>(TJSONUtils.JSONToDateTime(AParam.JSONValue.Value, FConfig.UseUTCDate))
+      else
+      begin
+        if FConfig.StrictTypes and not (AParam.JSONValue is TJSONNumber) then
+          raise ENeonException.Create(TNeonError.NUM_EXPECTED);
 
-    LMax := 0;
-    case GetTypeData(AParam.RttiType.Handle).FloatType of
-      ftSingle:
-      begin
-        LMax := MaxSingle;
-        LMsg := 'Single';
-      end;
-      ftDouble:
-      begin
-        LMax := MaxDouble;
-        LMsg := 'Double';
-      end;
-      ftExtended:
-      begin
+        LMax := 0;
+
+        case GetTypeData(AParam.RttiType.Handle).FloatType of
+          ftSingle:
+            begin
+              LMax := MaxSingle;
+              LMsg := 'Single';
+            end;
+          ftDouble:
+            begin
+              LMax := MaxDouble;
+              LMsg := 'Double';
+            end;
+          ftExtended:
+            begin
 {$IFDEF HAS_EXTENDED_80}
-        LMax := MaxExtended80;
+              LMax := MaxExtended80;
 {$ELSE}
-        LMax := MaxExtended;
+              LMax := MaxExtended;
 {$ENDIF}
-        LMsg := 'Extended';
-      end;
-      ftComp:
-      begin
-        LMax := MaxComp;
-        LMsg := 'Comp';
-      end;
-      ftCurr:
-      begin
-        LMax := MaxCurrency;
-        LMsg := 'Currency';
-      end;
-    end;
+              LMsg := 'Extended';
+            end;
+          ftComp:
+            begin
+              LMax := MaxComp;
+              LMsg := 'Comp';
+            end;
+          ftCurr:
+            begin
+              LMax := MaxCurrency;
+              LMsg := 'Currency';
+            end;
+        end;
 
-    try
-      LFloat := AParam.JSONValue.GetValue<Extended>;
-    except
-      on E: EOverflow do
-        raise ENeonException.CreateFmt(TNeonError.RANGE_OUT_F2, [AParam.JSONValue.Value, LMsg]);
-    end;
+        try
+          LFloat := AParam.JSONValue.GetValue<Extended>;
+        except
+          on E: EOverflow do
+            raise ENeonException.CreateFmt(TNeonError.RANGE_OUT_F2, [AParam.JSONValue.Value, LMsg]);
+        end;
 
-    if (LFloat < -LMax) or (LFloat > LMax) then
-      raise ENeonException.CreateFmt(TNeonError.RANGE_OUT_F2, [AParam.JSONValue.Value, LMsg]);
+        if (LFloat < - LMax) or
+           (LFloat > LMax) then
+          raise ENeonException.CreateFmt(TNeonError.RANGE_OUT_F2, [AParam.JSONValue.Value, LMsg]);
 
-    Result := LFloat;
-  end;
+        Result := LFloat;
+      end;
 end;
 
 function TNeonDeserializerJSON.ReadInt64(const AParam: TNeonDeserializerParam): TValue;
@@ -1588,10 +1572,12 @@ begin
   if AParam.JSONValue is TJSONNull then
     Exit(TValue.Empty);
 
-  if FConfig.StrictTypes and not (AParam.JSONValue is TJSONNumber) then
+  if FConfig.StrictTypes and
+     not (AParam.JSONValue is TJSONNumber) then
     raise ENeonException.Create(TNeonError.NUM_EXPECTED);
 
   LMin := GetTypeData(AParam.RttiType.Handle).MinInt64Value;
+
   if LMin < 0 then
   begin
     LInt := StrToInt64(AParam.JSONValue.Value);
@@ -1612,52 +1598,55 @@ begin
   if AParam.JSONValue is TJSONNull then
     Exit(TValue.Empty);
 
-  if FConfig.StrictTypes and not (AParam.JSONValue is TJSONNumber) then
+  if FConfig.StrictTypes and
+     not (AParam.JSONValue is TJSONNumber) then
     raise ENeonException.Create(TNeonError.NUM_EXPECTED);
 
   LInt := StrToInt64(AParam.JSONValue.Value);
-
   LMin := 0;
   LMax := 0;
+
   case GetTypeData(AParam.RttiType.Handle)^.OrdType of
     otSByte:
-    begin
-      LMin := Low(Int8);
-      LMax := High(Int8);
-      LMsg := 'a signed 8-bit value';
-    end;
+      begin
+        LMin := Low(Int8);
+        LMax := High(Int8);
+        LMsg := 'a signed 8-bit value';
+      end;
     otUByte:
-    begin
-      LMin := Low(UInt8);
-      LMax := High(UInt8);
-      LMsg := 'an unsigned 8-bit value';
-    end;
+      begin
+        LMin := Low(UInt8);
+        LMax := High(UInt8);
+        LMsg := 'an unsigned 8-bit value';
+      end;
     otSWord:
-    begin
-      LMin := Low(Int16);
-      LMax := High(Int16);
-      LMsg := 'a signed 16-bit value';
-    end;
+      begin
+        LMin := Low(Int16);
+        LMax := High(Int16);
+        LMsg := 'a signed 16-bit value';
+      end;
     otUWord:
-    begin
-      LMin := Low(UInt16);
-      LMax := High(UInt16);
-      LMsg := 'an unsigned 16-it value';
-    end;
+      begin
+        LMin := Low(UInt16);
+        LMax := High(UInt16);
+        LMsg := 'an unsigned 16-it value';
+      end;
     otSLong:
-    begin
-      LMin := Low(Int32);
-      LMax := High(Int32);
-      LMsg := 'a signed 32-bit value';
-    end;
+      begin
+        LMin := Low(Int32);
+        LMax := High(Int32);
+        LMsg := 'a signed 32-bit value';
+      end;
     otULong:
-    begin
-      LMin := Low(UInt32);
-      LMax := High(UInt32);
-      LMsg := 'an unsigned 32-bit value';
-    end;
+      begin
+        LMin := Low(UInt32);
+        LMax := High(UInt32);
+        LMsg := 'an unsigned 32-bit value';
+      end;
   end;
-  if (LInt < LMin) or (LInt > LMax) then
+
+  if (LInt < LMin) or
+     (LInt > LMax) then
     raise ENeonException.CreateFmt(TNeonError.RANGE_OUT_F2, [LInt.ToString, LMsg]);
 
   Result := LInt;
@@ -1688,7 +1677,7 @@ begin
       if LNeonMember.NeonUnwrapped then
         LParam.JSONValue := AJSONObject
       else
-        //Look for a JSON with the calculated Member Name
+        // Look for a JSON with the calculated Member Name
         LParam.JSONValue := AJSONObject.GetValue(GetNameFromMember(LNeonMember));
 
       // Property not found in JSON, continue to the next one
@@ -1705,6 +1694,7 @@ begin
         on E: Exception do
         begin
           LogError(Format(TNeonError.CONVERT_NUM_F3, [LNeonMember.Name, AType.Name, E.Message]));
+
           if FConfig.RaiseExceptions then
             raise;
         end;
@@ -1721,6 +1711,7 @@ var
 begin
   Result := False;
   LNullable := TDynamicNullable.GuessType(AData);
+
   if Assigned(LNullable) then
   begin
     Result := True;
@@ -1740,11 +1731,14 @@ begin
 
   Result := AData;
   LPData := AData.AsObject;
+
   if not Assigned(LPData) then
     Exit;
 
   LJSONObject := AParam.JSONValue as TJSONObject;
-  if (AParam.RttiType.TypeKind = tkClass) or (AParam.RttiType.TypeKind = tkInterface) then
+
+  if (AParam.RttiType.TypeKind = tkClass) or
+     (AParam.RttiType.TypeKind = tkInterface) then
     ReadMembers(AParam.RttiType, LPData, LJSONObject);
 end;
 
@@ -1764,7 +1758,6 @@ begin
 
   // Objects, Records, Interfaces are all represented by JSON objects
   LJSONObject := AParam.JSONValue as TJSONObject;
-
   ReadMembers(AParam.RttiType, LPData, LJSONObject);
 end;
 
@@ -1787,6 +1780,7 @@ begin
     raise ENeonException.Create(TNeonError.ARR_EXPECTED);
 
   LSet := 0;
+
   for LJSONValue in LJSONArray do
   begin
     if LJSONValue is TJSONNull then
@@ -1794,10 +1788,12 @@ begin
 
     if LJSONValue is TJSONNumber then
       LValue := (LJSONValue as TJSONNumber).AsInt
-    else if TJSONUtils.IsBool(LJSONValue) then
-      LValue := TJSONUtils.GetValueBool(LJSONValue)
-    else if LJSONValue is TJSONString then
-      LValue := ReadDataMember(LJSONValue, LEnumType, TValue.Empty);
+    else
+      if TJSONUtils.IsBool(LJSONValue) then
+        LValue := TJSONUtils.GetValueBool(LJSONValue)
+      else
+        if LJSONValue is TJSONString then
+          LValue := ReadDataMember(LJSONValue, LEnumType, TValue.Empty);
 
     Include(TIntegerSet(LSet), LValue.AsOrdinal);
   end;
@@ -1812,9 +1808,11 @@ var
 begin
   Result := False;
   LStreamable := TDynamicStream.GuessType(AData.AsObject);
+
   if Assigned(LStreamable) then
   begin
     Result := True;
+
     LStream := TMemoryStream.Create;
     try
       if IsOriginalInstance(AData) then
@@ -1842,16 +1840,17 @@ begin
 {$ELSE}
     Exit(TValue.From<string>(AParam.JSONValue.ToString));
 {$ENDIF}
-
   case AParam.RttiType.TypeKind of
-    tkLString: Result := TValue.From<UTF8String>(UTF8String(AParam.JSONValue.Value));
-
-    {$IFDEF WINDOWS}
-    tkWString: Result := TValue.From<WideString>(AParam.JSONValue.Value);
-    {$ENDIF}
-    tkUString: Result := TValue.From<string>(AParam.JSONValue.Value);
-    tkString:  Result := TValue.From<UTF8String>(UTF8String(AParam.JSONValue.Value));
-
+    tkLString:
+      Result := TValue.From<UTF8String>(UTF8String(AParam.JSONValue.Value));
+{$IFDEF WINDOWS}
+    tkWString:
+      Result := TValue.From<WideString>(AParam.JSONValue.Value);
+{$ENDIF}
+    tkUString:
+      Result := TValue.From<string>(AParam.JSONValue.Value);
+    tkString:
+      Result := TValue.From<UTF8String>(UTF8String(AParam.JSONValue.Value));
   else
     // Future string types treated as unicode strings
     Result := AParam.JSONValue.Value;
@@ -1888,8 +1887,7 @@ begin
   end;
 end;
 
-function TNeonDeserializerJSON.CreateItem(ANeonRtti: TNeonRttiObject;
-  AValue: TJSONValue; var AType: TRttiType): TValue;
+function TNeonDeserializerJSON.CreateItem(ANeonRtti: TNeonRttiObject; AValue: TJSONValue; var AType: TRttiType): TValue;
 var
   LFactory: TCustomFactory;
   LCreated: TObject;
@@ -1950,17 +1948,16 @@ begin
     LFactory := AParam.NeonObject.NeonFactoryClass.Create;
     try
       LObj := LFactory.Build(AParam.RttiType, AParam.JSONValue);
-
       // Compute again the instance type in case it has changed
       AParam.RttiType := TRttiUtils.Context.GetType(LObj.ClassType);
-
       Exit(LObj);
     finally
       LFactory.Free;
     end;
   end;
 
-  if (FConfig.AutoCreate or AParam.NeonObject.NeonAutoCreate) then
+  if (FConfig.AutoCreate or
+     AParam.NeonObject.NeonAutoCreate) then
     Exit(TRttiUtils.CreateInstance(AParam.RttiType));
 end;
 
@@ -2082,7 +2079,11 @@ var
 begin
   LWriter := TStringWriter.Create;
   try
-    TNeon.PrintToWriter(AJSONValue, LWriter, APretty{$IFDEF HAS_TOJSON_OPTIONS}, OUTPUT_DEFAULT{$ENDIF});
+    TNeon.PrintToWriter(AJSONValue, LWriter, APretty
+{$IFDEF HAS_TOJSON_OPTIONS}
+      , OUTPUT_DEFAULT
+{$ENDIF}
+      );
     Result := LWriter.ToString;
   finally
     LWriter.Free;
@@ -2104,13 +2105,18 @@ begin
 end;
 {$ENDIF}
 
+
 class procedure TNeon.PrintToStream(AJSONValue: TJSONValue; AStream: TStream; APretty: Boolean);
 var
   LWriter: TStreamWriter;
 begin
   LWriter := TStreamWriter.Create(AStream);
   try
-    TNeon.PrintToWriter(AJSONValue, LWriter, APretty{$IFDEF HAS_TOJSON_OPTIONS}, OUTPUT_DEFAULT{$ENDIF});
+    TNeon.PrintToWriter(AJSONValue, LWriter, APretty
+{$IFDEF HAS_TOJSON_OPTIONS}
+      , OUTPUT_DEFAULT
+{$ENDIF}
+      );
   finally
     LWriter.Free;
   end;
@@ -2130,8 +2136,11 @@ begin
 end;
 {$ENDIF}
 
+
 class procedure TNeon.PrintToWriter(AJSONValue: TJSONValue; AWriter: TTextWriter; APretty: Boolean
-  {$IFDEF HAS_TOJSON_OPTIONS}; AOutputOptions: TJSONAncestor.TJSONOutputOptions{$ENDIF});
+{$IFDEF HAS_TOJSON_OPTIONS}
+    ; AOutputOptions: TJSONAncestor.TJSONOutputOptions
+{$ENDIF});
 var
   LJSONString: string;
 begin
@@ -2287,14 +2296,19 @@ begin
   LDes := TNeonDeserializerJSON.Create(AConfig);
   try
     LType := TRttiUtils.Context.GetType(TypeInfo(T));
+
     if not Assigned(LType) then
       raise ENeonException.Create(TNeonError.EMPTY_TYPE);
 
     case LType.TypeKind of
-      tkArray, tkRecord, tkDynArray: TValue.Make(nil, TypeInfo(T), LValue);
+      tkArray,
+      tkRecord,
+      tkDynArray:
+        TValue.Make(nil, TypeInfo(T), LValue);
     else
       LValue := TValue.Empty;
     end;
+
     LValue := LDes.JSONToTValue(AJSON, LType, LValue);
     Result := LValue.AsType<T>;
   finally
@@ -2313,12 +2327,12 @@ begin
   Result := TJSONObject.ParseJSONValue(Data, UseBool, RaiseExc);
 {$ELSE}
   {$IFDEF HAS_JSON_BOOL}
-    Result := TJSONObject.ParseJSONValue(Data, UseBool);
+  Result := TJSONObject.ParseJSONValue(Data, UseBool);
   {$ELSE}
-    Result := TJSONObject.ParseJSONValue(Data);
+  Result := TJSONObject.ParseJSONValue(Data);
   {$ENDIF}
-    if RaiseExc and not Assigned(Result) then
-      raise ENeonException.Create(TNeonError.PARSE);
+  if RaiseExc and not Assigned(Result) then
+    raise ENeonException.Create(TNeonError.PARSE);
 {$ENDIF}
 end;
 

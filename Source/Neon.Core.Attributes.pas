@@ -46,18 +46,17 @@ type
   end;
 
   /// <summary>
-  ///   The attribute [NeonProperty] is used to indicate the property name in JSON.
+  /// The attribute [NeonProperty] is used to indicate the property name in JSON.
   /// </summary>
   /// <remarks>
-  ///   Read + Write Attribute
+  /// Read + Write Attribute
   /// </remarks>
   NeonPropertyAttribute = class(NeonNamedAttribute);
-
   /// <summary>
-  ///   The attribute [NeonEnum] is used to indicate the names of an enum
+  /// The attribute [NeonEnum] is used to indicate the names of an enum
   /// </summary>
   /// <remarks>
-  ///   Read + Write Attribute
+  /// Read + Write Attribute
   /// </remarks>
   NeonEnumNamesAttribute = class(TCustomAttribute)
   private
@@ -68,51 +67,54 @@ type
   end;
 
   /// <summary>
-  ///   The Neon attribute [NeonIgnore] is used to tell Neon to ignore a certain property (field)
-  ///   of a Delphi object. The property is ignored both when reading JSON into Delphi objects, and
-  ///   when writing Delphi objects into JSON.
+  /// The Neon attribute [NeonIgnore] is used to tell Neon to ignore a certain property (field)
+  /// of a Delphi object. The property is ignored both when reading JSON into Delphi objects, and
+  /// when writing Delphi objects into JSON.
   /// </summary>
   /// <remarks>
-  ///   Read + Write Attribute
+  /// Read + Write Attribute
   /// </remarks>
+  ///
   NeonIgnoreAttribute = class(NeonAttribute);
 
   /// <summary>
-  ///   The Neon attribute [NeonUnwrapped] is a property/field annotation used to
-  ///   define that value should be "unwrapped" when serialized (and
-  ///   wrapped again when deserializing), resulting in flattening of data structure,
-  ///   compared to PODO structure.
+  /// The Neon attribute [NeonUnwrapped] is a property/field annotation used to
+  /// define that value should be "unwrapped" when serialized (and
+  /// wrapped again when deserializing), resulting in flattening of data structure,
+  /// compared to PODO structure.
   /// </summary>
   /// <remarks>
-  ///   Must be applied only to class/record's properties/fields
+  /// Must be applied only to class/record's properties/fields
   /// </remarks>
+  ///
   NeonUnwrappedAttribute = class(NeonAttribute);
 
   /// <summary>
-  ///   The IncludeIf enum values define when to include the field or property.
+  /// The IncludeIf enum values define when to include the field or property.
   /// </summary>
   IncludeIf = (
     /// <summary>
-    ///   Include the member if it's not nil
+    /// Include the member if it's not nil
     /// </summary>
     NotNull,
     /// <summary>
-    ///   Include the member if the value it's not empty
+    /// Include the member if the value it's not empty
     /// </summary>
     NotEmpty,
     /// <summary>
-    ///   Include the member if it's value it's not the default value
+    /// Include the member if it's value it's not the default value
     /// </summary>
     NotDefault,
     /// <summary>
-    ///   Include the member always
+    /// Include the member always
     /// </summary>
     Always,
     /// <summary>
-    ///   Include the member based on the result of the function specified as string
-    ///   (default function is ShouldInclude)
+    /// Include the member based on the result of the function specified as string
+    /// (default function is ShouldInclude)
     /// </summary>
     CustomFunction);
+
   TIncludeValue = record
     Present: Boolean;
     Value: IncludeIf;
@@ -120,26 +122,26 @@ type
   end;
 
   /// <summary>
-  ///   The Neon annotation NeonInclude tells Neon to include the property (or field)
-  ///   based on the value of the enumeration Include
+  /// The Neon annotation NeonInclude tells Neon to include the property (or field)
+  /// based on the value of the enumeration Include
   /// </summary>
   NeonIncludeAttribute = class(TCustomAttribute)
   private
     FIncludeValue: TIncludeValue;
   public
     constructor Create(AIncludeValue: IncludeIf = IncludeIf.Always; const AIncludeFunction: string = 'ShouldInclude');
-
     property IncludeValue: TIncludeValue read FIncludeValue write FIncludeValue;
   end;
 
   /// <summary>
-  ///   The Neon annotation NeonFormat tells Neon to output the property (or field)
-  ///   in the specified format
+  /// The Neon annotation NeonFormat tells Neon to output the property (or field)
+  /// in the specified format
   /// </summary>
   /// <remarks>
-  ///   Currently Base64 is supported for TBytes through a CustomSerializer
+  /// Currently Base64 is supported for TBytes through a CustomSerializer
   /// </remarks>
   NeonFormat = (Native, Base64);
+
   NeonFormatAttribute = class(NeonNamedAttribute)
   private
     FFormatValue: NeonFormat;
@@ -151,30 +153,30 @@ type
   end;
 
   /// <summary>
-  ///   The NeonIgnoreProperties Neon annotation is used to specify a list of properties
-  ///   of a class to ignore. The NeonIgnoreProperties annotation is placed above the
-  ///   class declaration instead of above the individual properties (fields) to ignore.
+  /// The NeonIgnoreProperties Neon annotation is used to specify a list of properties
+  /// of a class to ignore. The NeonIgnoreProperties annotation is placed above the
+  /// class declaration instead of above the individual properties (fields) to ignore.
   /// </summary>
   /// <remarks>
-  ///   Read + Write Attribute
+  /// Read + Write Attribute
   /// </remarks>
   NeonIgnorePropertiesAttribute = class(NeonAttribute);
 
   /// <summary>
-  ///   The NeonIgnoreType Neon annotation is used to mark a whole type (class) to be
-  ///   ignored everywhere that type is used.
+  /// The NeonIgnoreType Neon annotation is used to mark a whole type (class) to be
+  /// ignored everywhere that type is used.
   /// </summary>
   /// <remarks>
-  ///   Read + Write Attribute
+  /// Read + Write Attribute
   /// </remarks>
   NeonIgnoreTypeAttribute = class(NeonAttribute);
 
   /// <summary>
-  ///   The Neon attribute NeonMembers is used to tell Neon to change the Members
-  ///   when reading/writing a specific record/object
+  /// The Neon attribute NeonMembers is used to tell Neon to change the Members
+  /// when reading/writing a specific record/object
   /// </summary>
   /// <remarks>
-  ///   Read + Write Attribute
+  /// Read + Write Attribute
   /// </remarks>
   NeonMembersSetAttribute = class(NeonAttribute)
   private
@@ -185,11 +187,11 @@ type
   end;
 
   /// <summary>
-  ///   The Neon attribute NeonVisibilityAttribute is used to tell Neon to change the Visibility
-  ///   when reading/writing a specific record/object
+  /// The Neon attribute NeonVisibilityAttribute is used to tell Neon to change the Visibility
+  /// when reading/writing a specific record/object
   /// </summary>
   /// <remarks>
-  ///   Read + Write Attribute
+  /// Read + Write Attribute
   /// </remarks>
   NeonVisibilityAttribute = class(NeonAttribute)
   private
@@ -200,8 +202,8 @@ type
   end;
 
   /// <summary>
-  ///   The NeonSerialize Neon annotation is used to specify a custom serializer for a
-  ///   field in a Delphi object.
+  /// The NeonSerialize Neon annotation is used to specify a custom serializer for a
+  /// field in a Delphi object.
   /// </summary>
   NeonSerializeAttribute = class(NeonAttribute)
   private
@@ -215,23 +217,23 @@ type
   end;
 
   /// <summary>
-  ///   The Neon annotation NeonDeserialize is used to specify a custom de-serializer
-  ///   class for a given field in a Delphi object.
+  /// The Neon annotation NeonDeserialize is used to specify a custom de-serializer
+  /// class for a given field in a Delphi object.
   /// </summary>
   NeonDeserializeAttribute = class(NeonSerializeAttribute);
 
   /// <summary>
-  ///   The NeonFactory attribute is used to specify an object factory for an
-  ///   instance. In the constructor you must pass the factory class
+  /// The NeonFactory attribute is used to specify an object factory for an
+  /// instance. In the constructor you must pass the factory class
   /// </summary>
   /// <remarks>
-  ///   <para>
-  ///     The instance to be created <b>must be nil</b>.
-  ///   </para>
-  ///   <para>
-  ///     The factory class must be registerd in the config with
-  ///     Config.RegisterFactory()
-  ///   </para>
+  /// <para>
+  /// The instance to be created <b>must be nil</b>.
+  /// </para>
+  /// <para>
+  /// The factory class must be registerd in the config with
+  /// Config.RegisterFactory()
+  /// </para>
   /// </remarks>
   NeonFactoryAttribute = class(NeonAttribute)
   private
@@ -242,13 +244,13 @@ type
   end;
 
   /// <summary>
-  ///   The NeonItemFactory attribute is used to specify an object factory for
-  ///   the items of a collection. In the constructor you must pass the factory
-  ///   class
+  /// The NeonItemFactory attribute is used to specify an object factory for
+  /// the items of a collection. In the constructor you must pass the factory
+  /// class
   /// </summary>
   /// <remarks>
-  ///   The factory class must be registerd in the config with
-  ///   Config.RegisterFactory()
+  /// The factory class must be registerd in the config with
+  /// Config.RegisterFactory()
   /// </remarks>
   NeonItemFactoryAttribute = class(NeonAttribute)
   private
@@ -259,25 +261,25 @@ type
   end;
 
   /// <summary>
-  ///   The Neon annotation NeonValue tells Neon that Neon should not attempt to
-  ///   serialize the object itself, but rather call a method on the object which
-  ///   serializes the object to a TJSONValue.
+  /// The Neon annotation NeonValue tells Neon that Neon should not attempt to
+  /// serialize the object itself, but rather call a method on the object which
+  /// serializes the object to a TJSONValue.
   /// </summary>
   NeonValueAttribute = class(NeonAttribute);
   NeonMethodAttribute = class(NeonAttribute);
   NeonSerializerMethodAttribute = class(NeonAttribute);
 
   /// <summary>
-  ///   The NeonRawValue annotation tells Neon that this property value should written
-  ///   directly as it is to the JSON output. If the property is a String Neon would
-  ///   normally have enclosed the value in quotation marks, but if annotated with the
-  ///   NeonRawValue property Neon won't do that.
+  /// The NeonRawValue annotation tells Neon that this property value should written
+  /// directly as it is to the JSON output. If the property is a String Neon would
+  /// normally have enclosed the value in quotation marks, but if annotated with the
+  /// NeonRawValue property Neon won't do that.
   /// </summary>
   NeonRawValueAttribute = class(NeonAttribute);
 
   /// <summary>
-  ///   The NeonAutoCreate tells Neon to create an object if it's nil. The
-  ///   class must have at least one parameterless Create constructor.
+  /// The NeonAutoCreate tells Neon to create an object if it's nil. The
+  /// class must have at least one parameterless Create constructor.
   /// </summary>
   NeonAutoCreateAttribute = class(NeonAttribute);
 

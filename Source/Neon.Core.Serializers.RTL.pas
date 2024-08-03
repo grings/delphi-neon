@@ -38,8 +38,8 @@ uses
 
 type
   /// <summary>
-  ///   Custom serializer for the TGUID record type. It serialize the GUID in
-  ///   the canonical form: 'C4A22FDD-443F-4737-AA7D-2323F635E207'
+  /// Custom serializer for the TGUID record type. It serialize the GUID in
+  /// the canonical form: 'C4A22FDD-443F-4737-AA7D-2323F635E207'
   /// </summary>
   TGUIDSerializer = class(TCustomSerializer)
   protected
@@ -51,8 +51,8 @@ type
   end;
 
   /// <summary>
-  ///   Custom serializer for the TStream (and descendant) class. It serializes
-  ///   the stream as Base64
+  /// Custom serializer for the TStream (and descendant) class. It serializes
+  /// the stream as Base64
   /// </summary>
   TStreamSerializer = class(TCustomSerializer)
   protected
@@ -64,8 +64,8 @@ type
   end;
 
   /// <summary>
-  ///   Custom serializer for the TJSONValue class. Clones the JSON object or
-  ///   array
+  /// Custom serializer for the TJSONValue class. Clones the JSON object or
+  /// array
   /// </summary>
   TJSONValueSerializer = class(TCustomSerializer)
   protected
@@ -77,7 +77,7 @@ type
   end;
 
   /// <summary>
-  ///   Custom serializer for the TValue record.
+  /// Custom serializer for the TValue record.
   /// </summary>
   TTValueSerializer = class(TCustomSerializer)
   protected
@@ -89,13 +89,12 @@ type
   end;
 
   /// <summary>
-  ///   Custom serializer for the TBytes type. It allows to serialize TBytes as
-  ///   Base64 using NeonFormat attribute
+  /// Custom serializer for the TBytes type. It allows to serialize TBytes as
+  /// Base64 using NeonFormat attribute
   /// </summary>
   TBytesSerializer = class(TCustomSerializer)
   private
     function IsFormatValue(AFormat: NeonFormatAttribute; const AValue: string): Boolean; inline;
-
     function ValueAsBase64(const AValue: TJSONValue): TValue; inline;
   protected
     class function GetTargetInfo: PTypeInfo; override;
@@ -104,7 +103,6 @@ type
     function Serialize(const AValue: TValue; ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue; override;
     function Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue; override;
   end;
-
 
 procedure RegisterDefaultSerializers(ARegistry: TNeonSerializerRegistry);
 
@@ -126,16 +124,14 @@ begin
   Result := TypeInfo(TGUID);
 end;
 
-function TGUIDSerializer.Serialize(const AValue: TValue; ANeonObject:
-    TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
+function TGUIDSerializer.Serialize(const AValue: TValue; ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
 var
   LGUID: TGUID;
 begin
   LGUID := AValue.AsType<TGUID>;
-  Result := TJSONString.Create(Format('%.8x-%.4x-%.4x-%.2x%.2x-%.2x%.2x%.2x%.2x%.2x%.2x',
-    [LGUID.D1, LGUID.D2, LGUID.D3, LGUID.D4[0], LGUID.D4[1], LGUID.D4[2],
-     LGUID.D4[3], LGUID.D4[4], LGUID.D4[5], LGUID.D4[6], LGUID.D4[7]])
-    );
+  Result := TJSONString.Create(
+    Format('%.8x-%.4x-%.4x-%.2x%.2x-%.2x%.2x%.2x%.2x%.2x%.2x',
+           [LGUID.D1, LGUID.D2, LGUID.D3, LGUID.D4[0], LGUID.D4[1], LGUID.D4[2], LGUID.D4[3], LGUID.D4[4], LGUID.D4[5], LGUID.D4[6], LGUID.D4[7]]));
 end;
 
 class function TGUIDSerializer.CanHandle(AType: PTypeInfo): Boolean;
@@ -146,8 +142,7 @@ begin
     Result := False;
 end;
 
-function TGUIDSerializer.Deserialize(AValue: TJSONValue; const AData: TValue;
-    ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
+function TGUIDSerializer.Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
 var
   LGUID: TGUID;
 begin
@@ -165,8 +160,7 @@ begin
   Result := TypeInfoIs(AType);
 end;
 
-function TStreamSerializer.Serialize(const AValue: TValue;
-  ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
+function TStreamSerializer.Serialize(const AValue: TValue; ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
 var
   LStream: TStream;
   LBase64: string;
@@ -176,7 +170,9 @@ begin
   if LStream.Size = 0 then
   begin
     case ANeonObject.NeonInclude.Value of
-      IncludeIf.NotEmpty, IncludeIf.NotDefault: Exit(nil);
+      IncludeIf.NotEmpty,
+      IncludeIf.NotDefault:
+        Exit(nil);
     else
       Exit(TJSONString.Create(''));
     end;
@@ -187,15 +183,13 @@ begin
   Result := TJSONString.Create(LBase64);
 end;
 
-function TStreamSerializer.Deserialize(AValue: TJSONValue; const AData: TValue;
-  ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
+function TStreamSerializer.Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
 var
   LStream: TStream;
 begin
   Result := AData;
   LStream := AData.AsObject as TStream;
   LStream.Position := soFromBeginning;
-
   TBase64.Decode(AValue.Value, LStream);
 end;
 
@@ -204,9 +198,7 @@ begin
   Result := TypeInfoIs(AType);
 end;
 
-function TJSONValueSerializer.Deserialize(AValue: TJSONValue;
-  const AData: TValue; ANeonObject: TNeonRttiObject;
-  AContext: IDeserializerContext): TValue;
+function TJSONValueSerializer.Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
 var
   LJSONData: TJSONValue;
   LPair: TJSONPair;
@@ -218,18 +210,19 @@ begin
   // Check the TypeInfo of AData as TJSONValue and AValue
   if not (LJSONData.ClassType = AValue.ClassType) then
   begin
-    AContext.LogError(Format('TJSONValueSerializer: %s and %s not compatible',
-      [LJSONData.ClassName, AValue.ClassName]));
+    AContext.LogError(Format('TJSONValueSerializer: %s and %s not compatible', [LJSONData.ClassName, AValue.ClassName]));
     Exit;
   end;
 
   if LJSONData is TJSONObject then
+  begin
     for LPair in (AValue as TJSONObject) do
-      (LJSONData as TJSONObject).AddPair(LPair.Clone as TJSONPair)
-
-  else if LJSONData is TJSONArray then
-    for LValue in (AValue as TJSONArray) do
-      (LJSONData as TJSONArray).AddElement(LValue.Clone as TJSONValue)
+      (LJSONData as TJSONObject).AddPair(LPair.Clone as TJSONPair);
+  end
+  else
+    if LJSONData is TJSONArray then
+      for LValue in (AValue as TJSONArray) do
+        (LJSONData as TJSONArray).AddElement(LValue.Clone as TJSONValue)
 end;
 
 class function TJSONValueSerializer.GetTargetInfo: PTypeInfo;
@@ -237,8 +230,7 @@ begin
   Result := TJSONValue.ClassInfo;
 end;
 
-function TJSONValueSerializer.Serialize(const AValue: TValue;
-  ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
+function TJSONValueSerializer.Serialize(const AValue: TValue; ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
 var
   LOriginalJSON: TJSONValue;
   LEmpty: Boolean;
@@ -255,9 +247,12 @@ begin
 
   if LEmpty then
     case ANeonObject.NeonInclude.Value of
-      IncludeIf.NotNull:    Exit(nil);
-      IncludeIf.NotEmpty:   Exit(nil);
-      IncludeIf.NotDefault: Exit(nil);
+      IncludeIf.NotNull:
+        Exit(nil);
+      IncludeIf.NotEmpty:
+        Exit(nil);
+      IncludeIf.NotDefault:
+        Exit(nil);
     end;
 
   Exit(LOriginalJSON.Clone as TJSONValue);
@@ -268,8 +263,7 @@ begin
   Result := AType = GetTargetInfo;
 end;
 
-function TTValueSerializer.Deserialize(AValue: TJSONValue; const AData: TValue;
-  ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
+function TTValueSerializer.Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
 var
   LType: TRttiType;
   LValue: TValue;
@@ -281,16 +275,18 @@ begin
     LType := TRttiUtils.Context.GetType(TypeInfo(Double));
     LValue := AContext.ReadDataMember(AValue, LType, AData, False);
   end
-  else if AValue is TJSONString then
-  begin
-    LType := TRttiUtils.Context.GetType(TypeInfo(string));
-    LValue := AContext.ReadDataMember(AValue, LType, AData, False);
-  end
-  else if TJSONUtils.IsBool(AValue) then
-  begin
-    LType := TRttiUtils.Context.GetType(TypeInfo(Boolean));
-    LValue := AContext.ReadDataMember(AValue, LType, AData, False);
-  end;
+  else
+    if AValue is TJSONString then
+    begin
+      LType := TRttiUtils.Context.GetType(TypeInfo(string));
+      LValue := AContext.ReadDataMember(AValue, LType, AData, False);
+    end
+    else
+      if TJSONUtils.IsBool(AValue) then
+      begin
+        LType := TRttiUtils.Context.GetType(TypeInfo(Boolean));
+        LValue := AContext.ReadDataMember(AValue, LType, AData, False);
+      end;
 
   Result := LValue;
 end;
@@ -300,8 +296,7 @@ begin
   Result := TypeInfo(TValue);
 end;
 
-function TTValueSerializer.Serialize(const AValue: TValue;
-  ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
+function TTValueSerializer.Serialize(const AValue: TValue; ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
 begin
   if AValue.Kind = tkRecord then
     Result := AContext.WriteDataMember(AValue.AsType<TValue>, False)
@@ -314,13 +309,13 @@ begin
   Result := AType = TypeInfo(TBytes);
 end;
 
-function TBytesSerializer.Deserialize(AValue: TJSONValue; const AData: TValue;
-  ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
+function TBytesSerializer.Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
 var
   LType: TRttiType;
   LFormat: NeonFormatAttribute;
 begin
   LFormat := ANeonObject.GetAttribute<NeonFormatAttribute>;
+
   if IsFormatValue(LFormat, 'native') then
   begin
     LType := TRttiUtils.Context.GetType(TypeInfo(TBytes));
@@ -343,8 +338,7 @@ begin
   Result := TypeInfo(TBytes);
 end;
 
-function TBytesSerializer.Serialize(const AValue: TValue;
-  ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
+function TBytesSerializer.Serialize(const AValue: TValue; ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
 var
   LVal: TBytes;
   LFormat: NeonFormatAttribute;

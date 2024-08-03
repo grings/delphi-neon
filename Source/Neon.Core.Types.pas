@@ -54,7 +54,7 @@ type
 
 type
   TNeonIgnoreCallback = function(const AContext: TNeonIgnoreIfContext): Boolean of object;
-  TCaseFunc = reference to function (const AString: string): string;
+  TCaseFunc = reference to function(const AString: string): string;
 
 type
   TNeonError = class

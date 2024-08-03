@@ -46,39 +46,28 @@ type
   public
     class procedure Decode(const ASource: string; ADest: TStream); overload;
     class function Encode(const ASource: TStream): string; overload;
-
     class function ToJSON(AJSONValue: TJSONValue): string; static;
-
     class function StringArrayToJsonArray(const AValues: TArray<string>): string; static;
     class function DoubleArrayToJsonArray(const AValues: TArray<Double>): string; static;
     class function IntegerArrayToJsonArray(const AValues: TArray<Integer>): string; static;
-
     class function HasItems(const AJSON: TJSONValue): Boolean;
     class function IsNotEmpty(const AJSON: TJSONValue): Boolean;
     class function IsNotDefault(const AJSON: TJSONValue): Boolean;
-
     class procedure JSONCopyFrom(ASource, ADestination: TJSONObject); static;
-
     class function GetValueBool(AJSON: TJSONValue): Boolean;
     class function GetJSONBool(const AValue: TValue): TJSONValue; overload;
     class function GetJSONBool(AValue: Boolean): TJSONValue; overload;
     class function IsBool(AJSON: TJSONValue): Boolean;
-
     class function BooleanToTJSON(AValue: Boolean): TJSONValue;
-
     class function DateToJSON(ADate: TDate): string; static;
     class function DateToJSONValue(ADate: TDate): TJSONValue; static;
-
     class function TimeToJSON(ATime: TTime): string; static;
     class function TimeToJSONValue(ATime: TTime): TJSONValue; static;
-
     class function DateTimeToJSON(ADateTime: TDateTime; AInputIsUTC: Boolean = True): string; static;
     class function DateTimeToJSONValue(ADateTime: TDateTime; AInputIsUTC: Boolean = True): TJSONValue; static;
-
     class function JSONToDate(const ADate: string): TDate; static;
     class function JSONToTime(const ATime: string): TTime; static;
     class function JSONToDateTime(const ADateTime: string; AReturnUTC: Boolean = True): TDateTime; static;
-
     class procedure Prettify(const AJSONString: string; AWriter: TTextWriter);
   end;
 
@@ -88,86 +77,56 @@ type
   public
     // TRttiObject helpers functions
     class function FindAttribute<T: TCustomAttribute>(AType: TRttiObject): T; static;
-
     class function HasAttribute<T: TCustomAttribute>(AClass: TClass): Boolean; overload; static;
-
     class function HasAttribute<T: TCustomAttribute>(ARttiObj: TRttiObject): Boolean; overload; static;
-
     class function HasAttribute<T: TCustomAttribute>(ARttiObj: TRttiObject; const ADoSomething: TProc<T>): Boolean; overload; static;
-
-    class function ForEachAttribute<T: TCustomAttribute>(
-      ARttiObj: TRttiObject; const ADoSomething: TProc<T>): Integer; overload; static;
-
+    class function ForEachAttribute<T: TCustomAttribute>(ARttiObj: TRttiObject; const ADoSomething: TProc<T>): Integer; overload; static;
     // TRttiType helpers functions
-    class function ForEachMethodWithAttribute<T: TCustomAttribute>(
-      ARttiType: TRttiType; const ADoSomething: TFunc<TRttiMethod, T, Boolean>): Integer; static;
-
-    class function ForEachFieldWithAttribute<T: TCustomAttribute>(
-      ARttiType: TRttiType; const ADoSomething: TFunc<TRttiField, T, Boolean>): Integer; overload; static;
-
-    class function ForEachPropertyWithAttribute<T: TCustomAttribute>(
-      ARttiType: TRttiType; const ADoSomething: TFunc<TRttiProperty, T, Boolean>): Integer; overload; static;
-
-    class function IsDynamicArrayOf<T: class>(ARttiType: TRttiType;
-      const AAllowInherithance: Boolean = True): Boolean; overload; static;
-
-    class function IsDynamicArrayOf(ARttiType: TRttiType; const AClass: TClass;
-      const AAllowInherithance: Boolean = True): Boolean; overload; static;
-
-    class function IsObjectOfType<T: class>(ARttiType: TRttiType;
-      const AAllowInherithance: Boolean = True): Boolean; overload; static;
-
-    class function IsObjectOfType(ARttiType: TRttiType; const AClass: TClass;
-      const AAllowInherithance: Boolean = True): Boolean; overload; static;
-
+    class function ForEachMethodWithAttribute<T: TCustomAttribute>(ARttiType: TRttiType; const ADoSomething: TFunc<TRttiMethod, T, Boolean>): Integer; static;
+    class function ForEachFieldWithAttribute<T: TCustomAttribute>(ARttiType: TRttiType; const ADoSomething: TFunc<TRttiField, T, Boolean>): Integer; overload;
+      static;
+    class function ForEachPropertyWithAttribute<T: TCustomAttribute>(ARttiType: TRttiType; const ADoSomething: TFunc<TRttiProperty, T, Boolean>): Integer;
+      overload; static;
+    class function IsDynamicArrayOf<T: class>(ARttiType: TRttiType; const AAllowInherithance: Boolean = True): Boolean; overload; static;
+    class function IsDynamicArrayOf(ARttiType: TRttiType; const AClass: TClass; const AAllowInherithance: Boolean = True): Boolean; overload; static;
+    class function IsObjectOfType<T: class>(ARttiType: TRttiType; const AAllowInherithance: Boolean = True): Boolean; overload; static;
+    class function IsObjectOfType(ARttiType: TRttiType; const AClass: TClass; const AAllowInherithance: Boolean = True): Boolean; overload; static;
     /// <summary>
-    ///   Free array items (only if these are object)
+    /// Free array items (only if these are object)
     /// </summary>
     class procedure FreeArrayItems(const AData: TValue); static;
-
     /// <summary>
-    ///   Create new value data
+    /// Create new value data
     /// </summary>
     class function CreateNewValue(AType: TRttiType): TValue; static;
-
     /// <summary>
-    ///   Create instance of class with parameterless constructor
+    /// Create instance of class with parameterless constructor
     /// </summary>
     class function CreateInstanceValue(AType: TRttiType): TValue; overload;
-
     // Create instance of class with parameterless constructor
-    class function CreateInstance<T: class, constructor>: TObject;  overload;
-    class function CreateInstance(AClass: TClass): TObject;  overload;
+    class function CreateInstance<T: class, constructor>: TObject; overload;
+    class function CreateInstance(AClass: TClass): TObject; overload;
     class function CreateInstance(AType: TRttiType): TObject; overload;
     class function CreateInstance(const ATypeName: string): TObject; overload;
-
     // Create instance of class with one string parameter
-    class function CreateInstance(AClass: TClass; const AValue: string): TObject;  overload;
+    class function CreateInstance(AClass: TClass; const AValue: string): TObject; overload;
     class function CreateInstance(AType: TRttiType; const AValue: string): TObject; overload;
     class function CreateInstance(const ATypeName, AValue: string): TObject; overload;
-
     // Create instance of class with an array of TValue
-    class function CreateInstance(AClass: TClass; const Args: array of TValue): TObject;  overload;
-    class function CreateInstance(AType: TRttiType;  const Args: array of TValue): TObject; overload;
+    class function CreateInstance(AClass: TClass; const Args: array of TValue): TObject; overload;
+    class function CreateInstance(AType: TRttiType; const Args: array of TValue): TObject; overload;
     class function CreateInstance(const ATypeName: string; const Args: array of TValue): TObject; overload;
-
     // Rtti general helper functions
     class function IfHasAttribute<T: TCustomAttribute>(AInstance: TObject): Boolean; overload;
     class function IfHasAttribute<T: TCustomAttribute>(AInstance: TObject; const ADoSomething: TProc<T>): Boolean; overload;
-
     class function ForEachAttribute<T: TCustomAttribute>(AInstance: TObject; const ADoSomething: TProc<T>): Integer; overload;
-
     class function ForEachFieldWithAttribute<T: TCustomAttribute>(AInstance: TObject; const ADoSomething: TFunc<TRttiField, T, Boolean>): Integer; overload;
     class function ForEachField(AInstance: TObject; const ADoSomething: TFunc<TRttiField, Boolean>): Integer;
-
     class function GetType(AValue: TValue): TRttiType; overload;
     class function GetType(AObject: TRttiObject): TRttiType; overload;
-
     class function GetSetElementType(ASetType: TRttiType): TRttiType;
-
     class function ClassDistanceFromRoot(AClass: TClass): Integer; overload; static;
     class function ClassDistanceFromRoot(AInfo: PTypeInfo): Integer; overload; static;
-
     class property Context: TRttiContext read FContext;
   end;
 
@@ -175,7 +134,6 @@ type
   public
     class function Encode(const ASource: TBytes): string; overload;
     class function Encode(const ASource: TStream): string; overload;
-
     class function Decode(const ASource: string): TBytes; overload;
     class procedure Decode(const ASource: string; ADest: TStream); overload;
   end;
@@ -185,17 +143,14 @@ type
     class procedure SetField(AField: TField; AJSON: TJSONValue; AUseUTCDate: Boolean);
   public
     class function RecordToJSONSchema(const ADataSet: TDataSet; AUseUTCDate: Boolean): TJSONObject; static;
-
     class function FieldToJSONValue(const AField: TField; AUseUTCDate: Boolean): TJSONValue; static;
     class function RecordToJSONObject(const ADataSet: TDataSet; AUseUTCDate: Boolean): TJSONObject; static;
     class function DataSetToJSONArray(const ADataSet: TDataSet; AUseUTCDate: Boolean): TJSONArray; overload; static;
     class function DataSetToJSONArray(const ADataSet: TDataSet; const AAcceptFunc: TFunc<Boolean>; AUseUTCDate: Boolean): TJSONArray; overload; static;
-
     class procedure JSONToRecord(AJSONObject: TJSONObject; ADataSet: TDataSet; AUseUTCDate: Boolean); static;
     class procedure JSONToCurrentRecord(AJSONObject: TJSONObject; ADataSet: TDataSet; AUseUTCDate: Boolean); static;
     class procedure JSONToDataSet(AJSONValue: TJSONValue; ADataSet: TDataSet; AUseUTCDate: Boolean); static;
     class procedure JSONObjectToDataSet(AJSONValue: TJSONValue; ADataSet: TDataSet; AUseUTCDate: Boolean); static;
-
     class function BlobFieldToBase64(ABlobField: TBlobField): string;
     class procedure Base64ToBlobField(const ABase64: string; ABlobField: TBlobField);
   end;
@@ -215,6 +170,7 @@ var
 begin
   Result := 0;
   LClass := AClass;
+
   while LClass <> TObject do
   begin
     LClass := LClass.ClassParent;
@@ -226,10 +182,11 @@ class function TRttiUtils.ClassDistanceFromRoot(AInfo: PTypeInfo): Integer;
 var
   LType: TRttiType;
 begin
-  Result := -1;
-
+  Result := - 1;
   LType := TRttiUtils.Context.GetType(AInfo);
-  if Assigned(LType) and (LType.TypeKind = tkClass) then
+
+  if Assigned(LType) and
+    (LType.TypeKind = tkClass) then
     Result := TRttiUtils.ClassDistanceFromRoot(LType.AsInstance.MetaclassType);
 end;
 
@@ -239,11 +196,12 @@ var
   LItemValue: TValue;
   LArrayLength: NativeInt;
 begin
-  // Free Array Items (if objects)
   LArrayLength := AData.GetArrayLength;
+
   for LIndex := 0 to LArrayLength - 1 do
   begin
     LItemValue := AData.GetArrayElement(LIndex);
+
     if LItemValue.IsObject then
       if Assigned(LItemValue.AsObject()) then
         LItemValue.AsObject.Free;
@@ -255,34 +213,47 @@ var
   LAllocatedMem: Pointer;
 begin
   case AType.TypeKind of
-    tkEnumeration: Result := TValue.From<Byte>(0);
-    tkInteger:     Result := TValue.From<Integer>(0);
-    tkInt64:       Result := TValue.From<Int64>(0);
+    tkEnumeration:
+      Result := TValue.From<Byte>(0);
+    tkInteger:
+      Result := TValue.From<Integer>(0);
+    tkInt64:
+      Result := TValue.From<Int64>(0);
 {$IFDEF HAS_UTF8CHAR}
-    tkChar:        Result := TValue.From<UTF8Char>(#0);
+    tkChar:
+      Result := TValue.From<UTF8Char>(#0);
 {$ELSE}
     tkChar,
 {$ENDIF}
-    tkWChar:       Result := TValue.From<Char>(#0);
-    tkFloat:       Result := TValue.From<Double>(0);
-    tkString:      Result := TValue.From<UTF8String>('');
-    tkWString:     Result := TValue.From<string>('');
-    tkLString:     Result := TValue.From<UTF8String>('');
-    tkUString:     Result := TValue.From<string>('');
-    tkVariant:     Result := TValue.From<Variant>(Null);
-
-    tkClass:       Result := CreateInstance(AType);
-
-    {$IFDEF HAS_MRECORDS}tkMRecord,{$ENDIF}
-    tkRecord, tkDynArray:
-    begin
-      LAllocatedMem := AllocMem(AType.TypeSize);
-      try
-        TValue.Make(LAllocatedMem, AType.Handle, Result);
-      finally
-        FreeMem(LAllocatedMem);
+    tkWChar:
+      Result := TValue.From<Char>(#0);
+    tkFloat:
+      Result := TValue.From<Double>(0);
+    tkString:
+      Result := TValue.From<UTF8String>('');
+    tkWString:
+      Result := TValue.From<string>('');
+    tkLString:
+      Result := TValue.From<UTF8String>('');
+    tkUString:
+      Result := TValue.From<string>('');
+    tkVariant:
+      Result := TValue.From<Variant>(Null);
+    tkClass:
+      Result := CreateInstance(AType);
+{$IFDEF HAS_MRECORDS}
+    tkMRecord,
+{$ENDIF}
+    tkRecord,
+      tkDynArray:
+      begin
+        LAllocatedMem := AllocMem(AType.TypeSize);
+        try
+          TValue.Make(LAllocatedMem, AType.Handle, Result);
+        finally
+          FreeMem(LAllocatedMem);
+        end;
       end;
-    end;
   else
     raise Exception.CreateFmt('Error creating type [%s]', [AType.Name]);
   end;
@@ -323,6 +294,7 @@ var
   LMetaClass: TClass;
 begin
   Result := nil;
+
   if Assigned(AType) then
   begin
     for LMethod in AType.GetMethods do
@@ -352,10 +324,11 @@ end;
 
 class function TRttiUtils.CreateInstanceValue(AType: TRttiType): TValue;
 var
-  LMethod: TRTTIMethod;
+  LMethod: TRttiMethod;
   LMetaClass: TClass;
 begin
   Result := nil;
+
   if Assigned(AType) then
     for LMethod in AType.GetMethods do
     begin
@@ -370,20 +343,19 @@ begin
     end;
 end;
 
-class function TRttiUtils.ForEachAttribute<T>(AInstance: TObject;
-  const ADoSomething: TProc<T>): Integer;
+class function TRttiUtils.ForEachAttribute<T>(AInstance: TObject; const ADoSomething: TProc<T>): Integer;
 var
   LContext: TRttiContext;
   LType: TRttiType;
 begin
   Result := 0;
   LType := LContext.GetType(AInstance.ClassType);
+
   if Assigned(LType) then
     Result := TRttiUtils.ForEachAttribute<T>(LType, ADoSomething);
 end;
 
-class function TRttiUtils.ForEachField(AInstance: TObject;
-  const ADoSomething: TFunc<TRttiField, Boolean>): Integer;
+class function TRttiUtils.ForEachField(AInstance: TObject; const ADoSomething: TFunc<TRttiField, Boolean>): Integer;
 var
   LContext: TRttiContext;
   LField: TRttiField;
@@ -392,6 +364,7 @@ var
 begin
   Result := 0;
   LType := LContext.GetType(AInstance.ClassType);
+
   for LField in LType.GetFields do
   begin
     LBreak := False;
@@ -409,14 +382,14 @@ begin
   end;
 end;
 
-class function TRttiUtils.ForEachFieldWithAttribute<T>(AInstance: TObject;
-  const ADoSomething: TFunc<TRttiField, T, Boolean>): Integer;
+class function TRttiUtils.ForEachFieldWithAttribute<T>(AInstance: TObject; const ADoSomething: TFunc<TRttiField, T, Boolean>): Integer;
 var
   LContext: TRttiContext;
   LType: TRttiType;
 begin
   Result := 0;
   LType := LContext.GetType(AInstance.ClassType);
+
   if Assigned(LType) then
     Result := TRttiUtils.ForEachFieldWithAttribute<T>(LType, ADoSomething);
 end;
@@ -433,22 +406,24 @@ var
 begin
   Result := False;
   LType := LContext.GetType(AInstance.ClassType);
+
   if Assigned(LType) then
     Result := TRttiUtils.HasAttribute<T>(LType, ADoSomething);
 end;
 
-class function TRttiUtils.ForEachAttribute<T>(ARttiObj: TRttiObject;
-    const ADoSomething: TProc<T>): Integer;
+class function TRttiUtils.ForEachAttribute<T>(ARttiObj: TRttiObject; const ADoSomething: TProc<T>): Integer;
 var
   LAttribute: TCustomAttribute;
 begin
   Result := 0;
+
   for LAttribute in ARttiObj.GetAttributes do
   begin
     if LAttribute.InheritsFrom(TClass(T)) then
     begin
       if Assigned(ADoSomething) then
         ADoSomething(T(LAttribute));
+
       Inc(Result);
     end;
   end;
@@ -464,6 +439,7 @@ var
   LAttribute: TCustomAttribute;
 begin
   Result := False;
+
   for LAttribute in ARttiObj.GetAttributes do
   begin
     if LAttribute.InheritsFrom(TClass(T)) then
@@ -478,26 +454,26 @@ begin
   end;
 end;
 
-class function TRttiUtils.ForEachFieldWithAttribute<T>(ARttiType: TRttiType;
-  const ADoSomething: TFunc<TRttiField, T, Boolean>): Integer;
+class function TRttiUtils.ForEachFieldWithAttribute<T>(ARttiType: TRttiType; const ADoSomething: TFunc<TRttiField, T, Boolean>): Integer;
 var
   LField: TRttiField;
   LBreak: Boolean;
 begin
   Result := 0;
+
   for LField in ARttiType.GetFields do
   begin
     LBreak := False;
+
     if TRttiUtils.HasAttribute<T>(LField,
-       procedure (AAttrib: T)
-       begin
-         if Assigned(ADoSomething) then
-         begin
-           if not ADoSomething(LField, AAttrib) then
-             LBreak := True;
-         end;
-       end
-    )
+      procedure(AAttrib: T)
+      begin
+        if Assigned(ADoSomething) then
+        begin
+          if not ADoSomething(LField, AAttrib) then
+            LBreak := True;
+        end;
+      end)
     then
       Inc(Result);
 
@@ -506,26 +482,26 @@ begin
   end;
 end;
 
-class function TRttiUtils.ForEachMethodWithAttribute<T>(ARttiType: TRttiType;
-  const ADoSomething: TFunc<TRttiMethod, T, Boolean>): Integer;
+class function TRttiUtils.ForEachMethodWithAttribute<T>(ARttiType: TRttiType; const ADoSomething: TFunc<TRttiMethod, T, Boolean>): Integer;
 var
   LMethod: TRttiMethod;
   LBreak: Boolean;
 begin
   Result := 0;
+
   for LMethod in ARttiType.GetMethods do
   begin
     LBreak := False;
+
     if TRttiUtils.HasAttribute<T>(LMethod,
-       procedure (AAttrib: T)
-       begin
-         if Assigned(ADoSomething) then
-         begin
-           if not ADoSomething(LMethod, AAttrib) then
-             LBreak := True;
-         end;
-       end
-    )
+      procedure(AAttrib: T)
+      begin
+        if Assigned(ADoSomething) then
+        begin
+          if not ADoSomething(LMethod, AAttrib) then
+            LBreak := True;
+        end;
+      end)
     then
       Inc(Result);
 
@@ -534,26 +510,26 @@ begin
   end;
 end;
 
-class function TRttiUtils.ForEachPropertyWithAttribute<T>(ARttiType: TRttiType;
-  const ADoSomething: TFunc<TRttiProperty, T, Boolean>): Integer;
+class function TRttiUtils.ForEachPropertyWithAttribute<T>(ARttiType: TRttiType; const ADoSomething: TFunc<TRttiProperty, T, Boolean>): Integer;
 var
   LProperty: TRttiProperty;
   LBreak: Boolean;
 begin
   Result := 0;
+
   for LProperty in ARttiType.GetProperties do
   begin
     LBreak := False;
+
     if TRttiUtils.HasAttribute<T>(LProperty,
-       procedure (AAttrib: T)
-       begin
-         if Assigned(ADoSomething) then
-         begin
-           if not ADoSomething(LProperty, AAttrib) then
-             LBreak := True;
-         end;
-       end
-    )
+      procedure(AAttrib: T)
+      begin
+        if Assigned(ADoSomething) then
+        begin
+          if not ADoSomething(LProperty, AAttrib) then
+            LBreak := True;
+        end;
+      end)
     then
       Inc(Result);
 
@@ -579,14 +555,17 @@ class function TRttiUtils.GetType(AObject: TRttiObject): TRttiType;
 begin
   if AObject is TRttiParameter then
     Result := TRttiParameter(AObject).ParamType
-  else if AObject is TRttiField then
-    Result := TRttiField(AObject).FieldType
-  else if AObject is TRttiProperty then
-    Result := TRttiProperty(AObject).PropertyType
-  else if AObject is TRttiManagedField then
-    Result := TRttiManagedField(AObject).FieldType
   else
-    raise Exception.Create('Object doesn''t have a type');
+    if AObject is TRttiField then
+      Result := TRttiField(AObject).FieldType
+    else
+      if AObject is TRttiProperty then
+        Result := TRttiProperty(AObject).PropertyType
+      else
+        if AObject is TRttiManagedField then
+          Result := TRttiManagedField(AObject).FieldType
+        else
+          raise Exception.Create('Object doesn''t have a type');
 end;
 
 class function TRttiUtils.HasAttribute<T>(AClass: TClass): Boolean;
@@ -594,25 +573,23 @@ begin
   Result := HasAttribute<T>(Context.GetType(AClass));
 end;
 
-class function TRttiUtils.IsDynamicArrayOf(ARttiType: TRttiType;
-  const AClass: TClass; const AAllowInherithance: Boolean): Boolean;
+class function TRttiUtils.IsDynamicArrayOf(ARttiType: TRttiType; const AClass: TClass; const AAllowInherithance: Boolean = True): Boolean;
 begin
   Result := False;
+
   if ARttiType is TRttiDynamicArrayType then
-    Result := TRttiUtils.IsObjectOfType(
-      TRttiDynamicArrayType(ARttiType).ElementType, AClass, AAllowInherithance);
+    Result := TRttiUtils.IsObjectOfType(TRttiDynamicArrayType(ARttiType).ElementType, AClass, AAllowInherithance);
 end;
 
-class function TRttiUtils.IsDynamicArrayOf<T>(ARttiType: TRttiType;
-  const AAllowInherithance: Boolean): Boolean;
+class function TRttiUtils.IsDynamicArrayOf<T>(ARttiType: TRttiType; const AAllowInherithance: Boolean = True): Boolean;
 begin
   Result := TRttiUtils.IsDynamicArrayOf(ARttiType, TClass(T), AAllowInherithance);
 end;
 
-class function TRttiUtils.IsObjectOfType(ARttiType: TRttiType;
-  const AClass: TClass; const AAllowInherithance: Boolean): Boolean;
+class function TRttiUtils.IsObjectOfType(ARttiType: TRttiType; const AClass: TClass; const AAllowInherithance: Boolean = True): Boolean;
 begin
   Result := False;
+
   if ARttiType is TRttiInstanceType then
   begin
     if AAllowInherithance then
@@ -622,8 +599,7 @@ begin
   end;
 end;
 
-class function TRttiUtils.IsObjectOfType<T>(ARttiType: TRttiType;
-  const AAllowInherithance: Boolean): Boolean;
+class function TRttiUtils.IsObjectOfType<T>(ARttiType: TRttiType; const AAllowInherithance: Boolean = True): Boolean;
 begin
   Result := TRttiUtils.IsObjectOfType(ARttiType, TClass(T), AAllowInherithance);
 end;
@@ -633,6 +609,7 @@ var
   LAttribute: TCustomAttribute;
 begin
   Result := nil;
+
   for LAttribute in AType.GetAttributes do
   begin
     if LAttribute.InheritsFrom(TClass(T)) then
@@ -644,8 +621,7 @@ begin
   end;
 end;
 
-class function TRttiUtils.CreateInstance(AClass: TClass;
-  const Args: array of TValue): TObject;
+class function TRttiUtils.CreateInstance(AClass: TClass; const Args: array of TValue): TObject;
 var
   LType: TRttiType;
 begin
@@ -659,6 +635,7 @@ var
   LMetaClass: TClass;
 begin
   Result := nil;
+
   if Assigned(AType) then
   begin
     for LMethod in AType.GetMethods do
@@ -673,6 +650,7 @@ begin
       end;
     end;
   end;
+
   if not Assigned(Result) then
     raise Exception.CreateFmt('TRttiUtils.CreateInstance: can''t create object [%s]', [AType.Name]);
 end;
@@ -701,6 +679,7 @@ end;
 class function TJSONUtils.DateToJSON(ADate: TDate): string;
 begin
   Result := '';
+
   if ADate <> 0 then
     Result := FormatDateTime('YYYY-MM-DD', ADate);
 end;
@@ -713,8 +692,9 @@ end;
 class function TJSONUtils.TimeToJSON(ATime: TTime): string;
 begin
   Result := '';
+
   if ATime <> 0 then
-  Result := FormatDateTime('hh:nn:ss', ATime);
+    Result := FormatDateTime('hh:nn:ss', ATime);
 end;
 
 class function TJSONUtils.TimeToJSONValue(ATime: TTime): TJSONValue;
@@ -725,6 +705,7 @@ end;
 class function TJSONUtils.DateTimeToJSON(ADateTime: TDateTime; AInputIsUTC: Boolean = True): string;
 begin
   Result := '';
+
   if ADateTime <> 0 then
     Result := DateToISO8601(ADateTime, AInputIsUTC);
 end;
@@ -759,9 +740,11 @@ var
   LIndex: Integer;
 begin
   LArray := TJSONArray.Create;
+
   try
     for LIndex := 0 to High(AValues) do
       LArray.Add(AValues[LIndex]);
+
     Result := ToJSON(LArray);
   finally
     LArray.Free;
@@ -795,7 +778,7 @@ begin
   if AValue.AsBoolean then
     Result := TJSONTrue.Create
   else
-    Result := TJsonFalse.Create;
+    Result := TJSONFalse.Create;
 {$ENDIF}
 end;
 
@@ -807,7 +790,7 @@ begin
   if AValue then
     Result := TJSONTrue.Create
   else
-    Result := TJsonFalse.Create;
+    Result := TJSONFalse.Create;
 {$ENDIF}
 end;
 
@@ -821,10 +804,11 @@ begin
 {$ELSE}
   if AJSON is TJSONTrue then
     Result := True
-  else if AJSON is TJSONFalse then
-    Result := False
   else
-    raise ENeonException.Create('The JSON value is not boolean');
+    if AJSON is TJSONFalse then
+      Result := False
+    else
+      raise ENeonException.Create('The JSON value is not boolean');
 {$ENDIF}
 end;
 
@@ -835,7 +819,8 @@ begin
   if AJSON is TJSONBool then
     Result := True;
 {$ELSE}
-  if (AJSON is TJSONTrue) or (AJSON is TJSONFalse) then
+  if (AJSON is TJSONTrue) or
+     (AJSON is TJSONFalse) then
     Result := True;
 {$ENDIF}
 end;
@@ -914,6 +899,7 @@ begin
   try
     for LIndex := 0 to High(AValues) do
       LArray.Add(AValues[LIndex]);
+
     Result := ToJSON(LArray);
   finally
     LArray.Free;
@@ -923,14 +909,16 @@ end;
 class function TJSONUtils.JSONToDate(const ADate: string): TDate;
 begin
   Result := 0.0;
-  if Length(ADate) = 10 then  {YYYY-MM-DD} // Possible RegEx => ^(?:\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01]))$
+
+  if Length(ADate) = 10 then { YYYY-MM-DD } // Possible RegEx => ^(?:\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01]))$
     Result := EncodeDate(StrToInt(Copy(ADate, 1, 4)), StrToInt(Copy(ADate, 6, 2)), StrToInt(Copy(ADate, 9, 2)));
 end;
 
 class function TJSONUtils.JSONToTime(const ATime: string): TTime;
 begin
   Result := 0.0;
-  if Length(ATime) = 8 then {hh:nn:ss} // Possible RegEx => ^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$
+
+  if Length(ATime) = 8 then { hh:nn:ss } // Possible RegEx => ^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$
     Result := EncodeTime(StrToInt(Copy(ATime, 1, 2)), StrToInt(Copy(ATime, 4, 2)), StrToInt(Copy(ATime, 7, 2)), 0);
 end;
 
@@ -949,65 +937,77 @@ var
 begin
   LOffset := 0;
   LOutsideString := True;
-
   LPrev := #0;
+
   for LIndex := 0 to Length(AJSONString) - 1 do
   begin
     LChar := AJSONString.Chars[LIndex];
 
-    if (LChar = '"') and not (LPrev = '\') then
+    if (LChar = '"') and
+       not (LPrev = '\') then
       LOutsideString := not LOutsideString;
 
-    if LOutsideString and (LChar = '{') then
+    if LOutsideString and
+       (LChar = '{') then
     begin
       Inc(LOffset);
       AWriter.Write(LChar);
       AWriter.Write(sLineBreak);
       AWriter.Write(Spaces(LOffset));
-    end
-    else if LOutsideString and (LChar = '}') then
-    begin
-      Dec(LOffset);
-      AWriter.Write(sLineBreak);
-      AWriter.Write(Spaces(LOffset));
-      AWriter.Write(LChar);
-    end
-    else if LOutsideString and (LChar = ',') then
-    begin
-      AWriter.Write(LChar);
-      AWriter.Write(sLineBreak);
-      AWriter.Write(Spaces(LOffset));
-    end
-    else if LOutsideString and (LChar = '[') then
-    begin
-      Inc(LOffset);
-      AWriter.Write(LChar);
-      AWriter.Write(sLineBreak);
-      AWriter.Write(Spaces(LOffset));
-    end
-    else if LOutsideString and (LChar = ']') then
-    begin
-      Dec(LOffset);
-      AWriter.Write(sLineBreak);
-      AWriter.Write(Spaces(LOffset));
-      AWriter.Write(LChar);
-    end
-    else if LOutsideString and (LChar = ':') then
-    begin
-      AWriter.Write(LChar);
-      AWriter.Write(' ');
     end
     else
-      AWriter.Write(LChar);
+      if LOutsideString and
+         (LChar = '}') then
+      begin
+        Dec(LOffset);
+        AWriter.Write(sLineBreak);
+        AWriter.Write(Spaces(LOffset));
+        AWriter.Write(LChar);
+      end
+      else
+        if LOutsideString and
+           (LChar = ',') then
+        begin
+          AWriter.Write(LChar);
+          AWriter.Write(sLineBreak);
+          AWriter.Write(Spaces(LOffset));
+        end
+        else
+          if LOutsideString and
+             (LChar = '[') then
+          begin
+            Inc(LOffset);
+            AWriter.Write(LChar);
+            AWriter.Write(sLineBreak);
+            AWriter.Write(Spaces(LOffset));
+          end
+          else
+            if LOutsideString and
+               (LChar = ']') then
+            begin
+              Dec(LOffset);
+              AWriter.Write(sLineBreak);
+              AWriter.Write(Spaces(LOffset));
+              AWriter.Write(LChar);
+            end
+            else
+              if LOutsideString and
+                 (LChar = ':') then
+              begin
+                AWriter.Write(LChar);
+                AWriter.Write(' ');
+              end
+              else
+                AWriter.Write(LChar);
 
     LPrev := LChar;
   end;
-
 end;
 
 class function TJSONUtils.JSONToDateTime(const ADateTime: string; AReturnUTC: Boolean = True): TDateTime;
 begin
   Result := 0.0;
+
   if ADateTime <> '' then
     Result := ISO8601ToDate(ADateTime, AReturnUTC);
 end;
@@ -1030,6 +1030,7 @@ begin
   try
     for LIndex := 0 to High(AValues) do
       LArray.Add(AValues[LIndex]);
+
     Result := ToJSON(LArray);
   finally
     LArray.Free;
@@ -1064,7 +1065,7 @@ begin
   LBase64Stream := TStringStream.Create;
   try
     // FIX: if CharsPerLine is not initialized, it adds \r\n line feeds to
-    //      each line that are not part of Base64
+    // each line that are not part of Base64
     LEncoder := TBase64Encoding.Create(0);
     try
       LEncoder.Encode(ASource, LBase64Stream);
@@ -1075,9 +1076,9 @@ begin
   finally
     LBase64Stream.Free;
   end;
-{$ELSE}
+  {$ELSE}
   Result := TIdEncoderMIME.EncodeStream(ASource);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 class function TBase64.Decode(const ASource: string): TBytes;
@@ -1085,17 +1086,17 @@ class function TBase64.Decode(const ASource: string): TBytes;
 var
   LBytes: TIdBytes;
   LIndex: Integer;
-{$ENDIF}
+  {$ENDIF}
 begin
-{$IFDEF HAS_NET_ENCODING}
+  {$IFDEF HAS_NET_ENCODING}
   Result := TNetEncoding.Base64.DecodeStringToBytes(ASource);
-{$ELSE}
+  {$ELSE}
   LBytes := TIdDecoderMIME.DecodeBytes(ASource);
 
   SetLength(Result, Length(LBytes));
   for LIndex := 0 to Length(LBytes) - 1 do
     Result[LIndex] := LBytes[LIndex];
-{$ENDIF}
+  {$ENDIF}
 end;
 
 class procedure TBase64.Decode(const ASource: string; ADest: TStream);
@@ -1133,6 +1134,7 @@ begin
       Continue;
 
     LJSONValue := FieldToJSONValue(LField, AUseUTCDate);
+
     if Assigned(LJSONValue) then
       Result.AddPair(LPairName, LJSONValue);
   end;
@@ -1164,94 +1166,83 @@ begin
 
     case LField.DataType of
       TFieldType.ftString:
-      begin
-        LJSONField.AddPair('type', 'string');
-      end;
-
+        begin
+          LJSONField.AddPair('type', 'string');
+        end;
       TFieldType.ftSmallint,
-      TFieldType.ftInteger,
-      TFieldType.ftWord,
-      TFieldType.ftLongWord,
-      TFieldType.ftShortint,
-      TFieldType.ftByte:
-      begin
-        LJSONField.AddPair('type', 'integer').AddPair('format', 'int32');
-      end;
-
+        TFieldType.ftInteger,
+        TFieldType.ftWord,
+        TFieldType.ftLongWord,
+        TFieldType.ftShortint,
+        TFieldType.ftByte:
+        begin
+          LJSONField.AddPair('type', 'integer').AddPair('format', 'int32');
+        end;
       TFieldType.ftBoolean:
-      begin
-        LJSONField.AddPair('type', 'boolean');
-      end;
-
-      TFieldType.ftFloat,
-      TFieldType.ftSingle:
-      begin
-        LJSONField.AddPair('type', 'number').AddPair('format', 'float');
-      end;
-
-      TFieldType.ftCurrency,
-      TFieldType.ftExtended:
-      begin
-        LJSONField.AddPair('type', 'number').AddPair('format', 'double');
-      end;
-
+        begin
+          LJSONField.AddPair('type', 'boolean');
+        end;
+        TFieldType.ftFloat,
+        TFieldType.ftSingle:
+        begin
+          LJSONField.AddPair('type', 'number').AddPair('format', 'float');
+        end;
+        TFieldType.ftCurrency,
+        TFieldType.ftExtended:
+        begin
+          LJSONField.AddPair('type', 'number').AddPair('format', 'double');
+        end;
       TFieldType.ftBCD:
-      begin
-        LJSONField.AddPair('type', 'number').AddPair('format', 'double');
-      end;
-
+        begin
+          LJSONField.AddPair('type', 'number').AddPair('format', 'double');
+        end;
       TFieldType.ftDate:
-      begin
-        LJSONField.AddPair('type', 'string').AddPair('format', 'date');
-      end;
-
+        begin
+          LJSONField.AddPair('type', 'string').AddPair('format', 'date');
+        end;
       TFieldType.ftTime:
-      begin
-        LJSONField.AddPair('type', 'string').AddPair('format', 'time');
-      end;
-
+        begin
+          LJSONField.AddPair('type', 'string').AddPair('format', 'time');
+        end;
       TFieldType.ftDateTime:
-      begin
-        LJSONField.AddPair('type', 'string').AddPair('format', 'date-time');
-      end;
+        begin
+          LJSONField.AddPair('type', 'string').AddPair('format', 'date-time');
+        end;
       TFieldType.ftAutoInc:
-      begin
-        LJSONField.AddPair('type', 'integer').AddPair('format', 'int32');
-      end;
+        begin
+          LJSONField.AddPair('type', 'integer').AddPair('format', 'int32');
+        end;
       TFieldType.ftMemo,
-      TFieldType.ftWideMemo:
-      begin
-        LJSONField.AddPair('type', 'string');
-      end;
+        TFieldType.ftWideMemo:
+        begin
+          LJSONField.AddPair('type', 'string');
+        end;
       TFieldType.ftFixedChar,
-      TFieldType.ftFixedWideChar,
-      TFieldType.ftWideString:
-      begin
-        LJSONField.AddPair('type', 'string');
-      end;
-
+        TFieldType.ftFixedWideChar,
+        TFieldType.ftWideString:
+        begin
+          LJSONField.AddPair('type', 'string');
+        end;
       TFieldType.ftLargeint:
-      begin
-        LJSONField.AddPair('type', 'integer').AddPair('format', 'int64');
-      end;
+        begin
+          LJSONField.AddPair('type', 'integer').AddPair('format', 'int64');
+        end;
       TFieldType.ftVariant:
-      begin
-        LJSONField.AddPair('type', 'string');
-      end;
+        begin
+          LJSONField.AddPair('type', 'string');
+        end;
       TFieldType.ftGuid:
-      begin
-        LJSONField.AddPair('type', 'string');
-      end;
-
+        begin
+          LJSONField.AddPair('type', 'string');
+        end;
       TFieldType.ftTimeStamp:
-      begin
-        LJSONField.AddPair('type', 'string').AddPair('format', 'date-time');
-      end;
-
+        begin
+          LJSONField.AddPair('type', 'string').AddPair('format', 'date-time');
+        end;
       TFieldType.ftFMTBcd:
-      begin
-        LJSONField.AddPair('type', 'number').AddPair('format', 'double');
-      end;
+        begin
+          LJSONField.AddPair('type', 'number').AddPair('format', 'double');
+        end;
     end;
   end;
 end;
@@ -1259,48 +1250,87 @@ end;
 class procedure TDataSetUtils.SetField(AField: TField; AJSON: TJSONValue; AUseUTCDate: Boolean);
 begin
   case AField.DataType of
-    TFieldType.ftString:          AField.AsString := AJSON.Value;
-    TFieldType.ftSmallint:        AField.AsString := AJSON.Value;
-    TFieldType.ftInteger:         AField.AsString := AJSON.Value;
-    TFieldType.ftWord:            AField.AsString := AJSON.Value;
-    TFieldType.ftBoolean:         AField.AsString := AJSON.Value;
-    TFieldType.ftFloat:           AField.AsString := AJSON.Value;
-    TFieldType.ftCurrency:        AField.AsString := AJSON.Value;
-    TFieldType.ftBCD:             AField.AsString := AJSON.Value;
-    TFieldType.ftDate:            AField.AsDateTime := TJSONUtils.JSONToDate(AJSON.Value);
-    TFieldType.ftTime:            AField.AsDateTime := TJSONUtils.JSONToTime(AJSON.Value);
-    TFieldType.ftDateTime:        AField.AsDateTime := TJSONUtils.JSONToDateTime(AJSON.Value, AUseUTCDate);
-    TFieldType.ftBytes:           AField.AsBytes := TBase64.Decode(AJSON.Value);
-    TFieldType.ftVarBytes:        AField.AsBytes := TBase64.Decode(AJSON.Value);
-    TFieldType.ftAutoInc:         AField.AsString := AJSON.Value;
-    TFieldType.ftBlob:            Base64ToBlobField(AJSON.Value, AField as TBlobField);
-    TFieldType.ftMemo:            AField.AsString := AJSON.Value;
-    TFieldType.ftGraphic:         (AField as TGraphicField).Value := TBase64.Decode(AJSON.Value);
-    TFieldType.ftTypedBinary:     AField.AsBytes := TBase64.Decode(AJSON.Value);
-    TFieldType.ftFixedChar:       AField.AsString := AJSON.Value;
-    TFieldType.ftWideString:      AField.AsString := AJSON.Value;
-    TFieldType.ftLargeint:        AField.AsString := AJSON.Value;
-    TFieldType.ftADT:             AField.AsBytes := TBase64.Decode(AJSON.Value);
-    TFieldType.ftArray:           AField.AsBytes := TBase64.Decode(AJSON.Value);
-    TFieldType.ftDataSet:         JSONToDataSet(AJSON, (AField as TDataSetField).NestedDataSet, AUseUTCDate);
-    TFieldType.ftOraBlob:         Base64ToBlobField(AJSON.Value, AField as TBlobField);
-    TFieldType.ftOraClob:         Base64ToBlobField(AJSON.Value, AField as TBlobField);
-    TFieldType.ftVariant:         Base64ToBlobField(AJSON.Value, AField as TBlobField);
-    TFieldType.ftGuid:            AField.AsString := AJSON.Value;
-    TFieldType.ftTimeStamp:       AField.AsDateTime := TJSONUtils.JSONToDateTime(AJSON.Value, AUseUTCDate);
-    TFieldType.ftFMTBcd:          AField.AsBytes := TBase64.Decode(AJSON.Value);
-    TFieldType.ftFixedWideChar:   AField.AsString := AJSON.Value;
-    TFieldType.ftWideMemo:        AField.AsString := AJSON.Value;
-    TFieldType.ftOraTimeStamp:    AField.AsDateTime := TJSONUtils.JSONToDateTime(AJSON.Value, AUseUTCDate);
-    TFieldType.ftOraInterval:     AField.AsString := AJSON.Value;
-    TFieldType.ftLongWord:        AField.AsString := AJSON.Value;
-    TFieldType.ftShortint:        AField.AsString := AJSON.Value;
-    TFieldType.ftByte:            AField.AsString := AJSON.Value;
-    TFieldType.ftExtended:        AField.AsString := AJSON.Value;
-    TFieldType.ftStream:          AField.AsBytes := TBase64.Decode(AJSON.Value);
-    TFieldType.ftSingle:          AField.AsString := AJSON.Value;
+    TFieldType.ftString:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftSmallint:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftInteger:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftWord:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftBoolean:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftFloat:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftCurrency:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftBCD:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftDate:
+      AField.AsDateTime := TJSONUtils.JSONToDate(AJSON.Value);
+    TFieldType.ftTime:
+      AField.AsDateTime := TJSONUtils.JSONToTime(AJSON.Value);
+    TFieldType.ftDateTime:
+      AField.AsDateTime := TJSONUtils.JSONToDateTime(AJSON.Value, AUseUTCDate);
+    TFieldType.ftBytes:
+      AField.AsBytes := TBase64.Decode(AJSON.Value);
+    TFieldType.ftVarBytes:
+      AField.AsBytes := TBase64.Decode(AJSON.Value);
+    TFieldType.ftAutoInc:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftBlob:
+      Base64ToBlobField(AJSON.Value, AField as TBlobField);
+    TFieldType.ftMemo:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftGraphic:
+      (AField as TGraphicField).Value := TBase64.Decode(AJSON.Value);
+    TFieldType.ftTypedBinary:
+      AField.AsBytes := TBase64.Decode(AJSON.Value);
+    TFieldType.ftFixedChar:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftWideString:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftLargeint:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftADT:
+      AField.AsBytes := TBase64.Decode(AJSON.Value);
+    TFieldType.ftArray:
+      AField.AsBytes := TBase64.Decode(AJSON.Value);
+    TFieldType.ftDataSet:
+      JSONToDataSet(AJSON, (AField as TDataSetField).NestedDataSet, AUseUTCDate);
+    TFieldType.ftOraBlob:
+      Base64ToBlobField(AJSON.Value, AField as TBlobField);
+    TFieldType.ftOraClob:
+      Base64ToBlobField(AJSON.Value, AField as TBlobField);
+    TFieldType.ftVariant:
+      Base64ToBlobField(AJSON.Value, AField as TBlobField);
+    TFieldType.ftGuid:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftTimeStamp:
+      AField.AsDateTime := TJSONUtils.JSONToDateTime(AJSON.Value, AUseUTCDate);
+    TFieldType.ftFMTBcd:
+      AField.AsBytes := TBase64.Decode(AJSON.Value);
+    TFieldType.ftFixedWideChar:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftWideMemo:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftOraTimeStamp:
+      AField.AsDateTime := TJSONUtils.JSONToDateTime(AJSON.Value, AUseUTCDate);
+    TFieldType.ftOraInterval:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftLongWord:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftShortint:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftByte:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftExtended:
+      AField.AsString := AJSON.Value;
+    TFieldType.ftStream:
+      AField.AsBytes := TBase64.Decode(AJSON.Value);
+    TFieldType.ftSingle:
+      AField.AsString := AJSON.Value;
   end;
-
 end;
 
 class function TDataSetUtils.DataSetToJSONArray(const ADataSet: TDataSet; AUseUTCDate: Boolean): TJSONArray;
@@ -1313,6 +1343,7 @@ var
   LBookmark: TBookmark;
 begin
   Result := TJSONArray.Create;
+
   if not Assigned(ADataSet) then
     Exit;
 
@@ -1325,12 +1356,12 @@ begin
     try
       ADataSet.First;
       while not ADataSet.Eof do
-      try
-        if (not Assigned(AAcceptFunc)) or (AAcceptFunc()) then
-          Result.AddElement(RecordToJSONObject(ADataSet, AUseUTCDate));
-      finally
-        ADataSet.Next;
-      end;
+        try
+          if (not Assigned(AAcceptFunc)) or (AAcceptFunc()) then
+            Result.AddElement(RecordToJSONObject(ADataSet, AUseUTCDate));
+        finally
+          ADataSet.Next;
+        end;
     finally
       ADataSet.GotoBookmark(LBookmark);
     end;
@@ -1347,46 +1378,86 @@ begin
     Exit(TJSONNull.Create);
 
   case AField.DataType of
-    TFieldType.ftString:          Result := TJSONString.Create(AField.AsString);
-    TFieldType.ftSmallint:        Result := TJSONNumber.Create(AField.AsInteger);
-    TFieldType.ftInteger:         Result := TJSONNumber.Create(AField.AsInteger);
-    TFieldType.ftWord:            Result := TJSONNumber.Create(AField.AsInteger);
-    TFieldType.ftBoolean:         Result := TJSONUtils.BooleanToTJSON(AField.AsBoolean);
-    TFieldType.ftFloat:           Result := TJSONNumber.Create(AField.AsFloat);
-    TFieldType.ftCurrency:        Result := TJSONNumber.Create(AField.AsCurrency);
-    TFieldType.ftBCD:             Result := TJSONNumber.Create(AField.AsFloat);
-    TFieldType.ftDate:            Result := TJSONUtils.DateToJSONValue(AField.AsDateTime);
-    TFieldType.ftTime:            Result := TJSONUtils.TimeToJSONValue(AField.AsDateTime);
-    TFieldType.ftDateTime:        Result := TJSONUtils.DateTimeToJSONValue(AField.AsDateTime, AUseUTCDate);
-    TFieldType.ftBytes:           Result := TJSONString.Create(TBase64.Encode(AField.AsBytes));
-    TFieldType.ftVarBytes:        Result := TJSONString.Create(TBase64.Encode(AField.AsBytes));
-    TFieldType.ftAutoInc:         Result := TJSONNumber.Create(AField.AsInteger);
-    TFieldType.ftBlob:            Result := TJSONString.Create(BlobFieldToBase64(AField as TBlobField));
-    TFieldType.ftMemo:            Result := TJSONString.Create(AField.AsString);
-    TFieldType.ftGraphic:         Result := TJSONString.Create(TBase64.Encode(AField.AsBytes));
-    TFieldType.ftTypedBinary:     Result := TJSONString.Create(TBase64.Encode(AField.AsBytes));
-    TFieldType.ftFixedChar:       Result := TJSONString.Create(AField.AsString);
-    TFieldType.ftWideString:      Result := TJSONString.Create(AField.AsWideString);
-    TFieldType.ftLargeint:        Result := TJSONNumber.Create(AField.AsLargeInt);
-    TFieldType.ftADT:             Result := TJSONString.Create(TBase64.Encode(AField.AsBytes));
-    TFieldType.ftArray:           Result := TJSONString.Create(TBase64.Encode(AField.AsBytes));
-    TFieldType.ftDataSet:         Result := DataSetToJSONArray((AField as TDataSetField).NestedDataSet, AUseUTCDate);
-    TFieldType.ftOraBlob:         Result := TJSONString.Create(TBase64.Encode(AField.AsBytes));
-    TFieldType.ftOraClob:         Result := TJSONString.Create(TBase64.Encode(AField.AsBytes));
-    TFieldType.ftVariant:         Result := TJSONString.Create(AField.AsString);
-    TFieldType.ftGuid:            Result := TJSONString.Create(AField.AsString);
-    TFieldType.ftTimeStamp:       Result := TJSONUtils.DateTimeToJSONValue(AField.AsDateTime, AUseUTCDate);
-    TFieldType.ftFMTBcd:          Result := TJSONNumber.Create(AField.AsFloat);
-    TFieldType.ftFixedWideChar:   Result := TJSONString.Create(AField.AsString);
-    TFieldType.ftWideMemo:        Result := TJSONString.Create(AField.AsString);
-    TFieldType.ftOraTimeStamp:    Result := TJSONUtils.DateTimeToJSONValue(AField.AsDateTime, AUseUTCDate);
-    TFieldType.ftOraInterval:     Result := TJSONString.Create(AField.AsString);
-    TFieldType.ftLongWord:        Result := TJSONNumber.Create(AField.AsInteger);
-    TFieldType.ftShortint:        Result := TJSONNumber.Create(AField.AsInteger);
-    TFieldType.ftByte:            Result := TJSONNumber.Create(AField.AsInteger);
-    TFieldType.ftExtended:        Result := TJSONNumber.Create(AField.AsFloat);
-    TFieldType.ftTimeStampOffset: Result := TJSONString.Create(AField.AsString);
-    TFieldType.ftSingle:          Result := TJSONNumber.Create(AField.AsFloat);
+    TFieldType.ftString:
+      Result := TJSONString.Create(AField.AsString);
+    TFieldType.ftSmallint:
+      Result := TJSONNumber.Create(AField.AsInteger);
+    TFieldType.ftInteger:
+      Result := TJSONNumber.Create(AField.AsInteger);
+    TFieldType.ftWord:
+      Result := TJSONNumber.Create(AField.AsInteger);
+    TFieldType.ftBoolean:
+      Result := TJSONUtils.BooleanToTJSON(AField.AsBoolean);
+    TFieldType.ftFloat:
+      Result := TJSONNumber.Create(AField.AsFloat);
+    TFieldType.ftCurrency:
+      Result := TJSONNumber.Create(AField.AsCurrency);
+    TFieldType.ftBCD:
+      Result := TJSONNumber.Create(AField.AsFloat);
+    TFieldType.ftDate:
+      Result := TJSONUtils.DateToJSONValue(AField.AsDateTime);
+    TFieldType.ftTime:
+      Result := TJSONUtils.TimeToJSONValue(AField.AsDateTime);
+    TFieldType.ftDateTime:
+      Result := TJSONUtils.DateTimeToJSONValue(AField.AsDateTime, AUseUTCDate);
+    TFieldType.ftBytes:
+      Result := TJSONString.Create(TBase64.Encode(AField.AsBytes));
+    TFieldType.ftVarBytes:
+      Result := TJSONString.Create(TBase64.Encode(AField.AsBytes));
+    TFieldType.ftAutoInc:
+      Result := TJSONNumber.Create(AField.AsInteger);
+    TFieldType.ftBlob:
+      Result := TJSONString.Create(BlobFieldToBase64(AField as TBlobField));
+    TFieldType.ftMemo:
+      Result := TJSONString.Create(AField.AsString);
+    TFieldType.ftGraphic:
+      Result := TJSONString.Create(TBase64.Encode(AField.AsBytes));
+    TFieldType.ftTypedBinary:
+      Result := TJSONString.Create(TBase64.Encode(AField.AsBytes));
+    TFieldType.ftFixedChar:
+      Result := TJSONString.Create(AField.AsString);
+    TFieldType.ftWideString:
+      Result := TJSONString.Create(AField.AsWideString);
+    TFieldType.ftLargeint:
+      Result := TJSONNumber.Create(AField.AsLargeInt);
+    TFieldType.ftADT:
+      Result := TJSONString.Create(TBase64.Encode(AField.AsBytes));
+    TFieldType.ftArray:
+      Result := TJSONString.Create(TBase64.Encode(AField.AsBytes));
+    TFieldType.ftDataSet:
+      Result := DataSetToJSONArray((AField as TDataSetField).NestedDataSet, AUseUTCDate);
+    TFieldType.ftOraBlob:
+      Result := TJSONString.Create(TBase64.Encode(AField.AsBytes));
+    TFieldType.ftOraClob:
+      Result := TJSONString.Create(TBase64.Encode(AField.AsBytes));
+    TFieldType.ftVariant:
+      Result := TJSONString.Create(AField.AsString);
+    TFieldType.ftGuid:
+      Result := TJSONString.Create(AField.AsString);
+    TFieldType.ftTimeStamp:
+      Result := TJSONUtils.DateTimeToJSONValue(AField.AsDateTime, AUseUTCDate);
+    TFieldType.ftFMTBcd:
+      Result := TJSONNumber.Create(AField.AsFloat);
+    TFieldType.ftFixedWideChar:
+      Result := TJSONString.Create(AField.AsString);
+    TFieldType.ftWideMemo:
+      Result := TJSONString.Create(AField.AsString);
+    TFieldType.ftOraTimeStamp:
+      Result := TJSONUtils.DateTimeToJSONValue(AField.AsDateTime, AUseUTCDate);
+    TFieldType.ftOraInterval:
+      Result := TJSONString.Create(AField.AsString);
+    TFieldType.ftLongWord:
+      Result := TJSONNumber.Create(AField.AsInteger);
+    TFieldType.ftShortint:
+      Result := TJSONNumber.Create(AField.AsInteger);
+    TFieldType.ftByte:
+      Result := TJSONNumber.Create(AField.AsInteger);
+    TFieldType.ftExtended:
+      Result := TJSONNumber.Create(AField.AsFloat);
+    TFieldType.ftTimeStampOffset:
+      Result := TJSONString.Create(AField.AsString);
+    TFieldType.ftSingle:
+      Result := TJSONNumber.Create(AField.AsFloat);
   end;
 end;
 
@@ -1422,6 +1493,7 @@ begin
       Continue;
 
     LJSONField := AJSONObject.GetValue(LField.FieldName);
+
     if not Assigned(LJSONField) then
       Continue;
 
@@ -1456,7 +1528,6 @@ begin
   for LIndex := 0 to LJSONArray.Count - 1 do
   begin
     LJSONItem := LJSONArray.Items[LIndex] as TJSONObject;
-
     JSONToRecord(LJSONItem, ADataSet, AUseUTCDate);
   end;
 end;
@@ -1477,6 +1548,7 @@ begin
       Continue;
 
     LJSONField := AJSONObject.GetValue(LField.FieldName);
+
     if not Assigned(LJSONField) then
       Continue;
 

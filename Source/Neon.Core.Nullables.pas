@@ -37,7 +37,7 @@ uses
 type
   ENullableException = class(Exception);
 
-  {$RTTI EXPLICIT FIELDS([vcPrivate]) METHODS([vcPrivate])}
+{$RTTI EXPLICIT FIELDS([vcPrivate]) METHODS([vcPrivate])}
   Nullable<T> = record
   private
     FValue: T;
@@ -54,12 +54,9 @@ type
     function Equals(const Value: T): Boolean; overload;
     function GetValueOrDefault: T; overload;
     function GetValueOrDefault(const Default: T): T; overload;
-
     property HasValue: Boolean read GetHasValue;
     function IsNull: Boolean;
-
     property Value: T read GetValue;
-
     class operator Implicit(const Value: Nullable<T>): T;
     class operator Implicit(const Value: Nullable<T>): Variant;
     class operator Implicit(const Value: Pointer): Nullable<T>;
@@ -97,7 +94,8 @@ end;
 
 constructor Nullable<T>.Create(const Value: Variant);
 begin
-  if not VarIsNull(Value) and not VarIsEmpty(Value) then
+  if not VarIsNull(Value) and
+     not VarIsEmpty(Value) then
     Create(TValue.FromVariant(Value).AsType<T>)
   else
     Clear;
@@ -105,7 +103,7 @@ end;
 
 procedure Nullable<T>.Clear;
 begin
-  FValue := Default(T);
+  FValue := Default (T);
   FHasValue := '';
 end;
 
@@ -121,12 +119,14 @@ end;
 
 function Nullable<T>.Equals(const Value: T): Boolean;
 begin
-  Result := HasValue and TEqualityComparer<T>.Default.Equals(Self.Value, Value)
+  Result := HasValue and
+            TEqualityComparer<T>.Default.Equals(Self.Value, Value)
 end;
 
 function Nullable<T>.Equals(const Value: Nullable<T>): Boolean;
 begin
-  if HasValue and Value.HasValue then
+  if HasValue and
+     Value.HasValue then
     Result := TEqualityComparer<T>.Default.Equals(Self.Value, Value.Value)
   else
     Result := HasValue = Value.HasValue;
@@ -151,6 +151,7 @@ function Nullable<T>.GetValue: T;
 begin
   if not HasValue then
     raise ENullableException.Create('Nullable type has no value');
+
   Result := FValue;
 end;
 
@@ -164,7 +165,7 @@ end;
 
 function Nullable<T>.GetValueOrDefault: T;
 begin
-  Result := GetValueOrDefault(Default(T));
+  Result := GetValueOrDefault(Default (T));
 end;
 
 class operator Nullable<T>.Implicit(const Value: Nullable<T>): T;

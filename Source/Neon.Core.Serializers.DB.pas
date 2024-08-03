@@ -69,15 +69,13 @@ begin
   Result := TypeInfoIs(AType);
 end;
 
-function TDataSetSerializer.Deserialize(AValue: TJSONValue; const AData:
-    TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
+function TDataSetSerializer.Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
 begin
   Result := AData;
   TDataSetUtils.JSONToDataSet(AValue, AData.AsObject as TDataSet, AContext.GetConfiguration.GetUseUTCDate);
 end;
 
-function TDataSetSerializer.Serialize(const AValue: TValue; ANeonObject:
-    TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
+function TDataSetSerializer.Serialize(const AValue: TValue; ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
 var
   LDataSet: TDataSet;
 begin

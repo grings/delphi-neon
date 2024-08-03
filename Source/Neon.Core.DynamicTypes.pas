@@ -34,17 +34,17 @@ uses
 
 type
   IDynamicType = interface
-  ['{DD163E75-134C-4035-809C-D9E1EEEC4225}']
+    ['{DD163E75-134C-4035-809C-D9E1EEEC4225}']
   end;
 
   IDynamicStream = interface(IDynamicType)
-  ['{968D03E7-273F-4E94-A3EA-ECB7A73F0715}']
+    ['{968D03E7-273F-4E94-A3EA-ECB7A73F0715}']
     procedure LoadFromStream(AStream: TStream);
     procedure SaveToStream(AStream: TStream);
   end;
 
   IDynamicList = interface(IDynamicType)
-  ['{9F4A2D72-078B-4EA2-B86E-068206AD0F16}']
+    ['{9F4A2D72-078B-4EA2-B86E-068206AD0F16}']
     function NewItem: TValue;
     function GetItemType: TRttiType;
     procedure Add(AItem: TValue);
@@ -56,7 +56,7 @@ type
   end;
 
   IDynamicMap = interface(IDynamicType)
-  ['{89E60A06-C1A9-4D70-83B8-85D9B29510DB}']
+    ['{89E60A06-C1A9-4D70-83B8-85D9B29510DB}']
     function NewKey: TValue;
     function NewValue: TValue;
     function GetKeyType: TRttiType;
@@ -75,7 +75,7 @@ type
   end;
 
   IDynamicNullable = interface(IDynamicType)
-  ['{B1F7F5F0-223B-4ADF-9845-40278D57F62C}']
+    ['{B1F7F5F0-223B-4ADF-9845-40278D57F62C}']
     function HasValue: Boolean;
     function GetValue: TValue;
     function GetValueType: PTypeInfo;
@@ -105,9 +105,8 @@ type
     FMoveNextMethod: TRttiMethod;
     FCurrentProperty: TRttiProperty;
     FCountProperty: TRttiProperty;
-    constructor Create(AInstance, AEnumInstance: TObject; AItemType: TRttiType;
-      AAddMethod, AClearMethod, AMoveNextMethod: TRttiMethod;
-      ACurrentProperty, ACountProperty: TRttiProperty);
+    constructor Create(AInstance, AEnumInstance: TObject; AItemType: TRttiType; AAddMethod, AClearMethod, AMoveNextMethod: TRttiMethod; ACurrentProperty,
+        ACountProperty: TRttiProperty);
   public
     destructor Destroy; override;
     class function GuessType(AInstance: TObject): IDynamicList;
@@ -125,9 +124,10 @@ type
   public type
     TEnumerator = class
     private
-      const CURRENT_PROP = 'Current';
-      const MOVENEXT_METH = 'MoveNext';
-    private
+    const
+      CURRENT_PROP = 'Current';
+      MOVENEXT_METH = 'MoveNext';
+    var
       FInstance: TObject;
       FMoveNextMethod: TRttiMethod;
       FCurrentProperty: TRttiProperty;
@@ -149,10 +149,8 @@ type
     FCountProp: TRttiProperty;
     FToStringMethod: TRttiMethod;
     FFromStringMethod: TRttiMethod;
-
-    constructor Create(AInstance: TObject; AKeyType, AValueType: TRttiType;
-      AAddMethod, AClearMethod: TRttiMethod; ACountProp: TRttiProperty;
-      AKeyEnum, AValueEnum: TDynamicMap.TEnumerator; AToStringMethod, AFromStringMethod: TRttiMethod);
+    constructor Create(AInstance: TObject; AKeyType, AValueType: TRttiType; AAddMethod, AClearMethod: TRttiMethod; ACountProp: TRttiProperty; AKeyEnum, AValueEnum:
+        TDynamicMap.TEnumerator; AToStringMethod, AFromStringMethod: TRttiMethod);
   public
     class function GuessType(AInstance: TObject): IDynamicMap;
     destructor Destroy; override;
@@ -184,14 +182,12 @@ type
     constructor Create(AInstance: TValue; ATypeInfoMethod, AHasValueMethod, AGetValueMethod, ASetValueMethod: TRttiMethod);
   public
     class function GuessType(AInstance: TValue): IDynamicNullable;
-
     // Interface IDynamicNullable
     function HasValue: Boolean;
     function GetValue: TValue;
     function GetValueType: PTypeInfo;
     procedure SetValue(const AValue: TValue);
   end;
-
 
 implementation
 
@@ -221,19 +217,24 @@ begin
     Exit(nil);
 
   LLoadMethod := LType.GetMethod('LoadFromStream');
+
   if Assigned(LLoadMethod) then
   begin
     LParameters := LLoadMethod.GetParameters;
+
     if Length(LParameters) <> 1 then
+
       Exit(nil);
   end
   else
     Exit(nil);
 
   LSaveMethod := LType.GetMethod('SaveToStream');
+
   if Assigned(LSaveMethod) then
   begin
     LParameters := LSaveMethod.GetParameters;
+
     if Length(LParameters) <> 1 then
       Exit(nil);
   end
@@ -268,9 +269,8 @@ begin
   Result := FCountProperty.GetValue(FInstance).AsInteger;
 end;
 
-constructor TDynamicList.Create(AInstance, AEnumInstance: TObject; AItemType: TRttiType;
-  AAddMethod, AClearMethod, AMoveNextMethod: TRttiMethod;
-  ACurrentProperty, ACountProperty: TRttiProperty);
+constructor TDynamicList.Create(AInstance, AEnumInstance: TObject; AItemType: TRttiType; AAddMethod, AClearMethod, AMoveNextMethod: TRttiMethod;
+    ACurrentProperty, ACountProperty: TRttiProperty);
 begin
   FInstance := AInstance;
   FEnumInstance := AEnumInstance;
@@ -312,56 +312,52 @@ begin
     Exit;
 
   LListType := TRttiUtils.Context.GetType(AInstance.ClassType);
-
   LMethodGetEnumerator := LListType.GetMethod('GetEnumerator');
+
   if not Assigned(LMethodGetEnumerator) or
-     (LMethodGetEnumerator.MethodKind <> mkFunction) or
-     (LMethodGetEnumerator.ReturnType.Handle.Kind <> tkClass)
+    (LMethodGetEnumerator.MethodKind <> mkFunction) or
+    (LMethodGetEnumerator.ReturnType.Handle.Kind <> tkClass)
   then
     Exit;
 
   LMethodClear := LListType.GetMethod('Clear');
+
   if not Assigned(LMethodClear) then
     Exit;
 
   LMethodAdd := LListType.GetMethod('Add');
-  if not Assigned(LMethodAdd) or (Length(LMethodAdd.GetParameters) <> 1) then
+
+  if not Assigned(LMethodAdd) or
+     (Length(LMethodAdd.GetParameters) <> 1) then
     Exit;
 
   LItemType := LMethodAdd.GetParameters[0].ParamType;
-
   LCountProp := LListType.GetProperty('Count');
+
   if not Assigned(LCountProp) then
     Exit;
 
   LEnumInstance := LMethodGetEnumerator.Invoke(AInstance, []).AsObject;
+
   if not Assigned(LEnumInstance) then
     Exit;
 
   LEnumType := TRttiUtils.Context.GetType(LEnumInstance.ClassType);
-
   LCurrentProp := LEnumType.GetProperty('Current');
+
   if not Assigned(LCurrentProp) then
     Exit;
 
   LMethodMoveNext := LEnumType.GetMethod('MoveNext');
+
   if not Assigned(LMethodMoveNext) or
-     (Length(LMethodMoveNext.GetParameters) <> 0) or
-     (LMethodMoveNext.MethodKind <> mkFunction) or
-     (LMethodMoveNext.ReturnType.Handle <> TypeInfo(Boolean))
+    (Length(LMethodMoveNext.GetParameters) <> 0) or
+    (LMethodMoveNext.MethodKind <> mkFunction) or
+    (LMethodMoveNext.ReturnType.Handle <> TypeInfo(Boolean))
   then
     Exit;
 
-  Result := TDynamicList.Create(
-    AInstance,
-    LEnumInstance,
-    LItemType,
-    LMethodAdd,
-    LMethodClear,
-    LMethodMoveNext,
-    LCurrentProp,
-    LCountProp
-  );
+  Result := TDynamicList.Create(AInstance, LEnumInstance, LItemType, LMethodAdd, LMethodClear, LMethodMoveNext, LCurrentProp, LCountProp);
 end;
 
 function TDynamicList.MoveNext: Boolean;
@@ -389,9 +385,8 @@ begin
   Result := FCountProp.GetValue(FInstance).AsInteger;
 end;
 
-constructor TDynamicMap.Create(AInstance: TObject; AKeyType, AValueType: TRttiType;
-  AAddMethod, AClearMethod: TRttiMethod; ACountProp: TRttiProperty;
-  AKeyEnum, AValueEnum: TDynamicMap.TEnumerator; AToStringMethod, AFromStringMethod: TRttiMethod);
+constructor TDynamicMap.Create(AInstance: TObject; AKeyType, AValueType: TRttiType; AAddMethod, AClearMethod: TRttiMethod; ACountProp: TRttiProperty; AKeyEnum,
+    AValueEnum: TDynamicMap.TEnumerator; AToStringMethod, AFromStringMethod: TRttiMethod);
 begin
   FInstance := AInstance;
   FKeyType := AKeyType;
@@ -446,7 +441,6 @@ var
   LCountProp: TRttiProperty;
   LAddMethod, LClearMethod: TRttiMethod;
   LToStringMethod, LFromStringMethod: TRttiMethod;
-
   LKeyEnumMethod, LValEnumMethod: TRttiMethod;
   LKeyEnumObject, LValEnumObject: TObject;
   LKeyEnum, LValEnum: TDynamicMap.TEnumerator;
@@ -457,38 +451,40 @@ begin
     Exit;
 
   LMapType := TRttiUtils.Context.GetType(AInstance.ClassType);
-
   // Keys & Values Enumerator
   LKeyProp := LMapType.GetProperty('Keys');
+
   if not Assigned(LKeyProp) then
     Exit;
 
   LValProp := LMapType.GetProperty('Values');
+
   if not Assigned(LValProp) then
     Exit;
 
   LKeyEnumObject := LKeyProp.GetValue(AInstance).AsObject;
   LValEnumObject := LValProp.GetValue(AInstance).AsObject;
-
   LKeyEnumMethod := TRttiUtils.Context.GetType(LKeyEnumObject.ClassInfo).GetMethod('GetEnumerator');
   LValEnumMethod := TRttiUtils.Context.GetType(LValEnumObject.ClassInfo).GetMethod('GetEnumerator');
-
   LKeyEnum := TDynamicMap.TEnumerator.Create(LKeyEnumMethod, LKeyEnumObject);
   LValEnum := TDynamicMap.TEnumerator.Create(LValEnumMethod, LValEnumObject);
   // End Keys & Values Enumerator
 
   LClearMethod := LMapType.GetMethod('Clear');
+
   if not Assigned(LClearMethod) then
     Exit;
 
   LAddMethod := LMapType.GetMethod('Add');
-  if not Assigned(LAddMethod) or (Length(LAddMethod.GetParameters) <> 2) then
+
+  if not Assigned(LAddMethod) or
+     (Length(LAddMethod.GetParameters) <> 2) then
     Exit;
 
   LKeyType := LAddMethod.GetParameters[0].ParamType;
   LValType := LAddMethod.GetParameters[1].ParamType;
-
   LCountProp := LMapType.GetProperty('Count');
+
   if not Assigned(LCountProp) then
     Exit;
 
@@ -498,24 +494,13 @@ begin
   // Optional methods (on Key object)
   case LKeyType.TypeKind of
     tkClass:
-    begin
-      LToStringMethod := LKeyType.GetMethod('ToString');
-      LFromStringMethod := LKeyType.GetMethod('FromString');
-    end;
+      begin
+        LToStringMethod := LKeyType.GetMethod('ToString');
+        LFromStringMethod := LKeyType.GetMethod('FromString');
+      end;
   end;
 
-  Result := TDynamicMap.Create(
-    AInstance,
-    LKeyType,
-    LValType,
-    LAddMethod,
-    LClearMethod,
-    LCountProp,
-    LKeyEnum,
-    LValEnum,
-    LToStringMethod,
-    LFromStringMethod
-  );
+  Result := TDynamicMap.Create(AInstance, LKeyType, LValType, LAddMethod, LClearMethod, LCountProp, LKeyEnum, LValEnum, LToStringMethod, LFromStringMethod);
 end;
 
 function TDynamicMap.MoveNext: Boolean;
@@ -550,12 +535,13 @@ constructor TDynamicMap.TEnumerator.Create(AMethod: TRttiMethod; AInstance: TObj
 begin
   // Memory creation, must destroy the object
   FInstance := AMethod.Invoke(AInstance, []).AsObject;
-
   FCurrentProperty := TRttiUtils.Context.GetType(FInstance.ClassInfo).GetProperty(CURRENT_PROP);
+
   if not Assigned(FCurrentProperty) then
     raise ENeonException.CreateFmt('Property [%s] not found', [CURRENT_PROP]);
 
   FMoveNextMethod := TRttiUtils.Context.GetType(FInstance.ClassInfo).GetMethod(MOVENEXT_METH);
+
   if not Assigned(FMoveNextMethod) then
     raise ENeonException.CreateFmt('Method [%s] not found', [MOVENEXT_METH]);
 end;
@@ -576,8 +562,7 @@ begin
   Result := FMoveNextMethod.Invoke(FInstance, []).AsBoolean;
 end;
 
-constructor TDynamicNullable.Create(AInstance: TValue; ATypeInfoMethod, AHasValueMethod,
-  AGetValueMethod, ASetValueMethod: TRttiMethod);
+constructor TDynamicNullable.Create(AInstance: TValue; ATypeInfoMethod, AHasValueMethod, AGetValueMethod, ASetValueMethod: TRttiMethod);
 begin
   FInstance := AInstance;
   FTypeInfoMethod := ATypeInfoMethod;
@@ -602,22 +587,27 @@ begin
     Exit(nil);
 
   LTypeInfoMethod := LType.GetMethod('GetValueType');
+
   if not Assigned(LTypeInfoMethod) then
     Exit(nil);
 
   LContainedType := LTypeInfoMethod.Invoke(AInstance, []).AsType<PTypeInfo>;
+
   if LContainedType = nil then
     raise ENeonException.Create('Nullable contains type with no RTTI');
 
   LHasValueMethod := LType.GetMethod('GetHasValue');
+
   if not Assigned(LHasValueMethod) then
     Exit(nil);
 
   LGetValueMethod := LType.GetMethod('GetValue');
+
   if not Assigned(LGetValueMethod) then
     Exit(nil);
 
   LSetValueMethod := LType.GetMethod('SetValue');
+
   if not Assigned(LSetValueMethod) then
     Exit(nil);
 

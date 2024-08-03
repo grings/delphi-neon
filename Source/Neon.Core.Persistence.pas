@@ -43,15 +43,13 @@ uses
 type
   TCustomFactory = class;
   TCustomFactoryClass = class of TCustomFactory;
-
   TCustomSerializer = class;
   TCustomSerializerClass = class of TCustomSerializer;
-
   TNeonSerializerRegistry = class;
   TNeonRttiObject = class;
 
   INeonConfiguration = interface
-  ['{F82AB790-1C65-4501-915C-0289EFD9D8CC}']
+    ['{F82AB790-1C65-4501-915C-0289EFD9D8CC}']
     function SetMembers(AValue: TNeonMembersSet): INeonConfiguration;
     function SetMemberSort(AValue: TNeonSort): INeonConfiguration;
     function SetMemberCase(AValue: TNeonCase): INeonConfiguration;
@@ -67,7 +65,6 @@ type
     function SetIgnoreMembers(AMemberList: TArray<string>): INeonConfiguration;
     function RegisterSerializer(AClass: TCustomSerializerClass): INeonConfiguration;
     function RegisterFactory(AClass: TCustomFactoryClass): INeonConfiguration;
-
     function GetPrettyPrint: Boolean;
     function GetUseUTCDate: Boolean;
     function GetRaiseExceptions: Boolean;
@@ -75,63 +72,57 @@ type
   end;
 
   IConfigurationContext = interface
-  ['{3954FFB5-2D3D-4978-AADA-FEC5C0D73FD0}']
+    ['{3954FFB5-2D3D-4978-AADA-FEC5C0D73FD0}']
     function GetConfiguration: INeonConfiguration;
   end;
 
   ISerializerContext = interface(IConfigurationContext)
-  ['{36A014FC-9E3F-4EBF-9545-CF9DBCBF507C}']
-
+    ['{36A014FC-9E3F-4EBF-9545-CF9DBCBF507C}']
     /// <summary>
-    ///   Method to write value from a custom serializer
+    /// Method to write value from a custom serializer
     /// </summary>
     function WriteDataMember(const AValue: TValue; ACustomProcess: Boolean = True): TJSONValue;
-
     /// <summary>
-    ///   Writer for members of objects and records. In a custom serializer can
-    ///   be used to process the **same** object or record
+    /// Writer for members of objects and records. In a custom serializer can
+    /// be used to process the **same** object or record
     /// </summary>
     procedure WriteMembers(AType: TRttiType; AInstance: Pointer; AResult: TJSONValue);
-
     /// <summary>
-    ///   Useful method to add serialization errors in the serializer's log
+    /// Useful method to add serialization errors in the serializer's log
     /// </summary>
     procedure LogError(const AMessage: string);
   end;
 
   IDeserializerContext = interface(IConfigurationContext)
-  ['{5351D1F9-99B3-4826-B981-4CBF926085D6}']
+    ['{5351D1F9-99B3-4826-B981-4CBF926085D6}']
     /// <summary>
-    ///   Method to convert a TJSONValue into a TValue (from a custom
-    ///   serializer)
+    /// Method to convert a TJSONValue into a TValue (from a custom
+    /// serializer)
     /// </summary>
     function ReadDataMember(AJSONValue: TJSONValue; AType: TRttiType; const AData: TValue; ACustomProcess: Boolean = True): TValue;
-
     /// <summary>
-    ///   Reader for members of objects and record. In a custom serializer can
-    ///   be used to process the **same** object or record
+    /// Reader for members of objects and record. In a custom serializer can
+    /// be used to process the **same** object or record
     /// </summary>
     procedure ReadMembers(AType: TRttiType; AInstance: Pointer; AJSONObject: TJSONObject);
-
     /// <summary>
-    ///   Useful method to add deserialization errors in the deserializer's log
+    /// Useful method to add deserialization errors in the deserializer's log
     /// </summary>
     procedure LogError(const AMessage: string);
   end;
 
-  //TCustomItemCreator = reference to function (AType: TRttiType; AValue: TJSONValue): TObject;
-
   /// <summary>
-  ///   Base class for an Object Factory
+  /// Base class for an Object Factory
   /// </summary>
   TCustomFactory = class abstract(TObject)
   public
     function Build(const AType: TRttiType; AValue: TJSONValue): TObject; virtual; abstract;
   end;
+
   TNeonFactoryRegistry = class(TList<TCustomFactoryClass>);
 
   /// <summary>
-  ///   Base class for a Custom Serializer
+  /// Base class for a Custom Serializer
   /// </summary>
   TCustomSerializer = class abstract(TObject)
   protected
@@ -156,15 +147,15 @@ type
   end;
 
   TNeonSerializerRegistry = class
-  private type
-    SerializerCacheRegistry = class(TObjectDictionary<PTypeInfo, TCustomSerializer>);
-    SerializerClassRegistry = class(TList<TSerializerInfo>);
   private
+  type
+     SerializerCacheRegistry = class(TObjectDictionary<PTypeInfo, TCustomSerializer>);
+     SerializerClassRegistry = class(TList<TSerializerInfo>);
+  var
     FRegistryClass: SerializerClassRegistry;
     FRegistryCache: SerializerCacheRegistry;
     FRegistryCacheLock: TCriticalSection;
     function GetCount: Integer;
-
     function InternalGetSerializer(ATypeInfo: PTypeInfo): TCustomSerializer;
   public
     constructor Create;
@@ -173,15 +164,12 @@ type
     procedure Clear;
     procedure ClearCache;
     procedure Assign(ARegistry: TNeonSerializerRegistry);
-
     function RegisterSerializer(ASerializerClass: TCustomSerializerClass): TNeonSerializerRegistry; overload;
     procedure UnregisterSerializer(ASerializerClass: TCustomSerializerClass);
-
     function GetSerializer<T>: TCustomSerializer; overload;
     function GetSerializer(AValue: TValue): TCustomSerializer; overload;
     function GetSerializer(ATargetClass: TClass): TCustomSerializer; overload;
     function GetSerializer(ATargetInfo: PTypeInfo): TCustomSerializer; overload;
-
   public
     property Count: Integer read GetCount;
   end;
@@ -190,11 +178,9 @@ type
   public
     class function PascalToCamel(const AString: string): string;
     class function CamelToPascal(const AString: string): string;
-
     class function PascalToSnake(const AString: string): string;
     class function PascalToScreamingSnake(const AString: string): string;
     class function SnakeToPascal(const AString: string): string;
-
     class function PascalToKebab(const AString: string): string;
     class function KebabToPascal(const AString: string): string;
   end;
@@ -219,14 +205,12 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-
     class function Default: INeonConfiguration; static;
     class function Pretty: INeonConfiguration; static;
     class function Snake: INeonConfiguration; static;
     class function Camel: INeonConfiguration; static;
     class function Kebab: INeonConfiguration; static;
     class function ScreamingSnake: INeonConfiguration; static;
-
     function SetMembers(AValue: TNeonMembersSet): INeonConfiguration;
     function SetMemberSort(AValue: TNeonSort): INeonConfiguration;
     function SetMemberCase(AValue: TNeonCase): INeonConfiguration;
@@ -240,16 +224,13 @@ type
     function SetAutoCreate(AValue: Boolean): INeonConfiguration;
     function SetStrictTypes(AValue: Boolean): INeonConfiguration;
     function SetIgnoreMembers(AMemberList: TArray<string>): INeonConfiguration;
-
     function RegisterSerializer(AClass: TCustomSerializerClass): INeonConfiguration;
     function RegisterFactory(AClass: TCustomFactoryClass): INeonConfiguration;
-
     function GetUseUTCDate: Boolean;
     function GetPrettyPrint: Boolean;
     function GetRaiseExceptions: Boolean;
     function GetSerializers: TNeonSerializerRegistry;
     function GetFactoryList: TNeonFactoryRegistry;
-
     property Members: TNeonMembersSet read FMembers write FMembers;
     property MemberSort: TNeonSort read FMemberSort write FMemberSort;
     property MemberCase: TNeonCase read FMemberCase write FMemberCase;
@@ -262,7 +243,6 @@ type
     property AutoCreate: Boolean read FAutoCreate write FAutoCreate;
     property StrictTypes: Boolean read FStrictTypes write FStrictTypes;
     property IgnoreMembers: TArray<string> read FIgnoreMembers write FIgnoreMembers;
-
     property Serializers: TNeonSerializerRegistry read FSerializers write FSerializers;
     property FactoryList: TNeonFactoryRegistry read FFactoryList write FFactoryList;
   end;
@@ -290,14 +270,12 @@ type
   protected
     procedure InternalParseAttributes(const AAttr: TArray<TCustomAttribute>); virtual;
     procedure ProcessAttribute(AAttribute: TCustomAttribute); virtual;
-
   public
     constructor Create(ARttiObject: TRttiObject; AOperation: TNeonOperation);
     function AsRttiType: TRttiType;
   public
     procedure ParseAttributes; virtual;
     function GetAttribute<T: TCustomAttribute>: T;
-
     property Attributes: TArray<TCustomAttribute> read FAttributes write FAttributes;
     property TypeAttributes: TArray<TCustomAttribute> read FTypeAttributes write FTypeAttributes;
     // Neon-based properties
@@ -335,18 +313,15 @@ type
     function MemberAsProperty: TRttiProperty; inline;
     function MemberAsField: TRttiField; inline;
     function GetName: string;
-
     // Instance-based method
     function EvalIncludeIf(AInstance: Pointer): TNeonIncludeOption;
   protected
     procedure ProcessAttribute(AAttribute: TCustomAttribute); override;
   public
     constructor Create(AMember: TRttiMember; AParent: TNeonRttiType; AOperation: TNeonOperation);
-
     // Instance-based methods
     function GetValue(AInstance: Pointer): TValue;
     procedure SetValue(const AValue: TValue; AInstance: Pointer);
-
     function RttiType: TRttiType;
     function MemberType: TNeonMemberType;
     function IsWritable: Boolean;
@@ -356,7 +331,6 @@ type
     function IsField: Boolean;
     function IsProperty: Boolean;
     property Name: string read GetName;
-
     property Serializable: Boolean read FSerializable write FSerializable;
   end;
 
@@ -372,20 +346,18 @@ type
   public
     constructor Create(AConfig: TNeonConfiguration; AType: TRttiType; AOperation: TNeonOperation);
     destructor Destroy; override;
-
     function NewMember(AMember: TRttiMember): TNeonRttiMember;
-
     procedure FilterSerialize(AInstance: Pointer);
     procedure FilterDeserialize(AInstance: Pointer);
   end;
 
   TMemberRegistry = class(TObjectDictionary<PTypeInfo, TNeonRttiMembers>);
 
-  {$IFDEF HAS_NO_REF_COUNT}
+{$IFDEF HAS_NO_REF_COUNT}
   TNeonBase = class(TNoRefCountObject, IConfigurationContext)
-  {$ELSE}
+{$ELSE}
   TNeonBase = class(TSingletonImplementation, IConfigurationContext)
-  {$ENDIF}
+{$ENDIF}
   protected
     FConfig: TNeonConfiguration;
     FConfigIntf: INeonConfiguration;
@@ -400,7 +372,6 @@ type
   public
     constructor Create(const AConfig: INeonConfiguration);
     destructor Destroy; override;
-
     procedure LogError(const AMessage: string);
     function GetConfiguration: INeonConfiguration;
   public
@@ -411,7 +382,6 @@ type
   TTypeInfoUtils = class
     class function EnumToString(ATypeInfo: PTypeInfo; AValue: Integer; ANeonObject: TNeonRttiObject): string; static;
   end;
-
 
 implementation
 
@@ -449,7 +419,7 @@ begin
   if FConfig.IgnoreFieldPrefix and AMember.IsField then
   begin
     if AMember.Name.StartsWith('F', True) and
-       (AMember.Visibility in [mvPrivate, mvProtected])
+      (AMember.Visibility in [mvPrivate, mvProtected])
     then
       LMemberName := AMember.Name.Substring(1)
     else
@@ -459,15 +429,24 @@ begin
     LMemberName := AMember.Name;
 
   case FConfig.MemberCase of
-    TNeonCase.Unchanged : Result := LMemberName;
-    TNeonCase.LowerCase : Result := LowerCase(LMemberName);
-    TNeonCase.UpperCase : Result := UpperCase(LMemberName);
-    TNeonCase.PascalCase: Result := LMemberName;
-    TNeonCase.CamelCase : Result := TCaseAlgorithm.PascalToCamel(LMemberName);
-    TNeonCase.SnakeCase : Result := TCaseAlgorithm.PascalToSnake(LMemberName);
-    TNeonCase.KebabCase : Result := TCaseAlgorithm.PascalToKebab(LMemberName);
-    TNeonCase.ScreamingSnakeCase : Result := TCaseAlgorithm.PascalToScreamingSnake(LMemberName);
-    TNeonCase.CustomCase: Result := FConfig.MemberCustomCase(LMemberName);
+    TNeonCase.Unchanged:
+      Result := LMemberName;
+    TNeonCase.LowerCase:
+      Result := LowerCase(LMemberName);
+    TNeonCase.UpperCase:
+      Result := UpperCase(LMemberName);
+    TNeonCase.PascalCase:
+      Result := LMemberName;
+    TNeonCase.CamelCase:
+      Result := TCaseAlgorithm.PascalToCamel(LMemberName);
+    TNeonCase.SnakeCase:
+      Result := TCaseAlgorithm.PascalToSnake(LMemberName);
+    TNeonCase.KebabCase:
+      Result := TCaseAlgorithm.PascalToKebab(LMemberName);
+    TNeonCase.ScreamingSnakeCase:
+      Result := TCaseAlgorithm.PascalToScreamingSnake(LMemberName);
+    TNeonCase.CustomCase:
+      Result := FConfig.MemberCustomCase(LMemberName);
   end;
 end;
 
@@ -480,14 +459,13 @@ var
   function AlphaComparer(AReverse: Boolean): IComparer<TNeonRttiMember>;
   begin
     Result := TComparer<TNeonRttiMember>.Construct(
-      function (const L, R: TNeonRttiMember): Integer
-      begin
-        if AReverse then
-          Result := CompareStr(R.Name, L.Name)
-        else
-          Result := CompareStr(L.Name, R.Name);
-      end
-    );
+        function(const L, R: TNeonRttiMember): Integer
+        begin
+          if AReverse then
+            Result := CompareStr(R.Name, L.Name)
+          else
+            Result := CompareStr(L.Name, R.Name);
+        end);
   end;
 
 begin
@@ -502,19 +480,21 @@ begin
   if AType.IsRecord then
   begin
     LFields := TArray<TRttiMember>(AType.AsRecord.GetFields);
-    LProps  := TArray<TRttiMember>(AType.AsRecord.GetProperties);
+    LProps := TArray<TRttiMember>(AType.AsRecord.GetProperties);
   end
-  else if AType.IsInstance then
-  begin
-    LFields := TArray<TRttiMember>(AType.AsInstance.GetFields);
-    LProps  := TArray<TRttiMember>(AType.AsInstance.GetProperties);
-  end;
+  else
+    if AType.IsInstance then
+    begin
+      LFields := TArray<TRttiMember>(AType.AsInstance.GetFields);
+      LProps := TArray<TRttiMember>(AType.AsInstance.GetProperties);
+    end;
 
   for LMember in LFields do
   begin
     LNeonMember := Result.NewMember(LMember);
     Result.Add(LNeonMember);
   end;
+
   for LMember in LProps do
   begin
     LNeonMember := Result.NewMember(LMember);
@@ -523,10 +503,12 @@ begin
   FMemberRegistry.Add(AType.Handle, Result);
 
   case FConfig.MemberSort of
-    TNeonSort.Rtti: ; // Default, do nothing
-    TNeonSort.RttiReverse: Result.Reverse;
-    TNeonSort.Alpha: Result.Sort(AlphaComparer(False));
-    TNeonSort.AlphaReverse: Result.Sort(AlphaComparer(True));
+    TNeonSort.RttiReverse:
+      Result.Reverse;
+    TNeonSort.Alpha:
+      Result.Sort(AlphaComparer(False));
+    TNeonSort.AlphaReverse:
+      Result.Sort(AlphaComparer(True));
   end;
 end;
 
@@ -538,24 +520,27 @@ begin
   begin
     if AType.IsRecord then
       Result := TArray<TRttiMember>(AType.AsRecord.GetFields)
-    else if AType.IsInstance then
-      Result := TArray<TRttiMember>(AType.AsInstance.GetProperties);
+    else
+      if AType.IsInstance then
+        Result := TArray<TRttiMember>(AType.AsInstance.GetProperties);
   end;
 
   if TNeonMembers.Properties in FConfig.Members then
   begin
     if AType.IsRecord then
       Result := TArray<TRttiMember>(AType.AsRecord.GetProperties)
-    else if AType.IsInstance then
-      Result := TArray<TRttiMember>(AType.AsInstance.GetProperties);
+    else
+      if AType.IsInstance then
+        Result := TArray<TRttiMember>(AType.AsInstance.GetProperties);
   end;
 
   if TNeonMembers.Fields in FConfig.Members then
   begin
     if AType.IsRecord then
       Result := TArray<TRttiMember>(AType.AsRecord.GetFields)
-    else if AType.IsInstance then
-      Result := TArray<TRttiMember>(AType.AsInstance.GetFields);
+    else
+      if AType.IsInstance then
+        Result := TArray<TRttiMember>(AType.AsInstance.GetFields);
   end;
 end;
 
@@ -576,7 +561,6 @@ constructor TNeonConfiguration.Create;
 begin
   FSerializers := TNeonSerializerRegistry.Create;
   FFactoryList := TNeonFactoryRegistry.Create;
-
   SetMemberCase(TNeonCase.Unchanged);
   SetMembers([TNeonMembers.Standard]);
   SetIgnoreFieldPrefix(False);
@@ -591,14 +575,14 @@ end;
 class function TNeonConfiguration.Default: INeonConfiguration;
 begin
   Result := TNeonConfiguration.Create
-    .SetMemberCase(TNeonCase.PascalCase);
+      .SetMemberCase(TNeonCase.PascalCase);
 end;
 
 class function TNeonConfiguration.Pretty: INeonConfiguration;
 begin
   Result := TNeonConfiguration.Create
-    .SetMemberCase(TNeonCase.PascalCase)
-    .SetPrettyPrint(True);
+      .SetMemberCase(TNeonCase.PascalCase)
+      .SetPrettyPrint(True);
 end;
 
 function TNeonConfiguration.RegisterFactory(AClass: TCustomFactoryClass): INeonConfiguration;
@@ -616,14 +600,14 @@ end;
 class function TNeonConfiguration.Camel: INeonConfiguration;
 begin
   Result := TNeonConfiguration.Create
-    .SetMemberCase(TNeonCase.CamelCase);
+      .SetMemberCase(TNeonCase.CamelCase);
 end;
 
 class function TNeonConfiguration.Snake: INeonConfiguration;
 begin
   Result := TNeonConfiguration.Create
-    .SetIgnoreFieldPrefix(True)
-    .SetMemberCase(TNeonCase.SnakeCase);
+      .SetIgnoreFieldPrefix(True)
+      .SetMemberCase(TNeonCase.SnakeCase);
 end;
 
 destructor TNeonConfiguration.Destroy;
@@ -661,7 +645,7 @@ end;
 class function TNeonConfiguration.Kebab: INeonConfiguration;
 begin
   Result := TNeonConfiguration.Create
-    .SetMemberCase(TNeonCase.KebabCase);
+      .SetMemberCase(TNeonCase.KebabCase);
 end;
 
 function TNeonConfiguration.SetMembers(AValue: TNeonMembersSet): INeonConfiguration;
@@ -697,8 +681,8 @@ end;
 class function TNeonConfiguration.ScreamingSnake: INeonConfiguration;
 begin
   Result := TNeonConfiguration.Create
-    .SetIgnoreFieldPrefix(True)
-    .SetMemberCase(TNeonCase.ScreamingSnakeCase);
+      .SetIgnoreFieldPrefix(True)
+      .SetMemberCase(TNeonCase.ScreamingSnakeCase);
 end;
 
 function TNeonConfiguration.SetAutoCreate(AValue: Boolean): INeonConfiguration;
@@ -760,11 +744,12 @@ begin
     FMemberType := TNeonMemberType.Prop;
     FMemberRttiType := (FMember as TRttiProperty).PropertyType;
   end
-  else if FMember is TRttiField then
-  begin
-    FMemberType := TNeonMemberType.Field;
-    FMemberRttiType := (FMember as TRttiField).FieldType;
-  end;
+  else
+    if FMember is TRttiField then
+    begin
+      FMemberType := TNeonMemberType.Field;
+      FMemberRttiType := (FMember as TRttiField).FieldType;
+    end;
 
   if Assigned(FMemberRttiType) then
     FTypeAttributes := FMemberRttiType.GetAttributes;
@@ -777,6 +762,7 @@ var
   LRes: TValue;
 begin
   LRes := False;
+
   if not Assigned(FMethodIf) then
     Exit(TNeonIncludeOption.Default);
 
@@ -784,16 +770,19 @@ begin
   if (AInstance <> nil) and (FMethodIf.MethodKind = mkFunction) then
     LRes := FMethodIf.Invoke(TObject(AInstance), [TValue.From<TNeonIgnoreIfContext>(FMethodIfContext)])
 
-  // if the method is a class method, we can invoke it too, but have to do it a bit differently
-  else if FMethodIf.MethodKind = mkClassFunction then
-    LRes := FMethodIf.Invoke(FParent.FType.AsInstance.MetaClassType, [TValue.From<TNeonIgnoreIfContext>(FMethodIfContext)])
+    // if the method is a class method, we can invoke it too, but have to do it a bit differently
   else
-    // can't really evaluate, so continue with default
-    Exit(TNeonIncludeOption.Default);
+    if FMethodIf.MethodKind = mkClassFunction then
+      LRes := FMethodIf.Invoke(FParent.FType.AsInstance.MetaClassType, [TValue.From<TNeonIgnoreIfContext>(FMethodIfContext)])
+    else
+      // can't really evaluate, so continue with default
+      Exit(TNeonIncludeOption.Default);
 
   case LRes.AsType<Boolean> of
-    True: Result := TNeonIncludeOption.Include;
-    False: Result := TNeonIncludeOption.Exclude;
+    True:
+      Result := TNeonIncludeOption.Include;
+    False:
+      Result := TNeonIncludeOption.Exclude;
   end;
 end;
 
@@ -805,45 +794,60 @@ end;
 function TNeonRttiMember.GetValue(AInstance: Pointer): TValue;
 begin
   case FMemberType of
-    TNeonMemberType.Unknown: raise ENeonException.Create(TNeonError.FIELD_PROP);
-    TNeonMemberType.Prop   : Result := MemberAsProperty.GetValue(AInstance);
-    TNeonMemberType.Field  : Result := MemberAsField.GetValue(AInstance);
+    TNeonMemberType.Unknown:
+      raise ENeonException.Create(TNeonError.FIELD_PROP);
+    TNeonMemberType.Prop:
+      Result := MemberAsProperty.GetValue(AInstance);
+    TNeonMemberType.Field:
+      Result := MemberAsField.GetValue(AInstance);
   end;
 end;
 
 function TNeonRttiMember.IsField: Boolean;
 begin
   Result := False;
+
   case FMemberType of
-    TNeonMemberType.Field: Result := True;
+    TNeonMemberType.Field:
+      Result := True;
   end;
 end;
 
 function TNeonRttiMember.IsProperty: Boolean;
 begin
   Result := False;
+
   case FMemberType of
-    TNeonMemberType.Prop: Result := True;
+    TNeonMemberType.Prop:
+      Result := True;
   end;
 end;
 
 function TNeonRttiMember.IsReadable: Boolean;
 begin
   Result := False;
+
   case FMemberType of
-    TNeonMemberType.Unknown: raise ENeonException.Create(TNeonError.FIELD_PROP);
-    TNeonMemberType.Prop   : Result := MemberAsProperty.IsReadable;
-    TNeonMemberType.Field  : Result := True;
+    TNeonMemberType.Unknown:
+      raise ENeonException.Create(TNeonError.FIELD_PROP);
+    TNeonMemberType.Prop:
+      Result := MemberAsProperty.IsReadable;
+    TNeonMemberType.Field:
+      Result := True;
   end;
 end;
 
 function TNeonRttiMember.IsWritable: Boolean;
 begin
   Result := False;
+
   case FMemberType of
-    TNeonMemberType.Unknown: raise ENeonException.Create(TNeonError.FIELD_PROP);
-    TNeonMemberType.Prop   : Result := MemberAsProperty.IsWritable;
-    TNeonMemberType.Field  : Result := True;
+    TNeonMemberType.Unknown:
+      raise ENeonException.Create(TNeonError.FIELD_PROP);
+    TNeonMemberType.Prop:
+      Result := MemberAsProperty.IsWritable;
+    TNeonMemberType.Field:
+      Result := True;
   end;
 end;
 
@@ -865,10 +869,14 @@ end;
 function TNeonRttiMember.RttiType: TRttiType;
 begin
   Result := nil;
+
   case FMemberType of
-    TNeonMemberType.Unknown: raise ENeonException.Create(TNeonError.FIELD_PROP);
-    TNeonMemberType.Prop   : Result := MemberAsProperty.PropertyType;
-    TNeonMemberType.Field  : Result := MemberAsField.FieldType;
+    TNeonMemberType.Unknown:
+      raise ENeonException.Create(TNeonError.FIELD_PROP);
+    TNeonMemberType.Prop:
+      Result := MemberAsProperty.PropertyType;
+    TNeonMemberType.Field:
+      Result := MemberAsField.FieldType;
   end;
 end;
 
@@ -880,10 +888,12 @@ begin
   if AAttribute is NeonIncludeAttribute then
   begin
     LIncludeAttribute := AAttribute as NeonIncludeAttribute;
+
     if LIncludeAttribute.IncludeValue.Value = IncludeIf.CustomFunction then
     begin
       LMethodName := LIncludeAttribute.IncludeValue.IncludeFunction;
       FMethodIf := FParent.FType.GetMethod(LMethodName);
+
       if not Assigned(FMethodIf) then
         raise ENeonException.CreateFmt(TNeonError.NO_METHOD_F2, [LMethodName, FParent.AsRttiType.Name]);
 
@@ -895,22 +905,27 @@ end;
 procedure TNeonRttiMember.SetValue(const AValue: TValue; AInstance: Pointer);
 begin
   case FMemberType of
-    TNeonMemberType.Prop :
-    begin
-      if MemberAsProperty.IsWritable then
-        MemberAsProperty.SetValue(AInstance, AValue);
-    end;
-    TNeonMemberType.Field: MemberAsField.SetValue(AInstance, AValue);
+    TNeonMemberType.Prop:
+      begin
+        if MemberAsProperty.IsWritable then
+          MemberAsProperty.SetValue(AInstance, AValue);
+      end;
+    TNeonMemberType.Field:
+      MemberAsField.SetValue(AInstance, AValue);
   end;
 end;
 
 function TNeonRttiMember.TypeKind: TTypeKind;
 begin
   Result := tkUnknown;
+
   case FMemberType of
-    TNeonMemberType.Unknown: raise ENeonException.Create(TNeonError.FIELD_PROP);
-    TNeonMemberType.Prop   : Result := MemberAsProperty.PropertyType.TypeKind;
-    TNeonMemberType.Field  : Result := MemberAsField.FieldType.TypeKind;
+    TNeonMemberType.Unknown:
+      raise ENeonException.Create(TNeonError.FIELD_PROP);
+    TNeonMemberType.Prop:
+      Result := MemberAsProperty.PropertyType.TypeKind;
+    TNeonMemberType.Field:
+      Result := MemberAsField.FieldType.TypeKind;
   end;
 end;
 
@@ -924,12 +939,12 @@ var
   LOld, LNew: Char;
 begin
   Result := AString;
+
   if Result.IsEmpty then
     Exit;
 
   LOld := Result.Chars[0];
   LNew := UpperCase(LOld).Chars[0];
-
   Result := Result.Replace(LOld, LNew, []);
 end;
 
@@ -941,11 +956,14 @@ var
   LWords: TArray<string>;
 begin
   LWords := AString.Split(['-']);
+
   for LIndex := 0 to Length(LWords) - 1 do
   begin
     LSingleWord := LWords[LIndex];
+
     if LSingleWord.IsEmpty then
       Continue;
+
     LChar := Upcase(LSingleWord.Chars[0]);
     LSingleWord := LSingleWord.Remove(0, 1);
     LSingleWord := LSingleWord.Insert(0, LChar);
@@ -960,38 +978,29 @@ var
   LOld, LNew: Char;
 begin
   Result := AString;
+
   if Result.IsEmpty then
     Exit;
 
   LOld := Result.Chars[0];
   LNew := LowerCase(LOld).Chars[0];
-
   Result := Result.Replace(LOld, LNew, []);
 end;
 
 class function TCaseAlgorithm.PascalToKebab(const AString: string): string;
 begin
-  Result := LowerCase(
-    TRegEx.Replace(AString,
-    '([A-Z][a-z\d]+)(?=([A-Z][A-Z\a-z\d]+))', '$1-', [])
-  );
+  Result := LowerCase(TRegEx.Replace(AString, '([A-Z][a-z\d]+)(?=([A-Z][A-Z\a-z\d]+))', '$1-', []));
 end;
 
 class function TCaseAlgorithm.PascalToSnake(const AString: string): string;
 begin
-  Result := LowerCase(
-    TRegEx.Replace(AString,
-    '([A-Z][a-z\d]+)(?=([A-Z][A-Z\a-z\d]+))', '$1_', [])
-  );
+  Result := LowerCase(TRegEx.Replace(AString, '([A-Z][a-z\d]+)(?=([A-Z][A-Z\a-z\d]+))', '$1_', []));
 end;
 
 class function TCaseAlgorithm.PascalToScreamingSnake(const AString: string):
-    string;
+  string;
 begin
-  Result := UpperCase(
-    TRegEx.Replace(AString,
-    '([A-Z][a-z\d]+)(?=([A-Z][A-Z\a-z\d]+))', '$1_', [])
-  );
+  Result := UpperCase(TRegEx.Replace(AString, '([A-Z][a-z\d]+)(?=([A-Z][A-Z\a-z\d]+))', '$1_', []));
 end;
 
 class function TCaseAlgorithm.SnakeToPascal(const AString: string): string;
@@ -1002,11 +1011,14 @@ var
   LWords: TArray<string>;
 begin
   LWords := AString.Split(['_']);
+
   for LIndex := 0 to Length(LWords) - 1 do
   begin
     LSingleWord := LWords[LIndex];
+
     if LSingleWord.IsEmpty then
       Continue;
+
     LChar := Upcase(LSingleWord.Chars[0]);
     LSingleWord := LSingleWord.Remove(0, 1);
     LSingleWord := LSingleWord.Insert(0, LChar);
@@ -1016,8 +1028,7 @@ begin
   Result := string.Join('', LWords);
 end;
 
-constructor TNeonRttiMembers.Create(AConfig: TNeonConfiguration;
-  AType: TRttiType; AOperation: TNeonOperation);
+constructor TNeonRttiMembers.Create(AConfig: TNeonConfiguration; AType: TRttiType; AOperation: TNeonOperation);
 begin
   inherited Create(True);
 
@@ -1038,7 +1049,8 @@ var
 begin
   for LMember in Self do
   begin
-    if LMember.NeonInclude.Present and (LMember.NeonInclude.Value = IncludeIf.Always) then
+    if LMember.NeonInclude.Present and
+       (LMember.NeonInclude.Value = IncludeIf.Always) then
     begin
       LMember.Serializable := True;
       Continue;
@@ -1065,7 +1077,8 @@ var
 begin
   for LMember in Self do
   begin
-    if LMember.NeonInclude.Present and (LMember.NeonInclude.Value = IncludeIf.Always) then
+    if LMember.NeonInclude.Present and
+       (LMember.NeonInclude.Value = IncludeIf.Always) then
     begin
       LMember.Serializable := True;
       Continue;
@@ -1076,15 +1089,15 @@ begin
 
     case LMember.EvalIncludeIf(AInstance) of
       TNeonIncludeOption.Include:
-      begin
-        LMember.Serializable := True;
-        Continue;
-      end;
+        begin
+          LMember.Serializable := True;
+          Continue;
+        end;
       TNeonIncludeOption.Exclude:
-      begin
-        LMember.Serializable := False;
-        Continue;
-      end;
+        begin
+          LMember.Serializable := False;
+          Continue;
+        end;
     end;
 
     // Exclusions
@@ -1095,12 +1108,12 @@ begin
       Continue;
 
     if not LMember.IsWritable and
-       not (LMember.TypeKind in [tkClass, tkInterface]) then
+      not (LMember.TypeKind in [tkClass, tkInterface]) then
       Continue;
 
     if MatchesVisibility(LMember.Visibility) then
-    if MatchesMemberChoice(LMember.MemberType) then
-      LMember.Serializable := True;
+      if MatchesMemberChoice(LMember.MemberType) then
+        LMember.Serializable := True;
   end;
 end;
 
@@ -1109,6 +1122,7 @@ var
   LMemberName: string;
 begin
   Result := False;
+
   for LMemberName in FConfig.IgnoreMembers do
     if SameText(AName, LMemberName) then
       Exit(True);
@@ -1120,6 +1134,7 @@ var
   LMemberChoice: TNeonMembersSet;
 begin
   Result := False;
+
   if FParent.NeonMembers = [] then
     LMemberChoice := FConfig.Members
   else
@@ -1128,18 +1143,22 @@ begin
   if TNeonMembers.Standard in LMemberChoice then
   begin
     LRttiType := FParent.AsRttiType;
+
     if Assigned(LRttiType) then
     begin
       if LRttiType.IsRecord then
         LMemberChoice := LMemberChoice + [TNeonMembers.Fields];
+
       if LRttiType.IsInstance then
         LMemberChoice := LMemberChoice + [TNeonMembers.Properties];
     end;
   end;
 
   case AMemberType of
-    TNeonMemberType.Prop   :   Result := TNeonMembers.Properties in LMemberChoice;
-    TNeonMemberType.Field  :   Result := TNeonMembers.Fields in LMemberChoice;
+    TNeonMemberType.Prop:
+      Result := TNeonMembers.Properties in LMemberChoice;
+    TNeonMemberType.Field:
+      Result := TNeonMembers.Fields in LMemberChoice;
   end;
 end;
 
@@ -1182,6 +1201,7 @@ var
   LAttribute: TCustomAttribute;
 begin
   Result := nil;
+
   for LAttribute in FAttributes do
     if LAttribute is T then
       Exit(LAttribute as T);
@@ -1196,39 +1216,52 @@ begin
   begin
     if LAttribute is NeonIncludeAttribute then
       FNeonInclude := (LAttribute as NeonIncludeAttribute).IncludeValue
-    else if LAttribute is NeonSerializeAttribute then
-    begin
-      FNeonSerializerName := (LAttribute as NeonSerializeAttribute).Name;
-      FNeonSerializerClass := (LAttribute as NeonSerializeAttribute).Clazz;
-    end
-    else if LAttribute is NeonFactoryAttribute then
-    begin
-      LClass := (LAttribute as NeonFactoryAttribute).FactoryClass;
-      if LClass.InheritsFrom(TCustomFactory) then
-        FNeonFactoryClass := TCustomFactoryClass(LClass);
-    end
-    else if LAttribute is NeonItemFactoryAttribute then
-    begin
-      LClass := (LAttribute as NeonItemFactoryAttribute).FactoryClass;
-      if LClass.InheritsFrom(TCustomFactory) then
-        FNeonItemFactoryClass := TCustomFactoryClass(LClass);
-    end
-    else if LAttribute is NeonIgnoreAttribute then
-      FNeonIgnore := True
-    else if LAttribute is NeonRawValueAttribute then
-      FNeonRawValue := True
-    else if LAttribute is NeonPropertyAttribute then
-      FNeonProperty := (LAttribute as NeonPropertyAttribute).Value
-    else if LAttribute is NeonEnumNamesAttribute then
-      FNeonEnumNames := (LAttribute as NeonEnumNamesAttribute).Names
-    else if LAttribute is NeonVisibilityAttribute then
-      FNeonVisibility := (LAttribute as NeonVisibilityAttribute).Value
-    else if LAttribute is NeonMembersSetAttribute then
-      FNeonMembers := (LAttribute as NeonMembersSetAttribute).Value
-    else if LAttribute is NeonUnwrappedAttribute then
-      FNeonUnwrapped := True  //Only applicable to complex types (classes, records, interfaces)
-    else if LAttribute is NeonAutoCreateAttribute then
-      FNeonAutoCreate := True;  //Only applicable to class types
+    else
+      if LAttribute is NeonSerializeAttribute then
+      begin
+        FNeonSerializerName := (LAttribute as NeonSerializeAttribute).Name;
+        FNeonSerializerClass := (LAttribute as NeonSerializeAttribute).Clazz;
+      end
+      else
+        if LAttribute is NeonFactoryAttribute then
+        begin
+          LClass := (LAttribute as NeonFactoryAttribute).FactoryClass;
+
+          if LClass.InheritsFrom(TCustomFactory) then
+            FNeonFactoryClass := TCustomFactoryClass(LClass);
+        end
+        else
+          if LAttribute is NeonItemFactoryAttribute then
+          begin
+            LClass := (LAttribute as NeonItemFactoryAttribute).FactoryClass;
+
+            if LClass.InheritsFrom(TCustomFactory) then
+              FNeonItemFactoryClass := TCustomFactoryClass(LClass);
+          end
+          else
+            if LAttribute is NeonIgnoreAttribute then
+              FNeonIgnore := True
+            else
+              if LAttribute is NeonRawValueAttribute then
+                FNeonRawValue := True
+              else
+                if LAttribute is NeonPropertyAttribute then
+                  FNeonProperty := (LAttribute as NeonPropertyAttribute).Value
+                else
+                  if LAttribute is NeonEnumNamesAttribute then
+                    FNeonEnumNames := (LAttribute as NeonEnumNamesAttribute).Names
+                  else
+                    if LAttribute is NeonVisibilityAttribute then
+                      FNeonVisibility := (LAttribute as NeonVisibilityAttribute).Value
+                    else
+                      if LAttribute is NeonMembersSetAttribute then
+                        FNeonMembers := (LAttribute as NeonMembersSetAttribute).Value
+                      else
+                        if LAttribute is NeonUnwrappedAttribute then
+                          FNeonUnwrapped := True // Only applicable to complex types (classes, records, interfaces)
+                        else
+                          if LAttribute is NeonAutoCreateAttribute then
+                            FNeonAutoCreate := True; // Only applicable to class types
 
     // Further attribute processing
     ProcessAttribute(LAttribute);
@@ -1239,6 +1272,7 @@ procedure TNeonRttiObject.ParseAttributes;
 begin
   if Length(FTypeAttributes) > 0 then
     InternalParseAttributes(FTypeAttributes);
+
   if Length(FAttributes) > 0 then
     InternalParseAttributes(FAttributes);
 end;
@@ -1278,6 +1312,7 @@ end;
 procedure TNeonSerializerRegistry.Clear;
 begin
   FRegistryClass.Clear;
+
   FRegistryCacheLock.Enter;
   try
     FRegistryCache.Clear;
@@ -1358,7 +1393,7 @@ begin
   begin
     if LInfo.SerializerClass.CanHandle(ATypeInfo) then
     begin
-      if LInfo.Distance = -1 then
+      if LInfo.Distance = - 1 then
       begin
         LClass := LInfo.SerializerClass;
         Break;
@@ -1418,10 +1453,11 @@ var
   LType: TRttiType;
 begin
   Result := False;
-
   LType := TRttiUtils.Context.GetType(GetTargetInfo);
-  if Assigned(LType) and (LType.TypeKind = tkClass) then
-    Result := AClass.InheritsFrom(LType.AsInstance.MetaclassType);
+
+  if Assigned(LType) and
+     (LType.TypeKind = tkClass) then
+    Result := AClass.InheritsFrom(LType.AsInstance.MetaClassType);
 end;
 
 class function TCustomSerializer.GetTargetInfo: PTypeInfo;
@@ -1435,8 +1471,10 @@ var
 begin
   Result := False;
   LType := TRttiUtils.Context.GetType(AInfo);
-  if Assigned(LType) and (LType.TypeKind = tkClass) then
-    Result := ClassIs(LType.AsInstance.MetaclassType);
+
+  if Assigned(LType) and
+     (LType.TypeKind = tkClass) then
+    Result := ClassIs(LType.AsInstance.MetaClassType);
 end;
 
 class function TCustomSerializer.TypeInfoIsClass(AInfo: PTypeInfo): Boolean;
@@ -1445,7 +1483,9 @@ var
 begin
   Result := False;
   LType := TRttiUtils.Context.GetType(AInfo);
-  if Assigned(LType) and (LType.TypeKind = tkClass) then
+
+  if Assigned(LType) and
+     (LType.TypeKind = tkClass) then
     Result := True;
 end;
 
@@ -1455,22 +1495,22 @@ begin
   Result.Distance := ASerializerClass.ClassDistance;
 end;
 
-class function TTypeInfoUtils.EnumToString(ATypeInfo: PTypeInfo; AValue: Integer;
-    ANeonObject: TNeonRttiObject): string;
+class function TTypeInfoUtils.EnumToString(ATypeInfo: PTypeInfo; AValue: Integer; ANeonObject: TNeonRttiObject): string;
 var
   LTypeData: PTypeData;
 begin
   Result := '';
-
   LTypeData := GetTypeData(ATypeInfo);
-  if (AValue >= LTypeData.MinValue) and (AValue <= LTypeData.MaxValue) then
+
+  if (AValue >= LTypeData.MinValue) and
+     (AValue <= LTypeData.MaxValue) then
   begin
     Result := GetEnumName(ATypeInfo, AValue);
 
     if Length(ANeonObject.NeonEnumNames) > 0 then
     begin
       if (AValue >= Low(ANeonObject.NeonEnumNames)) and
-         (AValue <= High(ANeonObject.NeonEnumNames)) then
+        (AValue <= High(ANeonObject.NeonEnumNames)) then
         Result := ANeonObject.NeonEnumNames[AValue]
     end;
   end

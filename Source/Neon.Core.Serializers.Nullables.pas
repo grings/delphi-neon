@@ -90,8 +90,8 @@ type
     function Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue; override;
   end;
 
-  procedure RegisterNullableSerializers(ARegistry: TNeonSerializerRegistry);
-  procedure UnregisterNullableSerializers(ARegistry: TNeonSerializerRegistry);
+procedure RegisterNullableSerializers(ARegistry: TNeonSerializerRegistry);
+procedure UnregisterNullableSerializers(ARegistry: TNeonSerializerRegistry);
 
 implementation
 
@@ -106,17 +106,17 @@ begin
     Result := False;
 end;
 
-function TNullableStringSerializer.Deserialize(AValue: TJSONValue; const AData:
-    TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
+function TNullableStringSerializer.Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
 var
   LNullValue: NullString;
 begin
   if AValue is TJSONString then
     LNullValue := AValue.Value
-  else if AValue is TJSONNull then
-    LNullValue := nil
   else
-    raise ENeonException.Create(Self.ClassName + '.Deserialize: incompatible types');
+    if AValue is TJSONNull then
+      LNullValue := nil
+    else
+      raise ENeonException.Create(Self.ClassName + '.Deserialize: incompatible types');
 
   Result := TValue.From<NullString>(LNullValue);
 end;
@@ -126,8 +126,7 @@ begin
   Result := TypeInfo(NullString);
 end;
 
-function TNullableStringSerializer.Serialize(const AValue: TValue; ANeonObject:
-    TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
+function TNullableStringSerializer.Serialize(const AValue: TValue; ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
 var
   LValue: NullString;
 begin
@@ -138,7 +137,8 @@ begin
     case ANeonObject.NeonInclude.Value of
       IncludeIf.NotNull,
       IncludeIf.NotEmpty,
-      IncludeIf.NotDefault: Exit(nil);
+      IncludeIf.NotDefault:
+        Exit(nil);
     else
       Exit(TJSONNull.Create);
     end;
@@ -155,17 +155,17 @@ begin
     Result := False;
 end;
 
-function TNullableBooleanSerializer.Deserialize(AValue: TJSONValue; const
-    AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
+function TNullableBooleanSerializer.Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
 var
   LNullValue: NullBoolean;
 begin
   if TJSONUtils.IsBool(AValue) then
     LNullValue := TJSONUtils.GetValueBool(AValue)
-  else if AValue is TJSONNull then
-    LNullValue := nil
   else
-    raise ENeonException.Create(Self.ClassName + '.Deserialize: incompatible types');
+    if AValue is TJSONNull then
+      LNullValue := nil
+    else
+      raise ENeonException.Create(Self.ClassName + '.Deserialize: incompatible types');
 
   Result := TValue.From<NullBoolean>(LNullValue);
 end;
@@ -175,8 +175,7 @@ begin
   Result := TypeInfo(NullBoolean);
 end;
 
-function TNullableBooleanSerializer.Serialize(const AValue: TValue;
-    ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
+function TNullableBooleanSerializer.Serialize(const AValue: TValue; ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
 var
   LValue: NullBoolean;
 begin
@@ -185,13 +184,17 @@ begin
   if not LValue.HasValue then
   begin
     case ANeonObject.NeonInclude.Value of
-      IncludeIf.NotNull   : Exit(nil);
-      IncludeIf.NotEmpty  : Exit(nil);
-      IncludeIf.NotDefault: Exit(nil);
+      IncludeIf.NotNull:
+        Exit(nil);
+      IncludeIf.NotEmpty:
+        Exit(nil);
+      IncludeIf.NotDefault:
+        Exit(nil);
     else
       Exit(TJSONNull.Create);
     end;
   end;
+
   Result := TJSONUtils.GetJSONBool(LValue.Value);
 end;
 
@@ -203,17 +206,17 @@ begin
     Result := False;
 end;
 
-function TNullableIntegerSerializer.Deserialize(AValue: TJSONValue; const
-    AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
+function TNullableIntegerSerializer.Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
 var
   LNullValue: NullInteger;
 begin
   if AValue is TJSONNumber then
     LNullValue := (AValue as TJSONNumber).AsInt
-  else if AValue is TJSONNull then
-    LNullValue := nil
   else
-    raise ENeonException.Create(Self.ClassName + '.Deserialize: incompatible types');
+    if AValue is TJSONNull then
+      LNullValue := nil
+    else
+      raise ENeonException.Create(Self.ClassName + '.Deserialize: incompatible types');
 
   Result := TValue.From<NullInteger>(LNullValue);
 end;
@@ -223,8 +226,7 @@ begin
   Result := TypeInfo(NullInteger);
 end;
 
-function TNullableIntegerSerializer.Serialize(const AValue: TValue;
-    ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
+function TNullableIntegerSerializer.Serialize(const AValue: TValue; ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
 var
   LValue: NullInteger;
 begin
@@ -233,9 +235,12 @@ begin
   if not LValue.HasValue then
   begin
     case ANeonObject.NeonInclude.Value of
-      IncludeIf.NotNull   : Exit(nil);
-      IncludeIf.NotEmpty  : Exit(nil);
-      IncludeIf.NotDefault: Exit(nil);
+      IncludeIf.NotNull:
+        Exit(nil);
+      IncludeIf.NotEmpty:
+        Exit(nil);
+      IncludeIf.NotDefault:
+        Exit(nil);
     else
       Exit(TJSONNull.Create);
     end;
@@ -252,17 +257,17 @@ begin
     Result := False;
 end;
 
-function TNullableInt64Serializer.Deserialize(AValue: TJSONValue; const AData: TValue;
-    ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
+function TNullableInt64Serializer.Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
 var
   LNullValue: NullInt64;
 begin
   if AValue is TJSONNumber then
     LNullValue := (AValue as TJSONNumber).AsInt64
-  else if AValue is TJSONNull then
-    LNullValue := nil
   else
-    raise ENeonException.Create(Self.ClassName + '.Deserialize: incompatible types');
+    if AValue is TJSONNull then
+      LNullValue := nil
+    else
+      raise ENeonException.Create(Self.ClassName + '.Deserialize: incompatible types');
 
   Result := TValue.From<NullInt64>(LNullValue);
 end;
@@ -272,8 +277,7 @@ begin
   Result := TypeInfo(NullInt64);
 end;
 
-function TNullableInt64Serializer.Serialize(const AValue: TValue; ANeonObject:
-    TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
+function TNullableInt64Serializer.Serialize(const AValue: TValue; ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
 var
   LValue: NullInt64;
 begin
@@ -282,9 +286,12 @@ begin
   if not LValue.HasValue then
   begin
     case ANeonObject.NeonInclude.Value of
-      IncludeIf.NotNull   : Exit(nil);
-      IncludeIf.NotEmpty  : Exit(nil);
-      IncludeIf.NotDefault: Exit(nil);
+      IncludeIf.NotNull:
+        Exit(nil);
+      IncludeIf.NotEmpty:
+        Exit(nil);
+      IncludeIf.NotDefault:
+        Exit(nil);
     else
       Exit(TJSONNull.Create);
     end;
@@ -301,17 +308,17 @@ begin
     Result := False;
 end;
 
-function TNullableDoubleSerializer.Deserialize(AValue: TJSONValue; const AData: TValue;
-    ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
+function TNullableDoubleSerializer.Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
 var
   LNullValue: NullDouble;
 begin
   if AValue is TJSONNumber then
     LNullValue := (AValue as TJSONNumber).AsDouble
-  else if AValue is TJSONNull then
-    LNullValue := nil
   else
-    raise ENeonException.Create(Self.ClassName + '.Deserialize: incompatible types');
+    if AValue is TJSONNull then
+      LNullValue := nil
+    else
+      raise ENeonException.Create(Self.ClassName + '.Deserialize: incompatible types');
 
   Result := TValue.From<NullDouble>(LNullValue);
 end;
@@ -321,8 +328,7 @@ begin
   Result := TypeInfo(NullDouble);
 end;
 
-function TNullableDoubleSerializer.Serialize(const AValue: TValue; ANeonObject:
-    TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
+function TNullableDoubleSerializer.Serialize(const AValue: TValue; ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
 var
   LValue: NullDouble;
 begin
@@ -331,9 +337,12 @@ begin
   if not LValue.HasValue then
   begin
     case ANeonObject.NeonInclude.Value of
-      IncludeIf.NotNull   : Exit(nil);
-      IncludeIf.NotEmpty  : Exit(nil);
-      IncludeIf.NotDefault: Exit(nil);
+      IncludeIf.NotNull:
+        Exit(nil);
+      IncludeIf.NotEmpty:
+        Exit(nil);
+      IncludeIf.NotDefault:
+        Exit(nil);
     else
       Exit(TJSONNull.Create);
     end;
@@ -350,17 +359,18 @@ begin
     Result := False;
 end;
 
-function TNullableTDateTimeSerializer.Deserialize(AValue: TJSONValue; const AData: TValue;
-    ANeonObject: TNeonRttiObject; AContext: IDeserializerContext): TValue;
+function TNullableTDateTimeSerializer.Deserialize(AValue: TJSONValue; const AData: TValue; ANeonObject: TNeonRttiObject; AContext: IDeserializerContext):
+    TValue;
 var
   LNullValue: NullDateTime;
 begin
   if AValue is TJSONString then
     LNullValue := TJSONUtils.JSONToDateTime(AValue.Value, AContext.GetConfiguration.GetUseUTCDate)
-  else if AValue is TJSONNull then
-    LNullValue := nil
   else
-    raise ENeonException.Create(Self.ClassName + '.Deserialize: incompatible types');
+    if AValue is TJSONNull then
+      LNullValue := nil
+    else
+      raise ENeonException.Create(Self.ClassName + '.Deserialize: incompatible types');
 
   Result := TValue.From<NullDateTime>(LNullValue);
 end;
@@ -370,8 +380,7 @@ begin
   Result := TypeInfo(NullDateTime);
 end;
 
-function TNullableTDateTimeSerializer.Serialize(const AValue: TValue;
-    ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
+function TNullableTDateTimeSerializer.Serialize(const AValue: TValue; ANeonObject: TNeonRttiObject; AContext: ISerializerContext): TJSONValue;
 var
   LValue: NullDateTime;
 begin
@@ -380,9 +389,12 @@ begin
   if not LValue.HasValue then
   begin
     case ANeonObject.NeonInclude.Value of
-      IncludeIf.NotNull   : Exit(nil);
-      IncludeIf.NotEmpty  : Exit(nil);
-      IncludeIf.NotDefault: Exit(nil);
+      IncludeIf.NotNull:
+        Exit(nil);
+      IncludeIf.NotEmpty:
+        Exit(nil);
+      IncludeIf.NotDefault:
+        Exit(nil);
     else
       Exit(TJSONNull.Create);
     end;
