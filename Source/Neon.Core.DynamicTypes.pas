@@ -200,39 +200,31 @@ begin
 end;
 
 class function TDynamicStream.GuessType(AInstance: TObject): IDynamicStream;
-var
-  LType: TRttiType;
-  LLoadMethod, LSaveMethod: TRttiMethod;
-  LParameters: TArray<TRttiParameter>;
 begin
   if not Assigned(AInstance) then
     Exit(nil);
 
-  LType := TRttiUtils.Context.GetType(AInstance.ClassType);
+  var LType := TRttiUtils.Context.GetType(AInstance.ClassType);
 
   if not Assigned(LType) then
     Exit(nil);
 
-  LLoadMethod := LType.GetMethod('LoadFromStream');
+  var LLoadMethod := LType.GetMethod('LoadFromStream');
 
   if Assigned(LLoadMethod) then
   begin
-    LParameters := LLoadMethod.GetParameters;
-
-    if Length(LParameters) <> 1 then
+    if Length(LLoadMethod.GetParameters) <> 1 then
 
       Exit(nil);
   end
   else
     Exit(nil);
 
-  LSaveMethod := LType.GetMethod('SaveToStream');
+  var LSaveMethod := LType.GetMethod('SaveToStream');
 
   if Assigned(LSaveMethod) then
   begin
-    LParameters := LSaveMethod.GetParameters;
-
-    if Length(LParameters) <> 1 then
+   if Length(LSaveMethod.GetParameters) <> 1 then
       Exit(nil);
   end
   else
@@ -296,20 +288,14 @@ begin
 end;
 
 class function TDynamicList.GuessType(AInstance: TObject): IDynamicList;
-var
-  LMethodGetEnumerator, LMethodAdd: TRttiMethod;
-  LMethodClear, LMethodMoveNext: TRttiMethod;
-  LEnumInstance: TObject;
-  LListType, LItemType, LEnumType: TRttiType;
-  LCountProp, LCurrentProp: TRttiProperty;
 begin
   Result := nil;
 
   if not Assigned(AInstance) then
     Exit;
 
-  LListType := TRttiUtils.Context.GetType(AInstance.ClassType);
-  LMethodGetEnumerator := LListType.GetMethod('GetEnumerator');
+  var LListType := TRttiUtils.Context.GetType(AInstance.ClassType);
+  var LMethodGetEnumerator := LListType.GetMethod('GetEnumerator');
 
   if not Assigned(LMethodGetEnumerator) or
     (LMethodGetEnumerator.MethodKind <> mkFunction) or
@@ -317,35 +303,35 @@ begin
   then
     Exit;
 
-  LMethodClear := LListType.GetMethod('Clear');
+  var LMethodClear := LListType.GetMethod('Clear');
 
   if not Assigned(LMethodClear) then
     Exit;
 
-  LMethodAdd := LListType.GetMethod('Add');
+  var LMethodAdd := LListType.GetMethod('Add');
 
   if not Assigned(LMethodAdd) or
      (Length(LMethodAdd.GetParameters) <> 1) then
     Exit;
 
-  LItemType := LMethodAdd.GetParameters[0].ParamType;
-  LCountProp := LListType.GetProperty('Count');
+  var LItemType := LMethodAdd.GetParameters[0].ParamType;
+  var LCountProp := LListType.GetProperty('Count');
 
   if not Assigned(LCountProp) then
     Exit;
 
-  LEnumInstance := LMethodGetEnumerator.Invoke(AInstance, []).AsObject;
+  var LEnumInstance := LMethodGetEnumerator.Invoke(AInstance, []).AsObject;
 
   if not Assigned(LEnumInstance) then
     Exit;
 
-  LEnumType := TRttiUtils.Context.GetType(LEnumInstance.ClassType);
-  LCurrentProp := LEnumType.GetProperty('Current');
+  var LEnumType := TRttiUtils.Context.GetType(LEnumInstance.ClassType);
+  var LCurrentProp := LEnumType.GetProperty('Current');
 
   if not Assigned(LCurrentProp) then
     Exit;
 
-  LMethodMoveNext := LEnumType.GetMethod('MoveNext');
+  var LMethodMoveNext := LEnumType.GetMethod('MoveNext');
 
   if not Assigned(LMethodMoveNext) or
     (Length(LMethodMoveNext.GetParameters) <> 0) or
@@ -431,62 +417,52 @@ begin
 end;
 
 class function TDynamicMap.GuessType(AInstance: TObject): IDynamicMap;
-var
-  LMapType: TRttiType;
-  LKeyType, LValType: TRttiType;
-  LKeyProp, LValProp: TRttiProperty;
-  LCountProp: TRttiProperty;
-  LAddMethod, LClearMethod: TRttiMethod;
-  LToStringMethod, LFromStringMethod: TRttiMethod;
-  LKeyEnumMethod, LValEnumMethod: TRttiMethod;
-  LKeyEnumObject, LValEnumObject: TObject;
-  LKeyEnum, LValEnum: TDynamicMap.TEnumerator;
 begin
   Result := nil;
 
   if not Assigned(AInstance) then
     Exit;
 
-  LMapType := TRttiUtils.Context.GetType(AInstance.ClassType);
+  var LMapType := TRttiUtils.Context.GetType(AInstance.ClassType);
   // Keys & Values Enumerator
-  LKeyProp := LMapType.GetProperty('Keys');
+  var LKeyProp := LMapType.GetProperty('Keys');
 
   if not Assigned(LKeyProp) then
     Exit;
 
-  LValProp := LMapType.GetProperty('Values');
+  var LValProp := LMapType.GetProperty('Values');
 
   if not Assigned(LValProp) then
     Exit;
 
-  LKeyEnumObject := LKeyProp.GetValue(AInstance).AsObject;
-  LValEnumObject := LValProp.GetValue(AInstance).AsObject;
-  LKeyEnumMethod := TRttiUtils.Context.GetType(LKeyEnumObject.ClassInfo).GetMethod('GetEnumerator');
-  LValEnumMethod := TRttiUtils.Context.GetType(LValEnumObject.ClassInfo).GetMethod('GetEnumerator');
-  LKeyEnum := TDynamicMap.TEnumerator.Create(LKeyEnumMethod, LKeyEnumObject);
-  LValEnum := TDynamicMap.TEnumerator.Create(LValEnumMethod, LValEnumObject);
+  var LKeyEnumObject := LKeyProp.GetValue(AInstance).AsObject;
+  var LValEnumObject := LValProp.GetValue(AInstance).AsObject;
+  var LKeyEnumMethod := TRttiUtils.Context.GetType(LKeyEnumObject.ClassInfo).GetMethod('GetEnumerator');
+  var LValEnumMethod := TRttiUtils.Context.GetType(LValEnumObject.ClassInfo).GetMethod('GetEnumerator');
+  var LKeyEnum := TDynamicMap.TEnumerator.Create(LKeyEnumMethod, LKeyEnumObject);
+  var LValEnum := TDynamicMap.TEnumerator.Create(LValEnumMethod, LValEnumObject);
   // End Keys & Values Enumerator
 
-  LClearMethod := LMapType.GetMethod('Clear');
+  var LClearMethod := LMapType.GetMethod('Clear');
 
   if not Assigned(LClearMethod) then
     Exit;
 
-  LAddMethod := LMapType.GetMethod('Add');
+  var LAddMethod := LMapType.GetMethod('Add');
 
   if not Assigned(LAddMethod) or
      (Length(LAddMethod.GetParameters) <> 2) then
     Exit;
 
-  LKeyType := LAddMethod.GetParameters[0].ParamType;
-  LValType := LAddMethod.GetParameters[1].ParamType;
-  LCountProp := LMapType.GetProperty('Count');
+  var LKeyType := LAddMethod.GetParameters[0].ParamType;
+  var LValType := LAddMethod.GetParameters[1].ParamType;
+  var LCountProp := LMapType.GetProperty('Count');
 
   if not Assigned(LCountProp) then
     Exit;
 
-  LToStringMethod := nil;
-  LFromStringMethod := nil;
+  var LToStringMethod: TRttiMethod := nil;
+  var LFromStringMethod: TRttiMethod := nil;
 
   // Optional methods (on Key object)
   case LKeyType.TypeKind of
@@ -569,41 +545,36 @@ begin
 end;
 
 class function TDynamicNullable.GuessType(AInstance: TValue): IDynamicNullable;
-var
-  LType: TRttiType;
-  LContainedType: PTypeInfo;
-  LTypeInfoMethod, LHasValueMethod: TRttiMethod;
-  LGetValueMethod, LSetValueMethod: TRttiMethod;
 begin
   if AInstance.IsEmpty then
     Exit(nil);
 
-  LType := TRttiUtils.Context.GetType(AInstance.TypeInfo);
+  var LType := TRttiUtils.Context.GetType(AInstance.TypeInfo);
 
   if not Assigned(LType) then
     Exit(nil);
 
-  LTypeInfoMethod := LType.GetMethod('GetValueType');
+  var LTypeInfoMethod := LType.GetMethod('GetValueType');
 
   if not Assigned(LTypeInfoMethod) then
     Exit(nil);
 
-  LContainedType := LTypeInfoMethod.Invoke(AInstance, []).AsType<PTypeInfo>;
+  var LContainedType := LTypeInfoMethod.Invoke(AInstance, []).AsType<PTypeInfo>;
 
   if LContainedType = nil then
     raise ENeonException.Create('Nullable contains type with no RTTI');
 
-  LHasValueMethod := LType.GetMethod('GetHasValue');
+  var LHasValueMethod := LType.GetMethod('GetHasValue');
 
   if not Assigned(LHasValueMethod) then
     Exit(nil);
 
-  LGetValueMethod := LType.GetMethod('GetValue');
+  var LGetValueMethod := LType.GetMethod('GetValue');
 
   if not Assigned(LGetValueMethod) then
     Exit(nil);
 
-  LSetValueMethod := LType.GetMethod('SetValue');
+  var LSetValueMethod := LType.GetMethod('SetValue');
 
   if not Assigned(LSetValueMethod) then
     Exit(nil);

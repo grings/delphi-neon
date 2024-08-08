@@ -244,13 +244,10 @@ begin
 end;
 
 function TNeonSchemaGenerator.WriteArray(AType: TRttiType; ANeonObject: TNeonRttiObject): TJSONObject;
-var
-  LItems: TJSONObject;
 begin
-  LItems := WriteDataMember((AType as TRttiArrayType).ElementType);
   Result := TJSONObject.Create
       .AddPair('type', 'array')
-      .AddPair('items', LItems)
+      .AddPair('items', WriteDataMember((AType as TRttiArrayType).ElementType))
 end;
 
 function TNeonSchemaGenerator.WriteBoolean(AType: TRttiType; ANeonObject: TNeonRttiObject): TJSONObject;
@@ -275,10 +272,10 @@ end;
 function TNeonSchemaGenerator.WriteDataMember(AType: TRttiType; ANeonObject: TNeonRttiObject): TJSONObject;
 var
   LNeonTypeInfo: INeonTypeInfo;
-  LNeonMap: INeonTypeInfoMap absolute LNeonTypeInfo;
   LNeonList: INeonTypeInfoList absolute LNeonTypeInfo;
-  LNeonStream: INeonTypeInfoStream absolute LNeonTypeInfo;
+  LNeonMap: INeonTypeInfoMap absolute LNeonTypeInfo;
   LNeonNullable: INeonTypeInfoNullable absolute LNeonTypeInfo;
+  LNeonStream: INeonTypeInfoStream absolute LNeonTypeInfo;
 begin
   Result := nil;
 
@@ -390,25 +387,21 @@ begin
 end;
 
 function TNeonSchemaGenerator.WriteDynArray(AType: TRttiType; ANeonObject: TNeonRttiObject): TJSONObject;
-var
-  LItems: TJSONObject;
 begin
-  LItems := WriteDataMember((AType as TRttiDynamicArrayType).ElementType);
   Result := TJSONObject.Create
       .AddPair('type', 'array')
-      .AddPair('items', LItems)
+      .AddPair('items', WriteDataMember((AType as TRttiDynamicArrayType).ElementType))
 end;
 
 function TNeonSchemaGenerator.WriteEnum(AType: TRttiType; ANeonObject: TNeonRttiObject): TJSONObject;
 var
-  LTypeData: PTypeData;
-  LIndex: Integer;
   LEnumArray: TJSONArray;
+  LTypeData: PTypeData;
 begin
   LTypeData := GetTypeData(AType.Handle);
   LEnumArray := TJSONArray.Create;
 
-  for LIndex := LTypeData.MinValue to LTypeData.MaxValue do
+  for var LIndex := LTypeData.MinValue to LTypeData.MaxValue do
     LEnumArray.Add(TTypeInfoUtils.EnumToString(AType.Handle, LIndex, ANeonObject));
 
   Result := TJSONObject.Create
@@ -444,19 +437,17 @@ end;
 
 procedure TNeonSchemaGenerator.WriteMembers(AType: TRttiType; AResult: TJSONObject);
 var
-  LJSONValue: TJSONObject;
   LMembers: TNeonRttiMembers;
-  LNeonMember: TNeonRttiMember;
 begin
   LMembers := GetNeonMembers(AType);
   LMembers.FilterSerialize(nil);
 
-  for LNeonMember in LMembers do
+  for var LNeonMember in LMembers do
   begin
     if LNeonMember.Serializable then
     begin
       try
-        LJSONValue := WriteDataMember(LNeonMember.RttiType, LNeonMember);
+        var LJSONValue := WriteDataMember(LNeonMember.RttiType, LNeonMember);
 
         if Assigned(LJSONValue) then
           (AResult as TJSONObject).AddPair(GetNameFromMember(LNeonMember), LJSONValue);
@@ -488,31 +479,25 @@ begin
 end;
 
 function TNeonSchemaGenerator.WriteEnumerable(AType: TRttiType; ANeonObject: TNeonRttiObject; AList: INeonTypeInfoList): TJSONObject;
-var
-  LJSONItems: TJSONObject;
 begin
   // Is not an Enumerable compatible object
   if not Assigned(AList) then
     Exit(nil);
 
-  LJSONItems := WriteDataMember(AList.GetItemType);
   Result := TJSONObject.Create
       .AddPair('type', 'array')
-      .AddPair('items', LJSONItems);
+      .AddPair('items', WriteDataMember(AList.GetItemType));
 end;
 
 function TNeonSchemaGenerator.WriteEnumerableMap(AType: TRttiType; ANeonObject: TNeonRttiObject; AMap: INeonTypeInfoMap): TJSONObject;
-var
-  LValueJSON: TJSONObject;
 begin
   // Is not an EnumerableMap-compatible object
   if not Assigned(AMap) then
     Exit(nil);
 
-  LValueJSON := WriteDataMember(AMap.GetValueType);
   Result := TJSONObject.Create
       .AddPair('type', 'object')
-      .AddPair('additionalProperties', LValueJSON);
+      .AddPair('additionalProperties', WriteDataMember(AMap.GetValueType));
 end;
 
 function TNeonSchemaGenerator.WriteRecord(AType: TRttiType; ANeonObject: TNeonRttiObject): TJSONObject;

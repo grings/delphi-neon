@@ -138,8 +138,7 @@ end;
 
 class function TNeonTypeInfoList.GuessType(AType: TRttiType): INeonTypeInfoList;
 var
-  LMethodGetEnumerator, LMethodAdd: TRttiMethod;
-  LItemType: TRttiType;
+  LMethodGetEnumerator: TRttiMethod;
 begin
   Result := nil;
 
@@ -154,18 +153,16 @@ begin
   if not Assigned(AType.GetMethod('Clear')) then
     Exit;
 
-  LMethodAdd := AType.GetMethod('Add');
+  var LMethodAdd := AType.GetMethod('Add');
 
   if not Assigned(LMethodAdd) or
      (Length(LMethodAdd.GetParameters) <> 1) then
     Exit;
 
-  LItemType := LMethodAdd.GetParameters[0].ParamType;
-
   if not Assigned(AType.GetProperty('Count')) then
     Exit;
 
-  Result := TNeonTypeInfoList.Create(LItemType);
+  Result := TNeonTypeInfoList.Create(LMethodAdd.GetParameters[0].ParamType);
 end;
 
 constructor TNeonTypeInfoMap.Create(AKeyType, AValueType: TRttiType);
@@ -185,9 +182,6 @@ begin
 end;
 
 class function TNeonTypeInfoMap.GuessType(AType: TRttiType): INeonTypeInfoMap;
-var
-  LKeyType, LValType: TRttiType;
-  LAddMethod: TRttiMethod;
 begin
   Result := nil;
 
@@ -200,19 +194,16 @@ begin
   if not Assigned(AType.GetMethod('Clear')) then
     Exit;
 
-  LAddMethod := AType.GetMethod('Add');
+  var LAddMethod := AType.GetMethod('Add');
 
   if not Assigned(LAddMethod) or
     (Length(LAddMethod.GetParameters) <> 2) then
     Exit;
 
-  LKeyType := LAddMethod.GetParameters[0].ParamType;
-  LValType := LAddMethod.GetParameters[1].ParamType;
-
   if not Assigned(AType.GetProperty('Count')) then
     Exit;
 
-  Result := TNeonTypeInfoMap.Create(LKeyType, LValType);
+  Result := TNeonTypeInfoMap.Create(LAddMethod.GetParameters[0].ParamType, LAddMethod.GetParameters[1].ParamType);
 end;
 
 constructor TNeonTypeInfoNullable.Create(ABaseType: TRttiType);
@@ -226,13 +217,12 @@ begin
 end;
 
 class function TNeonTypeInfoNullable.GuessType(AType: TRttiType): INeonTypeInfoNullable;
-var
-  LGetValueMethod: TRttiMethod;
 begin
   if not Assigned(AType) then
     Exit(nil);
 
-  LGetValueMethod := AType.GetMethod('GetValue');
+  var LGetValueMethod := AType.GetMethod('GetValue');
+
   if not Assigned(LGetValueMethod) then
     Exit(nil);
 

@@ -447,9 +447,8 @@ end;
 
 function TNeonBase.GetNeonMembers(AType: TRttiType): TNeonRttiMembers;
 var
-  LFields, LProps: TArray<TRttiMember>;
-  LMember: TRttiMember;
-  LNeonMember: TNeonRttiMember;
+  LFields: TArray<TRttiMember>;
+  LProps: TArray<TRttiMember>;
 
   function AlphaComparer(AReverse: Boolean): IComparer<TNeonRttiMember>;
   begin
@@ -484,17 +483,11 @@ begin
       LProps := TArray<TRttiMember>(AType.AsInstance.GetProperties);
     end;
 
-  for LMember in LFields do
-  begin
-    LNeonMember := Result.NewMember(LMember);
-    Result.Add(LNeonMember);
-  end;
+  for var LMember in LFields do
+    Result.Add(Result.NewMember(LMember));
 
-  for LMember in LProps do
-  begin
-    LNeonMember := Result.NewMember(LMember);
-    Result.Add(LNeonMember);
-  end;
+  for var LMember in LProps do
+    Result.Add(Result.NewMember(LMember));
 
   FMemberRegistry.Add(AType.Handle, Result);
 
@@ -877,17 +870,14 @@ begin
 end;
 
 procedure TNeonRttiMember.ProcessAttribute(AAttribute: TCustomAttribute);
-var
-  LIncludeAttribute: NeonIncludeAttribute;
-  LMethodName: string;
 begin
   if AAttribute is NeonIncludeAttribute then
   begin
-    LIncludeAttribute := AAttribute as NeonIncludeAttribute;
+    var LIncludeAttribute := AAttribute as NeonIncludeAttribute;
 
     if LIncludeAttribute.IncludeValue.Value = IncludeIf.CustomFunction then
     begin
-      LMethodName := LIncludeAttribute.IncludeValue.IncludeFunction;
+      var LMethodName := LIncludeAttribute.IncludeValue.IncludeFunction;
       FMethodIf := FParent.FType.GetMethod(LMethodName);
 
       if not Assigned(FMethodIf) then
@@ -929,38 +919,31 @@ begin
 end;
 
 class function TCaseAlgorithm.CamelToPascal(const AString: string): string;
-var
-  LOld, LNew: Char;
 begin
   Result := AString;
 
   if Result.IsEmpty then
     Exit;
 
-  LOld := Result.Chars[0];
-  LNew := UpperCase(LOld).Chars[0];
-  Result := Result.Replace(LOld, LNew, []);
+  var LOld := Result.Chars[0];
+  Result := Result.Replace(LOld, UpperCase(LOld).Chars[0], []);
 end;
 
 class function TCaseAlgorithm.KebabToPascal(const AString: string): string;
 var
-  LChar: Char;
-  LIndex: Integer;
-  LSingleWord: string;
   LWords: TArray<string>;
 begin
   LWords := AString.Split(['-']);
 
-  for LIndex := 0 to Length(LWords) - 1 do
+  for var LIndex := 0 to Length(LWords) - 1 do
   begin
-    LSingleWord := LWords[LIndex];
+    var LSingleWord := LWords[LIndex];
 
     if LSingleWord.IsEmpty then
       Continue;
 
-    LChar := Upcase(LSingleWord.Chars[0]);
     LSingleWord := LSingleWord.Remove(0, 1);
-    LSingleWord := LSingleWord.Insert(0, LChar);
+    LSingleWord := LSingleWord.Insert(0, Upcase(LSingleWord.Chars[0]));
     LWords[LIndex] := LSingleWord;
   end;
 
@@ -968,17 +951,14 @@ begin
 end;
 
 class function TCaseAlgorithm.PascalToCamel(const AString: string): string;
-var
-  LOld, LNew: Char;
 begin
   Result := AString;
 
   if Result.IsEmpty then
     Exit;
 
-  LOld := Result.Chars[0];
-  LNew := LowerCase(LOld).Chars[0];
-  Result := Result.Replace(LOld, LNew, []);
+  var LOld := Result.Chars[0];
+  Result := Result.Replace(LOld, LowerCase(LOld).Chars[0], []);
 end;
 
 class function TCaseAlgorithm.PascalToKebab(const AString: string): string;
@@ -999,23 +979,20 @@ end;
 
 class function TCaseAlgorithm.SnakeToPascal(const AString: string): string;
 var
-  LChar: Char;
-  LIndex: Integer;
-  LSingleWord: string;
   LWords: TArray<string>;
 begin
   LWords := AString.Split(['_']);
 
-  for LIndex := 0 to Length(LWords) - 1 do
+  for var LIndex := 0 to Length(LWords) - 1 do
   begin
-    LSingleWord := LWords[LIndex];
+    var LSingleWord := LWords[LIndex];
 
     if LSingleWord.IsEmpty then
       Continue;
 
-    LChar := Upcase(LSingleWord.Chars[0]);
+
     LSingleWord := LSingleWord.Remove(0, 1);
-    LSingleWord := LSingleWord.Insert(0, LChar);
+    LSingleWord := LSingleWord.Insert(0, Upcase(LSingleWord.Chars[0]));
     LWords[LIndex] := LSingleWord;
   end;
 
@@ -1038,10 +1015,8 @@ begin
 end;
 
 procedure TNeonRttiMembers.FilterDeserialize(AInstance: Pointer);
-var
-  LMember: TNeonRttiMember;
 begin
-  for LMember in Self do
+  for var LMember in Self do
   begin
     if LMember.NeonInclude.Present and
        (LMember.NeonInclude.Value = IncludeIf.Always) then
@@ -1066,10 +1041,8 @@ begin
 end;
 
 procedure TNeonRttiMembers.FilterSerialize(AInstance: Pointer);
-var
-  LMember: TNeonRttiMember;
 begin
-  for LMember in Self do
+  for var LMember in Self do
   begin
     if LMember.NeonInclude.Present and
        (LMember.NeonInclude.Value = IncludeIf.Always) then
@@ -1112,19 +1085,16 @@ begin
 end;
 
 function TNeonRttiMembers.IgnoredName(const AName: string): Boolean;
-var
-  LMemberName: string;
 begin
   Result := False;
 
-  for LMemberName in FConfig.IgnoreMembers do
+  for var LMemberName in FConfig.IgnoreMembers do
     if SameText(AName, LMemberName) then
       Exit(True);
 end;
 
 function TNeonRttiMembers.MatchesMemberChoice(AMemberType: TNeonMemberType): Boolean;
 var
-  LRttiType: TRttiType;
   LMemberChoice: TNeonMembersSet;
 begin
   Result := False;
@@ -1136,7 +1106,7 @@ begin
 
   if TNeonMembers.Standard in LMemberChoice then
   begin
-    LRttiType := FParent.AsRttiType;
+    var LRttiType := FParent.AsRttiType;
 
     if Assigned(LRttiType) then
     begin
@@ -1191,22 +1161,17 @@ begin
 end;
 
 function TNeonRttiObject.GetAttribute<T>: T;
-var
-  LAttribute: TCustomAttribute;
 begin
   Result := nil;
 
-  for LAttribute in FAttributes do
+  for var LAttribute in FAttributes do
     if LAttribute is T then
       Exit(LAttribute as T);
 end;
 
 procedure TNeonRttiObject.InternalParseAttributes(const AAttr: TArray<TCustomAttribute>);
-var
-  LAttribute: TCustomAttribute;
-  LClass: TClass;
 begin
-  for LAttribute in AAttr do
+  for var LAttribute in AAttr do
   begin
     if LAttribute is NeonIncludeAttribute then
       FNeonInclude := (LAttribute as NeonIncludeAttribute).IncludeValue
@@ -1219,7 +1184,7 @@ begin
       else
         if LAttribute is NeonFactoryAttribute then
         begin
-          LClass := (LAttribute as NeonFactoryAttribute).FactoryClass;
+          var LClass := (LAttribute as NeonFactoryAttribute).FactoryClass;
 
           if LClass.InheritsFrom(TCustomFactory) then
             FNeonFactoryClass := TCustomFactoryClass(LClass);
@@ -1227,7 +1192,7 @@ begin
         else
           if LAttribute is NeonItemFactoryAttribute then
           begin
-            LClass := (LAttribute as NeonItemFactoryAttribute).FactoryClass;
+            var LClass := (LAttribute as NeonItemFactoryAttribute).FactoryClass;
 
             if LClass.InheritsFrom(TCustomFactory) then
               FNeonItemFactoryClass := TCustomFactoryClass(LClass);
@@ -1284,17 +1249,14 @@ begin
 end;
 
 procedure TNeonSerializerRegistry.Assign(ARegistry: TNeonSerializerRegistry);
-var
-  LInfo: TSerializerInfo;
-  LPair: TPair<PTypeInfo, TCustomSerializer>;
 begin
-  for LInfo in ARegistry.FRegistryClass do
+  for var LInfo in ARegistry.FRegistryClass do
     FRegistryClass.Add(LInfo);
 
   ARegistry.FRegistryCacheLock.Enter;
   FRegistryCacheLock.Enter;
   try
-    for LPair in ARegistry.FRegistryCache do
+    for var LPair in ARegistry.FRegistryCache do
       FRegistryCache.Add(LPair.Key, LPair.Value);
   finally
     FRegistryCacheLock.Leave;
@@ -1366,7 +1328,6 @@ end;
 
 function TNeonSerializerRegistry.InternalGetSerializer(ATypeInfo: PTypeInfo): TCustomSerializer;
 var
-  LInfo: TSerializerInfo;
   LClass: TCustomSerializerClass;
   LDistanceMax: Integer;
 begin
@@ -1382,7 +1343,7 @@ begin
     FRegistryCacheLock.Leave
   end;
 
-  for LInfo in FRegistryClass do
+  for var LInfo in FRegistryClass do
   begin
     if LInfo.SerializerClass.CanHandle(ATypeInfo) then
     begin
@@ -1424,10 +1385,8 @@ begin
 end;
 
 procedure TNeonSerializerRegistry.UnregisterSerializer(ASerializerClass: TCustomSerializerClass);
-var
-  LIndex: Integer;
 begin
-  for LIndex := 0 to FRegistryClass.Count - 1 do
+   for var LIndex := 0 to FRegistryClass.Count - 1 do
     if FRegistryClass[LIndex].SerializerClass = ASerializerClass then
     begin
       FRegistryClass.Delete(LIndex);
